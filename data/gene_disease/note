@@ -1,0 +1,7 @@
+copd_label.txt
+    <geneId><geneSymbol><diseaseId><diseaseName><diseaseClass><pmid><source><class>
+copd_label_edges.txt
+    <geneId><diseaseId>
+
+copd_label_content.txt
+    <diseaseId><label>
