@@ -1,0 +1,2 @@
+ --output/gene_disease/node2vec/nod2vec_emd.txt
+total running time 174.46176934242249

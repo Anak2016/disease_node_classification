@@ -1,0 +1,17 @@
+# -- pytorch_geometric dataset
+data.x: shape = [num_nodes, num_nodes_features]
+
+data.edge_index: shape = [2, num_edges] # 2 => number of node of an edge, num_edges = num of total edges
+
+data.edge_attr: shape = [num_edges, num_edge_features]
+
+data.y : shape= [ num_nodes, *] # label; target to train against
+
+data.pos: shape = [num_nodes, num_dimensions] # position matrix??
+
+data.face: [3, num_faces] # 3 => 3 nodes that create a face, num_faces =>  number of faces that has the node is attached to
+
+
+
+
+
