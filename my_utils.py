@@ -20,6 +20,56 @@ def display2screen(*args,**kwargs):
 
     pause()
 # -- files manipulation
+def create_copd_label_content(path='./data/gene_disease/',file_name= "copd_label", time_stamp='', **kwargs):
+    '''
+    use copd_label{time_stamp}.txt to write copd_label_content{time_stamp}.txt
+
+    copd_label_content{time_stamp}.txt contains uniq pair of the following
+        <cuis><class_label>
+
+    :return:
+    '''
+
+    sep = '\t'
+    if kwargs.get('sep'):
+        sep = kwargs.get('sep')
+
+    path2file = f"{path}{file_name}{time_stamp}.txt"
+    df = pd.read_csv(path2file, sep=sep)
+    df = df[["diseaseId", "class"]]
+    # -- get unique disease
+    np_ = np.unique(df.to_numpy().astype("<U22"), axis=0)
+    df = pd.DataFrame(np_)
+    # display2screen(df.shape)
+
+    save_file = f"{file_name}_content{time_stamp}.txt"
+    write2files(df,path=path,file_name=save_file,type='df')
+
+def create_copd_label_edges(path='./data/gene_disease/',file_name= "copd_label", time_stamp='', **kwargs):
+    '''
+    use copd_label{time_stamp}.txt to write copd_label_edges{time_stamp}.txt
+
+    copd_label_edges{time_stamp}.txt contains uniq pair the following
+        <cuis><class_label>
+
+    :return:
+    '''
+    sep = '\t'
+    if kwargs.get('sep'):
+        sep = kwargs.get('sep')
+
+    path2file = f"{path}{file_name}{time_stamp}.txt"
+    df = pd.read_csv(path2file, sep=sep)
+    df = df[["geneId", "diseaseId"]]
+    # -- get unique edges
+    np_ = np.unique(df.to_numpy().astype("<U22"), axis=0)
+    df = pd.DataFrame(np_)
+    # display2screen(df.shape)
+
+    save_file = f"{file_name}_edges{time_stamp}.txt"
+    write2files(df,path=path,file_name=save_file,type='df')
+
+
 def write2files(data,path="./data/gene_disease/", file_name=None, type='df'):
     '''
 
@@ -124,20 +174,23 @@ class Cora():
 
 
 class Copd():
-    def __init__(self, path=None, data=None):
+    def __init__(self, path=None, data=None, time_stamp=None):
+
+        self.time_stamp = time_stamp
         # --numpy data
         if path is not None and data is not None:
-
-            self.disease, self.labels = GetData.disease_labels(path, data)
+            self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
         else:
-            self.disease, self.labels = GetData.disease_labels()
+            self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
 
-        self.gene, _ = GetData.gene_disease()
-        self.edges = GetData.edges()
 
-    def load_data(self, path="./data/gene_disease/", dataset="copd_label"):
+        self.gene, self.non_uniq_diseases = GetData.gene_disease(path=path, time_stamp=time_stamp)
+        self.edges = GetData.edges(path=path, time_stamp=time_stamp)
+        # display2screen('line 184')
+
+    def load_data(self, path="./data/gene_disease/", dataset="copd_label", time_stamp=''):
         """
-        load data of cpod only for largest connected component
+        load data of cpod for full grpah and largest connected component
         return: adj = adj of subgraph
                 labels = lables of subgraph # one diseaseid is not connected to the largest componenet
                 g = subgraph of type networkx.Graph()
@@ -180,7 +233,7 @@ class Copd():
 
         adj = torch.FloatTensor(np.array(adj.todense()))
         labels = torch.LongTensor(np.where(labels)[1])  # label is of type int NOT type one_hot
-        return adj, labels, g
+        return adj, labels, G, g
 
     def normalize_adj(self,mx):
         """Row-normalize sparse matrix"""
@@ -250,31 +303,34 @@ class Copd():
     def create_rep_dataset(self, path='data/gene_disease/'):
         '''
         create files with value representtation of the following files
-            >copd_label_content.txt and copd_label_edges.txt
+            >copd_label_content{time_stamp}.txt and copd_label_edges{time_stamp}.txt
 
         '''
-        # copd_label_edges.txt
-        genes, non_uniq_diseases = GetData.gene_disease() # disease is not the same as self.disease in that it is not uniq
+        # -- copd_label_edges.txt
+        # disease is not the same as self.disease in that it is not uniq
+        # genes, non_uniq_diseases = GetData.gene_disease()
+        genes, non_uniq_diseases = self.gene, self.non_uniq_diseases
 
         # convert gene and non_uniq_disease to  its int_rep
         genes = list(map(self.genes2idx().get, genes))
         non_uniq_diseases = list(map(self.disease2idx().get, non_uniq_diseases))
 
-
-        # copd_label_content.txt
-        uniq_diseases, labels = GetData.disease_labels()
+        # --copd_label_content.txt
+        # uniq_diseases, labels = GetData.disease_labels()
+        uniq_diseases, labels = self.disease, self.labels
 
         uniq_diseases = list(map(self.disease2idx().get, uniq_diseases))
         labels = list(map(self.labels2idx().get, labels ))
 
         gene_disease = pd.DataFrame([genes,non_uniq_diseases], dtype=np.int32).T
         disease_label = pd.DataFrame([uniq_diseases,labels], dtype=np.int32).T
+        # display2screen(gene_disease.head(), disease_label.head())
 
         # write to rep_copd_label_edges.txt
-        write2files(gene_disease,path='data/gene_disease/rep/', file_name="rep_copd_label_edges.txt")
+        write2files(gene_disease,path='data/gene_disease/rep/', file_name=f"rep_copd_label_edges{self.time_stamp}.txt")
 
         # write to rep_copd_content.txt
-        write2files(disease_label,path='data/gene_disease/rep/', file_name="rep_copd_content.txt")
+        write2files(disease_label,path='data/gene_disease/rep/', file_name=f"rep_copd_content{self.time_stamp}.txt")
 
 
 class GetData():
@@ -282,15 +338,17 @@ class GetData():
         pass
 
     @staticmethod
-    def edges(path='data/gene_disease/', data='copd_label_edges.txt'):
+    def edges(path='data/gene_disease/', data='copd_label_edges', time_stamp=''):
+    # def edges(path='data/gene_disease/', data='copd_label_edges.txt'):
         '''
 
             :param path:
             :param data:
             :return: edges_index; type = numpy(), shape = [2, number of edges ]
             '''
-        import pandas as pd
-        edges = pd.read_csv(path + data, sep='\t', names=['geneid', 'diseaseid'], header=None)
+        path2file = f'{path}{data}{time_stamp}.txt'
+
+        edges = pd.read_csv(path2file, sep='\t', names=['geneid', 'diseaseid'], header=None)
         # largest connected componenet
 
         # -- create graph which have ordered nodes and edges.
@@ -308,7 +366,8 @@ class GetData():
         return edges
 
     @staticmethod
-    def disease_labels(path='data/gene_disease/', data='copd_label_content.txt'):
+    # def disease_labels(path='data/gene_disease/', data='copd_label_content.txt'):
+    def disease_labels(path='data/gene_disease/', data='copd_label_content', time_stamp=''):
         '''
 
             :param path:
@@ -316,24 +375,27 @@ class GetData():
             :return: [cui1, cui2, ... ]; type = numpy ; diseases are uniq
                     [label1, label2,..]; type = numpy ; label of the disease in order
             '''
-        import pandas as pd
-        with open(path + data, 'r') as f:
-            disease_labels = pd.read_csv(path + data, sep='\t', names=['diseaseid', 'label'], header=None).to_numpy().flatten()
+        path2file = f'{path}{data}{time_stamp}.txt'
+        with open(path2file, 'r') as f:
+            disease_labels = pd.read_csv(path2file, sep='\t', names=['diseaseid', 'label'], header=None).to_numpy().flatten()
             uniq_disease = np.array(disease_labels.tolist()[0::2])
             labels = np.array(disease_labels.tolist()[1::2])
         return uniq_disease, labels
 
     @staticmethod
-    def gene_disease(path='data/gene_disease/', data='copd_label_edges.txt'):
+    def gene_disease(path='data/gene_disease/', data='copd_label_edges', time_stamp=''):
         '''
 
         :return: [gene1, gene2,...]; type = numpy; geneid are not uniq
                 [cui1, cui2,....]; type= numpy; diseaseid are not uniq
         '''
-        with open(path + data, 'r') as f:
-            gene_disease = pd.read_csv(path + data, sep='\t', names=['geneid', 'diseaseid'], header=None).to_numpy().flatten()
+        path2file = f'{path}{data}{time_stamp}.txt'
+
+        with open(path2file, 'r') as f:
+            gene_disease = pd.read_csv(path2file, sep='\t', names=['geneid', 'diseaseid'], header=None).to_numpy().flatten()
             gene = np.array(gene_disease.tolist()[0::2], dtype="U")
             non_uniq_disease = np.array(gene_disease.tolist()[1::2], dtype="U") # diseaseId that has edges.
+
         return gene, non_uniq_disease
 
 class Conversion():

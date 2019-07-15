@@ -10,8 +10,6 @@ dataset = 'Cora'
 path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', dataset)
 dataset = Planetoid(path, dataset, T.NormalizeFeatures())
 data = dataset[0]
-print(data)
-exit()
 
 # create Data(edge_index, test_mask, train_mask, val_maask, x, y)
 # edge_index = [2, num_egdes]
@@ -66,13 +64,24 @@ def test():
         accs.append(acc)
     return accs
 
+if __name__ == "__main__":
+    # best_val_acc = test_acc = 0
+    # for epoch in range(1, 201):
+    #     train()
+    #     train_acc, val_acc, tmp_test_acc = test()
+    #     if val_acc > best_val_acc:
+    #         best_val_acc = val_acc
+    #         test_acc = tmp_test_acc
+    #     log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
+    #     print(log.format(epoch, train_acc, best_val_acc, test_acc))
+    import matplotlib.pyplot as plt
 
-best_val_acc = test_acc = 0
-for epoch in range(1, 201):
-    train()
-    train_acc, val_acc, tmp_test_acc = test()
-    if val_acc > best_val_acc:
-        best_val_acc = val_acc
-        test_acc = tmp_test_acc
-    log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-    print(log.format(epoch, train_acc, best_val_acc, test_acc))
+    x = [0, 1, 2, 3, 4]
+    y = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [9, 8, 7, 6, 5]]
+    labels = ['foo', 'bar', 'baz']
+
+    for y_arr, label in zip(y, labels):
+        plt.plot(x, y_arr, label=label)
+
+    plt.legend()
+    plt.show()

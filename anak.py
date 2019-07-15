@@ -7,9 +7,9 @@ from torchvision import transforms, utils
 # use node2vec with cora datset
 import torch.nn.functional as F
 import os.path as osp
-import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
 import torch_geometric.transforms as T
+import torch_geometric.data as Data
 import numpy as np
 import scipy.sparse as sp
 import torch
@@ -21,10 +21,11 @@ import pandas as pd
 import os
 import collections
 
+
 from torch_geometric.nn import GCNConv, ChebConv  # noqa
 from node2vec import Node2Vec
 from networkx.algorithms import bipartite
-from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion
+from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion, create_copd_label_content, create_copd_label_edges
 from sys import path
 
 # import sys
@@ -35,7 +36,7 @@ def pause():
     print("done")
     exit()
 
-def save_node2vec_emb(G, save_path = 'output/gene_disease/node2vec/', EMBEDDING_FILENAME = 'nod2vec_emd.txt', log=True):
+def save_node2vec_emb(G, save_path = 'output/gene_disease/embedding/node2vec/', EMBEDDING_FILENAME = 'node2vec_emb.txt', log=True):
     with open(save_path + EMBEDDING_FILENAME, 'w') as f:
         print("path is ok")
 
@@ -50,15 +51,12 @@ def save_node2vec_emb(G, save_path = 'output/gene_disease/node2vec/', EMBEDDING_
     f = time.time()
     total = f-s
     print(f'total = {total}')
-
-    # Look for most similar nodes
-    print("--Look for most similar nodes")
-    model.wv.most_similar('2')  # Output node names are always strings
-
     output_path = save_path + EMBEDDING_FILENAME
-
     # Save embeddings for later use
     model.wv.save_word2vec_format(output_path)
+
+    # # Save model for later use
+    # model.save(output_path)
 
     if log:
         with open(f'./log/{EMBEDDING_FILENAME}', 'w') as f:
@@ -76,7 +74,7 @@ def nx_plot(G, pos=None, node_color=None ):
         nx.draw(G)
         plt.show()
 
-def run_node2vec():
+def run_node2vec(copd, time_stamp=""):
     '''
 
     :return:
@@ -84,24 +82,30 @@ def run_node2vec():
     # largest connected component -> get adj, label, ... -> get bipartite.sets -> save_node2vec_emb
 
     # when load data only use data that is
-    copd = Copd()
-    # adj, features, labels, idx_train, idx_val, idx_test = cora.load_data()
-    adj, labels, g = copd.load_data()
+    # copd = Copd()
 
+    # adj, features, labels, idx_train, idx_val, idx_test = cora.load_data()
+    adj, labels, G, g = copd.load_data()
     # --color bipartite graph
     if param.plot:
         left, right = bipartite.sets(g)
         bipartite_color = [0 if i < len(left) else 1 for i, _ in enumerate(left.union(right))]
         pos = nx.circular_layout(g)
         nx_plot(g, pos=pos, node_color=bipartite_color)
-    #  -- save node2vec embbedding to file
-    save_node2vec_emb(g)
 
-def bine_copd_label():
+    #  -- save node2vec embbedding to file
+    # save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
+    save_node2vec_emb(G,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph{time_stamp}.txt" )
+
+def bine_copd_label(time_stamp=''):
     # load data in to dataframe
     # add u to gene and add i to item
     # create new columns of weight = 1 ( unweightd)
-    file = "data/gene_disease/copd_label_edges.txt"
+
+    # file = f"data/gene_disease/copd_label_edges{time_stamp}.txt"
+
+    file = f"data/gene_disease/rep/rep_copd_label_edges{time_stamp}.txt"
+
     import pandas as pd
     df = pd.read_csv(file, sep='\t', header=None)
     gene_dict = {'geneid':[]}
@@ -117,7 +121,7 @@ def bine_copd_label():
     dict_ = gene_dict
     # print(dict_['diseaseid'][:5])
     df = pd.DataFrame(dict_, columns=['geneid', 'diseaseid', 'weight'] )
-    save_path = 'data/gene_disease/bine/cope_label_edges_.txt'
+    save_path = f'data/gene_disease/bine/cope_label_edges{time_stamp}_.txt'
     df.to_csv(save_path, index=False, header=False, sep='\t')
 
 
@@ -356,11 +360,13 @@ def create_pytorch_dataset(path='data/gene_disease/', files=['copd_label_content
             plt.show()
             break
 
+# todo here>>create Coop_geometric_dataset and make it compatible with GCN
+class Copd_geomertric_dataset(Data):
+    def __init__(self):
+        pass
 
+def run_GCN(dataset = 'Cora'):
 
-def run_GCN():
-
-    dataset = 'Cora'
     path = osp.join(osp.dirname(osp.realpath(__file__)), 'data', 'Planetoid', dataset)
     dataset = Planetoid(path, dataset, T.NormalizeFeatures())
 
@@ -411,33 +417,6 @@ def run_GCN():
         log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
         print(log.format(epoch, train_acc, best_val_acc, test_acc))
 
-# def read_copd_label_edges(path='data/gene_disease/', data='copd_label_edges.txt'):
-#     '''
-#
-#     :param path:
-#     :param data:
-#     :return: edges_index.shape = [2, number of edges ]
-#     '''
-#     import pandas as pd
-#     with open(path+data, 'r') as f:
-#         edges_index = pd.read_csv(path+data, sep='\t', names=['geneid', 'diseaseid'], header=None).to_numpy()
-#         edges_index = edges_index.transpose()
-#     return edges_index
-
-
-# def get_disease_labels_dict(path='data/gene_disease/', data='copd_label_content.txt'):
-#     '''
-#
-#     :param path:
-#     :param data:
-#     :return: edge_index.shape = [2, number of edges]
-#     '''
-#     import pandas as pd
-#     with open(path + data, 'r') as f:
-#         nodes = pd.read_csv(path + data, sep='\t', names=['diseaseid', 'label'], header=None).to_numpy()
-#     return nodes2idx(nodes.flatten())  # {cuis: label} where range of cuiis = 0-59 and range of label = 0-7
-
-# todo 3.node2vec_emb
 def add_node_features(nodes):
     '''
         node2vec_emb
@@ -517,13 +496,25 @@ def create_pytorch_geometric_dataset():
 
 
 if __name__ == "__main__":
-    # bine_copd_label()
-    # run_GCN() # replace cora with copd_label.txt
+    # --initalization
+    time_stamp = '07_14_19_46'
+
+    # -- data manipulation + labeling
+    # create_copd_label_content(time_stamp=time_stamp, sep=',')
+    # create_copd_label_edges(time_stamp=time_stamp, sep=',')
+    # bine_copd_label(time_stamp=time_stamp)
+
+    # -- cora dataset
     # create_pytorch_dataset()
 
-    # --
-    copd = Copd()
-    copd.create_rep_dataset()
-    # create_pytorch_geometric_dataset()
-    # run_node2vec() # todo finish this first then do create_pytorch_geometric_dataset
+    # -- copd dataset
+    # copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp="")
+    copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp=time_stamp)
+    # copd.create_rep_dataset()
 
+    # -- running model
+    # run_node2vec(copd=copd, time_stamp=time_stamp)
+    # run_GCN() # replace cora with copd_label.txt
+    copd_geometric_dataset = Copd_geomertric_dataset()
+
+    # create_pytorch_geometric_dataset() # may not use this

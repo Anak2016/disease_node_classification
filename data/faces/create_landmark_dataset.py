@@ -1,10 +1,10 @@
 """Create a sample face landmarks dataset.
 
-Adapted from dlib/python_examples/face_landmark_detection.py
+Adapted from dlib\python_examples\face_landmark_detection.py
 See this file for more explanation.
 
 Download a trained facial shape predictor from:
-    http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
+    http:\\dlib.net\files\shape_predictor_68_face_landmarks.dat.bz2
 """
 import dlib
 import glob
@@ -33,7 +33,7 @@ with open('face_landmarks.csv', 'w', newline='') as csvfile:
             row = [f]
 
             d = dets[0]
-            # Get the landmarks/parts for the face in box d.
+            # Get the landmarks\parts for the face in box d.
             shape = predictor(img, d)
             for i in range(num_landmarks):
                 part_i_x = shape.part(i).x
