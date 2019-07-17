@@ -4,6 +4,9 @@ import torch
 import networkx as nx
 import pandas as pd
 import collections
+import matplotlib.pyplot as plt
+
+from collections import OrderedDict
 
 # -- utils
 def pause():
@@ -19,6 +22,11 @@ def display2screen(*args,**kwargs):
         print(f"{k}: {v}")
 
     pause()
+
+# dataset characteristic
+
+
+
 # -- files manipulation
 def create_copd_label_content(path='./data/gene_disease/',file_name= "copd_label", time_stamp='', **kwargs):
     '''
@@ -183,10 +191,10 @@ class Copd():
         else:
             self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
 
-
         self.gene, self.non_uniq_diseases = GetData.gene_disease(path=path, time_stamp=time_stamp)
         self.edges = GetData.edges(path=path, time_stamp=time_stamp)
-        # display2screen('line 184')
+
+        # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
 
     def load_data(self, path="./data/gene_disease/", dataset="copd_label", time_stamp=''):
         """
@@ -235,6 +243,109 @@ class Copd():
         labels = torch.LongTensor(np.where(labels)[1])  # label is of type int NOT type one_hot
         return adj, labels, G, g
 
+    # -- dataset characteristic
+    def class_member_dist(self, plot=False, verbose=True):
+        '''
+        plot class member distribution
+
+        :return: rank dict by value in decending order
+            [(class1, # members), (class2, # member), ....]
+        '''
+        # use orderdict
+        dist = {l:len(v) for l, v in self.class2disease().items()}
+
+        # display2screen(dist)
+        # sorted by value in ascending order
+        dist = sorted(dist.items(), key= lambda t:t[1], reverse=False)
+        if plot:
+            plt.bar([i for i in range(5)],height=[c[1] for c in dist])
+            plt.xticks([i for i in range(5)], [c[0] for c in dist])
+            plt.title("class_member_dist")
+            plt.show()
+
+        if verbose:
+            print(f'ranking class_member_dist in decending order')
+            for i, tuple in enumerate(dist):
+                print(f"rank {i}: class = {tuple[0]} has {tuple[1]} number of members")
+
+        return dist
+
+    def edges2nodes_ratio(self, verbose=False):
+        ratio = self.edges.shape[1]/len(self.nodes2idx().keys())
+        if verbose:
+            print(f'edges2nodes_ratio = {ratio}')
+        return ratio
+
+    def label_rate(self, verbose=False):
+        rate = self.disease.shape[0]/len(self.nodes2idx().keys())
+        if verbose:
+            print(f'label_rate = {rate}')
+        return rate
+
+    # todo here>.
+    def rank_gene_overlap(self, verbose=False, plot=False):
+        '''
+        step tp step on how this func works
+        1. for each class, create a set of gene that have edges connected to that class
+        2. find the overlappi of gene between each classes and rank all of them
+            : there will be n*n comparison where n = number of class
+        :return:
+        '''
+        nodes = sorted([i for i in self.nodes2idx().values()])
+        edges_flat = self.edges.T.flatten()
+        edges_flat = [self.nodes2idx()[i] for i in edges_flat]
+        '''
+        edges_flat has the following format
+            [d1,g1,d2,g2,d3,g3,...] where d = disease and g = gene
+        '''
+        # idx2disease = {d:i for i, d in self.nodes2idx().items()}
+        class_gene = {l:[] for l in self.disease2class().values()}
+
+        for i, n in enumerate(edges_flat[1::2]):
+            if n not in self.disease2class().keys(): # gene
+                gene_idx = n # int_rep
+                if i ==0:
+                    disease_idx = edges_flat[0]  # int_rep
+                else:
+                    disease_idx = edges_flat[(i * 2) - 1]  # int_rep
+
+                #-- add gene to its corresponding class
+                class_gene[self.disease2class()[disease_idx]].append(gene_idx)
+            else:
+                disease_idx = n # int_rep
+                if i == 0:
+                    gene_idx = edges_flat[0] # int_rep
+                else:
+                    gene_idx = edges_flat[(i*2) -1] # int_rep
+
+                # -- add gene to its corresponding class
+                class_gene[self.disease2class()[disease_idx]].append(gene_idx)
+
+        intersect_gene_member = {}
+        # -- find gene overlap between classes
+        count = 0
+        for k_out, v_out in class_gene.items():
+            for k_in, v_in in class_gene.items():
+                intersect_gene_member[f"{k_out} & {k_in} "] = len(set(v_out) & set(v_in))
+                count +=1
+                # print(f"gene intersection between {k_out} and {k_in} = {len(set(v_out) & set(v_in))}")
+
+        assert count == len(class_gene.keys()) * len(class_gene.keys()), "loop is implemented incorreclty"
+
+        intersect_gene_member = sorted(intersect_gene_member.items(), key=lambda t:t[1], reverse=True)
+
+        for k in intersect_gene_member:
+            print(f"gene intersection between {k[0]}= {k[1]}")
+
+        if plot:
+            plt.bar([i for i in range(len(intersect_gene_member))],height=[c[1] for c in intersect_gene_member])
+            plt.xticks([i for i in range(len(intersect_gene_member))], [c[0] for c in intersect_gene_member], rotation='vertical')
+            plt.title("ranking gene member overlap between classes")
+            plt.show()
+
+        return class_gene, intersect_gene_member
+
+    # -- preprocessing
     def normalize_adj(self,mx):
         """Row-normalize sparse matrix"""
         rowsum = np.array(mx.sum(1))
@@ -272,8 +383,18 @@ class Copd():
 
         return cuis2labels
 
-    def nodes2idx_inverse(self):
-        pass
+    def class2disease(self):
+        '''
+
+        :return:
+            {class_label: [lsit of disease member of the class]}
+        '''
+        class2disease = {k: [] for k in self.labels2idx().keys()}
+        for k,c in self.disease2class().items():
+             class2disease[c].append(k)
+
+        return class2disease
+
 
     def labels2idx(self):
         '''
@@ -296,8 +417,9 @@ class Copd():
         :return: {genesid: diseaseid_rep}
         '''
         gene = self.gene
+
         # 61 is the amount of diseaseid
-        return {l:i+61 for i, l in enumerate(list(collections.OrderedDict.fromkeys(gene.tolist()).keys()))}
+        return {l:i+int(self.disease.shape[0]) for i, l in enumerate(list(collections.OrderedDict.fromkeys(gene.tolist()).keys()))}
 
     # -- read, write, convert files
     def create_rep_dataset(self, path='data/gene_disease/'):

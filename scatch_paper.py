@@ -29,6 +29,9 @@ class Net(torch.nn.Module):
         # edge_index = data.edge_index; dim = [2,10556]
         # y = label ; dim = 2708
 
+        # print(x.shape)
+        # print(edge_index.shape)
+        # exit()
         x = F.relu(self.conv1(x, edge_index)) # conv1(x, edge_index, edge_weight)
         x = F.dropout(x, training=self.training)
         x = self.conv2(x, edge_index)
@@ -51,6 +54,13 @@ def train():
 
     # the whole dataset are run, but only check 140 value as training dataset.
     # during training only train_mask is used to evaluate for loss function.
+
+    # print(model()[data.train_mask].shape)
+    # print(data.train_mask)
+    # print(data.train_mask.nonzero().shape)
+    print(data.train_mask.dtype)
+    exit()
+
     F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
     optimizer.step()
 
@@ -65,23 +75,12 @@ def test():
     return accs
 
 if __name__ == "__main__":
-    # best_val_acc = test_acc = 0
-    # for epoch in range(1, 201):
-    #     train()
-    #     train_acc, val_acc, tmp_test_acc = test()
-    #     if val_acc > best_val_acc:
-    #         best_val_acc = val_acc
-    #         test_acc = tmp_test_acc
-    #     log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-    #     print(log.format(epoch, train_acc, best_val_acc, test_acc))
-    import matplotlib.pyplot as plt
-
-    x = [0, 1, 2, 3, 4]
-    y = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [9, 8, 7, 6, 5]]
-    labels = ['foo', 'bar', 'baz']
-
-    for y_arr, label in zip(y, labels):
-        plt.plot(x, y_arr, label=label)
-
-    plt.legend()
-    plt.show()
+    best_val_acc = test_acc = 0
+    for epoch in range(1, 201):
+        train()
+        train_acc, val_acc, tmp_test_acc = test()
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            test_acc = tmp_test_acc
+        log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
+        print(log.format(epoch, train_acc, best_val_acc, test_acc))

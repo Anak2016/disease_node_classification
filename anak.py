@@ -8,8 +8,8 @@ from torchvision import transforms, utils
 import torch.nn.functional as F
 import os.path as osp
 from torch_geometric.datasets import Planetoid
+from torch_geometric.data import Data as Data
 import torch_geometric.transforms as T
-import torch_geometric.data as Data
 import numpy as np
 import scipy.sparse as sp
 import torch
@@ -25,7 +25,7 @@ import collections
 from torch_geometric.nn import GCNConv, ChebConv  # noqa
 from node2vec import Node2Vec
 from networkx.algorithms import bipartite
-from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion, create_copd_label_content, create_copd_label_edges
+from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion, create_copd_label_content, create_copd_label_edges, display2screen
 from sys import path
 
 # import sys
@@ -94,7 +94,9 @@ def run_node2vec(copd, time_stamp=""):
         nx_plot(g, pos=pos, node_color=bipartite_color)
 
     #  -- save node2vec embbedding to file
-    # save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
+    # display2screen(len(g.nodes)) #2975
+    save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
+    # display2screen(len(G.nodes)) #2996
     save_node2vec_emb(G,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph{time_stamp}.txt" )
 
 def bine_copd_label(time_stamp=''):
@@ -360,39 +362,108 @@ def create_pytorch_dataset(path='data/gene_disease/', files=['copd_label_content
             plt.show()
             break
 
-# todo here>>create Coop_geometric_dataset and make it compatible with GCN
+# read https://pytorch-geometric.readthedocs.io/en/latest/modules/data.html
+# use GCN in scatch_paper.py as a template to build new GCN for COPD
 class Copd_geomertric_dataset(Data):
-    def __init__(self):
-        pass
 
-def run_GCN(dataset = 'Cora'):
+    def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None):
+        self.dataset = data
+        super(Copd_geomertric_dataset, self).__init__(x,edges_index,edge_attr,y)
 
-    path = osp.join(osp.dirname(osp.realpath(__file__)), 'data', 'Planetoid', dataset)
-    dataset = Planetoid(path, dataset, T.NormalizeFeatures())
+        # -- masking
+        self.train_mask_set = []
+        self.test_mask_set = []
+        ind = 0  # inc everytime nodes are added; check how many nodes are included in training set
+        count = 0
+        arr_ind = 0 # inc everytimes for loop go through all of the classes; it represent current ind of val_list in each class.
 
-    data = dataset[0]
+        while True:
+            # for i,k in enumerate(copd.disease2class().keys()):
+
+            max_class_int_rep = self.num_classes - 1 # max int_rep of all classes
+            current_class = count % max_class_int_rep
+
+            if ind < int(0.8 * len(copd.disease2class().keys())):  # training set
+                next_val = set(copd.class2disease()[current_class]).difference(set(self.train_mask_set))
+                if len(next_val) > 1:
+                    next_val = list(next_val)[0]
+                    # self.train_mask_set.append(copd.class2disease()[current_class][arr_ind])
+                    self.train_mask_set.append(next_val)
+                    ind += 1
+
+            if ind == int(0.8 * len(copd.disease2class().keys())):
+                break
+
+            count += 1
+
+        # display2screen(ind, count)
+        self.test_mask_set = list(set([i for i in copd.disease2idx().values()]).difference(self.train_mask_set))
+
+        train_class = set([copd.disease2class()[i] for i in self.train_mask_set])
+        test_class  = set([copd.disease2class()[i] for i in self.test_mask_set])
+
+        # display2screen(train_class, test_class, train_class.symmetric_difference(test_class))
+        assert len(self.test_mask_set) + len(self.train_mask_set) == len(copd.disease2class().keys()), "Some diseases are not included in neither training or test set "
+        assert len(set(self.train_mask_set).intersection(set(self.test_mask_set))) == 0, "diseases in both classes must be unique to its dataset either trianing or test dataset"
+        assert len(set([copd.disease2class()[i] for i in self.train_mask_set])) == len(copd.class2disease().keys()), f"members of training set does not include all of the class labels.\n classes={train_class}"
+        assert len(set([copd.disease2class()[i] for i in self.test_mask_set])) == len(copd.class2disease().keys()), f"members of test set does not include all of the class labels.\n classes={test_class}"
+
+        # display2screen(self.test_mask_set, self.train_mask_set)
+        # display2screen(len(self.test_mask_set), len(self.train_mask_set))
+
+        # -- convert to torch.tensor
+        self.train_mask_set = torch.LongTensor(self.train_mask_set)
+        self.test_mask_set = torch.LongTensor(self.test_mask_set)
+
+    @property
+    def num_classes(self):
+        return np.unique(y.numpy()).shape[0]
+
+    # -- inherited property
+    # @num_node_features.setter
+    # def num_features(self):
+
+    # -- masking index for x and y
+    @property
+    def train_mask(self):
+        # make sure that all train set ahve all the classes
+        return self.train_mask_set
+
+    @property
+    def test_mask(self):
+        # make sure that all test set ahve all the classes
+        return self.test_mask_set
+
+def run_GCN(data = None):
 
     class Net(torch.nn.Module):
         def __init__(self):
             super(Net, self).__init__()
-            self.conv1 = GCNConv(dataset.num_features, 16, cached=True)
-            self.conv2 = GCNConv(16 , dataset.num_classes, cached=True)
+
+            self.conv1 = GCNConv(data.num_features, 16, cached=True)
+            self.conv2 = GCNConv(16 , data.num_classes, cached=True)
 
         def forward(self):
             x, edge_index = data.x, data.edge_index
+            x = x.type(torch.float)
+            edge_index = edge_index.type(torch.long)
+            # edge_index = torch.transpose(edge_index, 0,1)
+
             x = F.relu(self.conv1(x, edge_index))
             x = F.dropout(x, training=self.training)
             x = self.conv2(x, edge_index)
             return F.log_softmax(x, dim=1)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model, data = Net().to(device), data.to(device)
+    model= Net().to(device)
+
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
     # model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch
 
     def train():
         model.train()
         optimizer.zero_grad()
+        # todo create correct train_mask to be used
         F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
         optimizer.step()
 
@@ -400,104 +471,25 @@ def run_GCN(dataset = 'Cora'):
         model.eval()
         logits, accs = model(), []
 
-        for _,mask in data('train_mask', 'val_mask', 'test_mask'):
+        # for _,mask in data('train_mask', 'test_mask'):
+        for mask in [data.train_mask, data.test_mask]:
             pred = logits[mask].max(1)[1]
             acc = pred.eq(data.y[mask]).sum().item()/ mask.sum().item()
             accs.append(acc)
         return accs
 
-
     best_val_acc =test_acc = 0
     for epoch in range(1,201):
         train()
-        train_acc, val_acc, tmp_test_acc = test()
-        if val_acc > best_val_acc: # only pick the best test whose val is better than the previous best
-            best_val_acc = val_acc
-            test_acc = tmp_test_acc
-        log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-        print(log.format(epoch, train_acc, best_val_acc, test_acc))
-
-def add_node_features(nodes):
-    '''
-        node2vec_emb
-    :param nodes: [node1, node2, ....] ; list of all nodesi in the graph
-    :return:
-    '''
-    pass
-
-# only use nodes that are in the largest connected component
-def create_pytorch_geometric_dataset():
-    '''
-        create torch.data.Data() as well as its attribute eg. edges_index, x, train_mask, ... , etc
-    :return:
-    '''
-    edges_index = GetData.edges() # return numpy
-
-    copd = Copd()
-    cui2labels= copd.nodes2idx() # return dict conversion
-    idx_cuis = copd.nodes2idx_inverse() # return dict conversion
-
-    # convert geneId to its int representation;
-    geneid = edges_index[0, :]
-
-    # 61 = number of diseaseid;
-    gene_idx = {g:i + 61  for i,g in enumerate(list(collections.OrderedDict.fromkeys(geneid.tolist()).keys()))} # todo gene_idx
-    geneid = list(map(gene_idx.get, geneid))
-
-    diseaseid = edges_index[1,: ]
-    diseaseid = list(map(idx_cuis.get, diseaseid))
-    print(diseaseid[:5])
-    print(geneid[:5])
-
-    exit()
-    assert None not in geneid, "geneid contains None as value "
-    assert None not in diseaseid, "diseaseid contains None as value "
-
-    # torch.data.Data(edge_index, test_mask, train_mask, val_mask, x, y )
-
-    # -- edges_index
-    edges_index = torch.tensor([geneid, diseaseid], dtype=torch.int32) # shape = [2,11657]
-
-
-    # todo 5. create x for pytorch.data.Data()
-    # -- x
-    #     :2 options
-    #   1. concat list of diseaseId to list of geneId
-    #     : order of diseaseId and geneId are important there because i can use it to split train_mask and test_mask
-    #
-    #   2. we can also use G.nodes to create x in the following step
-    #       1. convert nodes to its ints representation
-    #       2. rank them in ascending order
-    #       3. create adj matrix fomr it
-    #       4. DONE!!!!!!!!!!!!!!!!
-    #
-    #
-
-    # get uniq key to be used in x in the follwoing format
-    #       : dim = [# nodes, # fo nodes_features]
-    #      > [
-    #          [node1, # of node1_features]
-    #          [node2, # of node2_features]
-    #               ...
-    #         ]
-    diseaseid = list(collections.OrderedDict.fromkeys(diseaseid).keys())
-    geneid = list(collections.OrderedDict.fromkeys(geneid).keys())
-
-    nodes = diseaseid + geneid
-    print(nodes[:5])
-    print(diseaseid[:5])
-    print(geneid[:5])
-    print(len(nodes))
-    # nodes = add_node_features()
-
-
-    # --test_mask ; 20percent
-
+        train_acc, test_acc = test()
+        log = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'
+        print(log.format(epoch, train_acc, test_acc))
 
 
 if __name__ == "__main__":
     # --initalization
     time_stamp = '07_14_19_46'
+
 
     # -- data manipulation + labeling
     # create_copd_label_content(time_stamp=time_stamp, sep=',')
@@ -512,9 +504,43 @@ if __name__ == "__main__":
     copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp=time_stamp)
     # copd.create_rep_dataset()
 
+    verbose= True
+    plot = True
+    # -- copd report
+    # copd.edges2nodes_ratio(verbose=verbose)
+    # copd.label_rate(verbose=verbose)
+    # copd.class_member_dist(plot=plot, verbose=verbose)
+    # copd.rank_gene_overlap(verbose=verbose, plot=plot)
+
     # -- running model
     # run_node2vec(copd=copd, time_stamp=time_stamp)
-    # run_GCN() # replace cora with copd_label.txt
-    copd_geometric_dataset = Copd_geomertric_dataset()
 
-    # create_pytorch_geometric_dataset() # may not use this
+    # 2996, 101, 2895
+    # display2screen(len(list(copd.nodes2idx().values())), len(copd.disease2class().keys()), len(copd.genes2idx()))
+
+    # ==============================
+    # ==pre arguments to be fed to Copd_geometric_dataset
+    # ==============================
+    # -- add node embedding to x
+    emb_path = f'output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph{time_stamp}.txt'
+    with open(emb_path,'r') as f:
+        tmp = f.readlines()
+        tmp = tmp[1:]
+    emb_dict = {int(i.split(' ')[0]):list(map(float,i.split(' ')[1:]))  for i in tmp }
+    emb = sorted(emb_dict.items(), key= lambda t:t[0])
+
+    x = np.array([[j for j in i[1]] for i in emb ], dtype=np.float)
+    x = torch.tensor(x, dtype=torch.float) # torch.Size([2996, 64])
+
+    # -- edge_index
+    edge_index = list(map(copd.nodes2idx().get, copd.edges.T.flatten()))
+    edge_index = torch.tensor(edge_index, dtype=torch.int64).view(2,-1) # torch.Size([2, 4715])
+
+    # -- label
+    # label gene with 99
+    y = [copd.disease2class()[i] if i in copd.disease2idx().values() else 99 for i in copd.nodes2idx().values()]
+    y = torch.tensor(y, dtype=torch.int64) # torch.Size([2996])
+    # display2screen(y.shape)
+
+    copd_geometric_dataset = Copd_geomertric_dataset(copd, x=x,edges_index=edge_index,y=y)
+    run_GCN(copd_geometric_dataset)

@@ -128,8 +128,7 @@ def plot_2d(copd, path, file_list, **kwargs):
     print(f'total running time {total}')
     plt.show()
 
-def class_member_dist():
-    pass
+
 
 if __name__ == "__main__":
     # =======================

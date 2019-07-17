@@ -1,36 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/anak.py" line="395" />
+    <bookmark url="file://$PROJECT_DIR$/anak.py" line="466" />
     <bookmark url="file://$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" mnemonic="1" />
-    <bookmark url="file://$PROJECT_DIR$/my_utils.py" line="186" mnemonic="5" />
-    <bookmark url="file://$PROJECT_DIR$/anak.py" line="363" mnemonic="3" />
+    <bookmark url="file://$PROJECT_DIR$/anak.py" line="451" mnemonic="5" />
+    <bookmark url="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/loop.py" line="110" mnemonic="4" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/data/gene_disease/copd_label07_14_19_46.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/log/gcn/gcn_accuracy.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/log/node2vec/nod2vec_emd.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/processed/data.pt" beforeDir="false" afterPath="$PROJECT_DIR$/data/Planetoid/Cora/processed/data.pt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cora/README" beforeDir="false" afterPath="$PROJECT_DIR$/data/cora/README" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/faces/create_landmark_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/data/faces/create_landmark_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges_.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges_.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/reprep_copd_content.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/reprep_copd_label_edges.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/nod2vec_emd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_fullgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/node2vec_emb_fullgraph07_14_19_46.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_subgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/node2vec_emb_subgraph07_14_19_46.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/attention_walk/attention_coef.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/attention_walk/attentionwalk_emb.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/bine/vectors_u.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/bine/vectors_v.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/node2vec/nod2vec_emd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scatch_paper.py" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,16 +30,16 @@
     <favorites_list name="disease_node_classification" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5059952">
+    <splitter split-orientation="horizontal" split-proportion="0.5662148">
       <split-first>
         <leaf>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/visualization.py">
+            <entry file="file://$PROJECT_DIR$/anak.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="411">
-                  <caret line="133" column="26" lean-forward="true" selection-start-line="133" selection-start-column="26" selection-end-line="133" selection-end-column="26" />
+                <state relative-caret-position="379">
+                  <caret line="463" column="21" lean-forward="true" selection-start-line="463" selection-start-column="21" selection-end-line="463" selection-end-column="21" />
                   <folding>
-                    <element signature="e#0#19#0" expanded="true" />
+                    <element signature="e#0#47#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -62,12 +50,12 @@
       <split-second>
         <leaf>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/my_utils.py">
+            <entry file="file://$PROJECT_DIR$/scatch_paper.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="303">
-                  <caret line="215" column="60" selection-start-line="215" selection-start-column="60" selection-end-line="215" selection-end-column="60" />
+                <state relative-caret-position="484">
+                  <caret line="57" column="20" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
                   <folding>
-                    <element signature="e#0#18#0" expanded="true" />
+                    <element signature="e#0#21#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -86,23 +74,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>create_pytorch_dataset</find>
-      <find>copd_label</find>
-      <find>copd_label.txt</find>
-      <find>dataset</find>
-      <find>content</find>
-      <find>write2files</find>
-      <find>files</find>
-      <find>s</find>
-      <find>log</find>
-      <find>run_GCN</find>
-      <find>train_mask</find>
-      <find>Copd</find>
-      <find>data.edge_</find>
-      <find>tensor</find>
-      <find>read_csv</find>
-      <find>data</find>
-      <find>path</find>
       <find>gene_disease</find>
       <find>GetData.disease_labels</find>
       <find>self.disease, self.labels</find>
@@ -116,6 +87,23 @@
       <find>copd</find>
       <find>Copd_</find>
       <find>Copd_geo</find>
+      <find>copd_</find>
+      <find>super</find>
+      <find>Data</find>
+      <find>create_copd_label_content</find>
+      <find>create_pytorch_dataset</find>
+      <find>2990</find>
+      <find>1299</find>
+      <find>299</find>
+      <find />
+      <find>run_node2vec</find>
+      <find>line</find>
+      <find>2975</find>
+      <find>2996</find>
+      <find>2975</find>
+      <find>num_classes</find>
+      <find>class2disease</find>
+      <find>2995</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -151,24 +139,27 @@
         <option value="$PROJECT_DIR$/dataset_info.txt" />
         <option value="$PROJECT_DIR$/log/nod2vec_emd.txt" />
         <option value="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/data/dataset.py" />
-        <option value="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/gcn_conv.py" />
         <option value="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch/nn/functional.py" />
         <option value="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix.txt" />
         <option value="$PROJECT_DIR$/parameters.py" />
         <option value="$PROJECT_DIR$/info.txt" />
         <option value="$PROJECT_DIR$/todo.py" />
-        <option value="$PROJECT_DIR$/scatch_paper.py" />
         <option value="$PROJECT_DIR$/data/gene_disease/copd_label_content.txt" />
         <option value="$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" />
         <option value="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content07_14_19_46.txt" />
         <option value="$PROJECT_DIR$/visualization.py" />
-        <option value="$PROJECT_DIR$/anak.py" />
+        <option value="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/gcn_conv.py" />
+        <option value="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph.txt" />
         <option value="$PROJECT_DIR$/my_utils.py" />
+        <option value="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt" />
+        <option value="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/loop.py" />
+        <option value="$PROJECT_DIR$/scatch_paper.py" />
+        <option value="$PROJECT_DIR$/anak.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
+    <option name="x" value="953" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
@@ -191,7 +182,39 @@
             <path>
               <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
               <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
-              <item name="log" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+              <item name="gene_disease" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="gene_disease" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="gene_disease" type="462c0819:PsiDirectoryNode" />
+              <item name="embedding" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="disease_node_classification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disease_node_classification" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="gene_disease" type="462c0819:PsiDirectoryNode" />
+              <item name="embedding" type="462c0819:PsiDirectoryNode" />
+              <item name="node2vec" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -325,8 +348,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.anak" />
-        <item itemvalue="Python.visualization" />
         <item itemvalue="Python.scatch_paper" />
+        <item itemvalue="Python.visualization" />
         <item itemvalue="Python.utils" />
       </list>
     </recent_temporary>
@@ -361,9 +384,9 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49931225" visible="true" weight="0.19916579" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.498452" visible="true" weight="0.15954119" />
       <window_info id="Structure" order="1" sideWeight="0.5015015" side_tool="true" weight="0.2900844" />
-      <window_info id="Favorites" order="2" sideWeight="0.5006878" side_tool="true" weight="0.12669447" />
+      <window_info id="Favorites" order="2" sideWeight="0.501548" side_tool="true" weight="0.15015641" />
       <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
       <window_info anchor="bottom" id="Docker" order="1" show_stripe_button="false" />
@@ -372,9 +395,9 @@
       <window_info anchor="bottom" id="Run" order="4" weight="0.32899022" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
-      <window_info active="true" anchor="bottom" id="TODO" order="7" visible="true" weight="0.34944612" />
+      <window_info anchor="bottom" id="TODO" order="7" weight="0.34944612" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32931355" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.23967774" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.23967774" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.3162135" />
       <window_info anchor="bottom" id="Debug" order="12" weight="0.36253777" />
@@ -416,18 +439,13 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>287</line>
+          <line>289</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/scatch_paper.py</url>
-          <line>62</line>
+          <line>72</line>
           <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>473</line>
-          <option name="timeStamp" value="130" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/visualization.py</url>
@@ -441,70 +459,127 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>325</line>
+          <line>447</line>
           <option name="timeStamp" value="174" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/my_utils.py</url>
+          <line>345</line>
+          <option name="timeStamp" value="179" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="class2nodes" language="Python" />
-        <watch expression="len(nodes)" language="Python" />
+        <watch expression="self.train_mask_set" language="Python" />
+        <watch expression="count" language="Python" />
+        <watch expression="len(self.train_mask_set)" language="Python" />
+        <watch expression="next_val" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
-        <expression-string>print(non_uniq_diseases)</expression-string>
+        <expression-string>x = row[inv_mask].type(torch.long)
+print(loop_weight[x])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(genes)</expression-string>
+        <expression-string>print(row[inv_mask].type(torch.long))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(&quot;===&quot;)
-print(non_uniq_diseases)
-print(genes)</expression-string>
+        <expression-string>row[inv_mask].type(torch.long)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gene_disease)</expression-string>
+        <expression-string>print(loop_weight[row[inv_mask]])</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(self.non_uniq_diseases)</expression-string>
+        <expression-string>loop_weight[row[inv_mask]]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(self.gene)</expression-string>
+        <expression-string># x = copd.class2disease()
+val = set(copd.class2disease()[4]).difference(set(self.train_mask_set))
+print(val)
+# print(x)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(disease_labels)</expression-string>
+        <expression-string># x = copd.class2disease()
+val = set(copd.class2disease()[3]).difference(set(self.train_mask_set))
+print(val)
+# print(x)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string># print(disease_labels.shape)
-print(path2file)</expression-string>
+        <expression-string># x = copd.class2disease()
+val = set(copd.class2disease()[2]).difference(set(self.train_mask_set))
+print(val)
+# print(x)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(disease_labels.shape)</expression-string>
+        <expression-string># x = copd.class2disease()
+val = set(copd.class2disease()[1]).difference(set(self.train_mask_set))
+print(val)
+# print(x)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
     </expressions>
     <expressions id="watch">
+      <expression>
+        <expression-string>next_val</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(self.train_mask_set)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>count</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.train_mask_set</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>class_gene</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>gene_idx</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>disease_idx</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>disease</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>class2nodes</expression-string>
         <language-id>Python</language-id>
@@ -512,46 +587,6 @@ print(path2file)</expression-string>
       </expression>
       <expression>
         <expression-string>len(nodes)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>kwargs</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>class2disease</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(class2disease.keys()) * 0.8</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>i &lt;= int(len(class2disease.keys()) * 0.8)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>i &lt;= int(len(class2disease.keys()) * 0.8</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ind</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>i</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(class2disease.keys())</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -601,22 +636,6 @@ print(edge_index.shape)</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/data/in_memory_dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="82" column="51" lean-forward="true" selection-start-line="82" selection-start-column="51" selection-end-line="82" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/log/gcn_confusion_matrix" />
-    <entry file="file://$PROJECT_DIR$/log/gcn_confusion_matrix.py" />
-    <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/1997200948/numpy/core/_multiarray_umath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="748" column="4" selection-start-line="748" selection-start-column="4" selection-end-line="748" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/ide/ide-scripting.groovy" />
     <entry file="file://$PROJECT_DIR$/data/cora/README">
       <provider selected="true" editor-type-id="text-editor">
@@ -718,20 +737,6 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="47" column="648" selection-start-line="47" selection-start-column="648" selection-end-line="47" selection-end-column="648" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" column="52" selection-start-line="9" selection-start-column="52" selection-end-line="9" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/gene_disease/note">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -764,23 +769,6 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/data/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="699">
-          <caret line="66" column="12" lean-forward="true" selection-start-line="66" selection-start-column="12" selection-end-line="66" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scatch_paper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/gene_disease/copd_label_content_07_14_19_46.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -788,13 +776,6 @@ print(edge_index.shape)</expression-string>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
           <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/gene_disease/copd_label07_14_19_46.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
         </state>
       </provider>
     </entry>
@@ -822,20 +803,6 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="61" lean-forward="true" selection-start-line="61" selection-end-line="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content07_14_19_46.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="76" column="5" lean-forward="true" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges_.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="550">
@@ -847,20 +814,6 @@ print(edge_index.shape)</expression-string>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="354">
           <caret line="11638" column="20" lean-forward="true" selection-start-line="11638" selection-start-column="20" selection-end-line="11638" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="562">
-          <caret line="11645" column="11" lean-forward="true" selection-start-line="11645" selection-start-column="11" selection-end-line="11645" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges07_14_19_46.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="4714" selection-start-line="4714" selection-end-line="4714" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -878,46 +831,132 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="13" column="30" selection-start-line="13" selection-start-column="30" selection-end-line="13" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-160">
-          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/visualization.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="411">
-          <caret line="133" column="26" lean-forward="true" selection-start-line="133" selection-start-column="26" selection-end-line="133" selection-end-column="26" />
+        <state relative-caret-position="574">
+          <caret line="130" selection-start-line="130" selection-end-line="130" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/anak.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/data/data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="127">
-          <caret line="463" column="6" selection-start-line="463" selection-start-column="6" selection-end-line="463" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#47#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="251">
+          <caret line="25" column="6" selection-start-line="25" selection-start-column="6" selection-end-line="25" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/1997200948/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="2900" column="8" selection-start-line="2900" selection-start-column="8" selection-end-line="2900" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/gene_disease/copd_label07_14_19_46.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="644">
+          <caret line="29830" lean-forward="true" selection-start-line="29830" selection-end-line="29830" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="658">
+          <caret line="11657" lean-forward="true" selection-start-line="11657" selection-end-line="11657" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="49" column="5" lean-forward="true" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content07_14_19_46.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="88" column="5" lean-forward="true" selection-start-line="88" selection-start-column="5" selection-end-line="88" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges07_14_19_46.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="4701" column="10" lean-forward="true" selection-start-line="4701" selection-start-column="10" selection-end-line="4701" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="2843" column="75" lean-forward="true" selection-start-line="2843" selection-start-column="75" selection-end-line="2843" selection-end-column="75" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/my_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="215" column="60" selection-start-line="215" selection-start-column="60" selection-end-line="215" selection-end-column="60" />
+        <state relative-caret-position="571">
+          <caret line="195" lean-forward="true" selection-start-line="195" selection-end-line="195" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="13" column="20" lean-forward="true" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/gcn_conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="507">
+          <caret line="92" selection-start-line="92" selection-end-line="92" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch/nn/modules/module.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="504" column="21" lean-forward="true" selection-start-line="504" selection-start-column="21" selection-end-line="504" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/loop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="363">
+          <caret line="110" selection-start-line="110" selection-end-line="110" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scatch_paper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="484">
+          <caret line="57" column="20" selection-start-line="57" selection-start-column="20" selection-end-line="57" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/anak.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="379">
+          <caret line="463" column="21" lean-forward="true" selection-start-line="463" selection-start-column="21" selection-end-line="463" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#47#0" expanded="true" />
           </folding>
         </state>
       </provider>
