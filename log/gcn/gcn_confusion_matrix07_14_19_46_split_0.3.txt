@@ -1,0 +1,17 @@
+class int_rep is [0,1,2,3,4,99]
+
+training cm
+[[6 0 0 0 0]
+ [0 6 0 0 0]
+ [0 0 6 0 0]
+ [0 0 0 6 0]
+ [0 0 0 0 6]]
+training_accuracy= Train: 1.0000
+
+test cm
+[[ 1  1  0  3  0]
+ [ 0  2  0  1  2]
+ [ 1  8  1  2  9]
+ [ 1  5  0  5  3]
+ [ 4  5  1  5 11]]
+test_accuracy= Test: 0.2817
