@@ -49,9 +49,10 @@ def create_copd_label_content(path='./data/gene_disease/',file_name= "copd_label
     np_ = np.unique(df.to_numpy().astype("<U22"), axis=0)
     df = pd.DataFrame(np_)
     # display2screen(df.shape)
+    # display2screen(np_.shape)
 
     save_file = f"{file_name}_content{time_stamp}.txt"
-    write2files(df,path=path,file_name=save_file,type='df')
+    # write2files(df,path=path,file_name=save_file,type='df')
 
 def create_copd_label_edges(path='./data/gene_disease/',file_name= "copd_label", time_stamp='', **kwargs):
     '''
@@ -73,9 +74,10 @@ def create_copd_label_edges(path='./data/gene_disease/',file_name= "copd_label",
     np_ = np.unique(df.to_numpy().astype("<U22"), axis=0)
     df = pd.DataFrame(np_)
     # display2screen(df.shape)
+    # display2screen(np.unique(np_).shape)
 
     save_file = f"{file_name}_edges{time_stamp}.txt"
-    write2files(df,path=path,file_name=save_file,type='df')
+    # write2files(df,path=path,file_name=save_file,type='df')
 
 
 def write2files(data,path="./data/gene_disease/", file_name=None, type='df'):
@@ -87,6 +89,8 @@ def write2files(data,path="./data/gene_disease/", file_name=None, type='df'):
     :param type: type of content arg;  df, np, dict.
     :return:
     '''
+    print(f'write to {path+file_name}...')
+
     if file_name is None:
         raise ValueError('In write2files, dataset is not given as an argument')
     if isinstance(data, pd.DataFrame):
@@ -185,6 +189,7 @@ class Copd():
     def __init__(self, path=None, data=None, time_stamp=None):
 
         self.time_stamp = time_stamp
+        # todo here>> check which file does GetData read from. and what is the max_int_rep of nodes in these files
         # --numpy data
         if path is not None and data is not None:
             self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
@@ -220,10 +225,6 @@ class Copd():
         edges = [np.array((x, y), dtype=np.int32) for x, y in g.edges]
         edges = np.array(edges, dtype=np.int32).T  # shape = (2, 3678)
 
-        # {32, 39, 53, 55, 59, 60} does not exist in disease2class().keys()
-        # There are total of 9 keys from 0-8 but only 7 are in the largest subgraph,
-        # None = label of geneid ; basically implies that geneid has no labels\
-
         # label = 8 represent no class; it is used to label geneid
         # todo ???how should I label nodes that has no label? as None
         labels = set(map(self.disease2class().get, g.nodes))# {0, 1, 2, 3, 4, 5, 6, 7, None}
@@ -241,7 +242,67 @@ class Copd():
 
         adj = torch.FloatTensor(np.array(adj.todense()))
         labels = torch.LongTensor(np.where(labels)[1])  # label is of type int NOT type one_hot
+
         return adj, labels, G, g
+
+    # -- conversion related function
+    def nodes2idx(self):
+        '''
+            geneid and diseaseid are nodes in the graph
+        :return: {geneid or diseaseid : id }
+        '''
+
+        return {**self.disease2idx(), **self.genes2idx()}  # concat 2 dictionary
+
+    def disease2class(self):
+        '''
+
+        :return:
+            {cuis: labels}
+        '''
+
+        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.labels)}
+
+        return cuis2labels
+
+    def class2disease(self):
+        '''
+
+        :return:
+            {class_label: [lsit of disease member of the class]}
+        '''
+        class2disease = {k: [] for k in self.labels2idx().keys()}
+        for k, c in self.disease2class().items():
+            class2disease[c].append(k)
+
+        return class2disease
+
+    def labels2idx(self):
+        '''
+        :return: {label: label_rep}
+        '''
+        labels = self.labels
+        return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(labels.tolist()).keys()))}
+
+    def disease2idx(self):
+        '''
+        :return: {diseaseid: diseaseid_rep}
+        '''
+        cuis = self.disease
+
+        return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(cuis.tolist()).keys()))}
+
+    def genes2idx(self):
+        '''
+
+        :return: {genesid: diseaseid_rep}
+        '''
+        gene = self.gene
+
+        # display2screen(np.unique(gene).shape)
+
+        # 61 is the amount of diseaseid
+        return {l: i + int(self.disease.shape[0]) for i, l in enumerate(list(collections.OrderedDict.fromkeys(gene.tolist()).keys()))}
 
     # -- dataset characteristic
     def class_member_dist(self, plot=False, verbose=True):
@@ -282,14 +343,11 @@ class Copd():
             print(f'label_rate = {rate}')
         return rate
 
-    # todo here>.
-    def rank_gene_overlap(self, verbose=False, plot=False):
+    def class_gene_dict(self):
         '''
-        step tp step on how this func works
-        1. for each class, create a set of gene that have edges connected to that class
-        2. find the overlappi of gene between each classes and rank all of them
-            : there will be n*n comparison where n = number of class
-        :return:
+        create class_gene dict where keys = diseases_classes and values = gene that has edges connected to its disease nodes
+
+        :return: {disease_class: gene_connected_to_diseass}
         '''
         nodes = sorted([i for i in self.nodes2idx().values()])
         edges_flat = self.edges.T.flatten()
@@ -299,36 +357,53 @@ class Copd():
             [d1,g1,d2,g2,d3,g3,...] where d = disease and g = gene
         '''
         # idx2disease = {d:i for i, d in self.nodes2idx().items()}
-        class_gene = {l:[] for l in self.disease2class().values()}
+        class_gene = {l: [] for l in self.disease2class().values()}
 
         for i, n in enumerate(edges_flat[1::2]):
-            if n not in self.disease2class().keys(): # gene
-                gene_idx = n # int_rep
-                if i ==0:
+            if n not in self.disease2class().keys():  # gene
+                gene_idx = n  # int_rep
+                if i == 0:
                     disease_idx = edges_flat[0]  # int_rep
                 else:
                     disease_idx = edges_flat[(i * 2) - 1]  # int_rep
 
-                #-- add gene to its corresponding class
+                # -- add gene to its corresponding class
                 class_gene[self.disease2class()[disease_idx]].append(gene_idx)
             else:
-                disease_idx = n # int_rep
+                disease_idx = n  # int_rep
                 if i == 0:
-                    gene_idx = edges_flat[0] # int_rep
+                    gene_idx = edges_flat[0]  # int_rep
                 else:
-                    gene_idx = edges_flat[(i*2) -1] # int_rep
+                    gene_idx = edges_flat[(i * 2) - 1]  # int_rep
 
                 # -- add gene to its corresponding class
                 class_gene[self.disease2class()[disease_idx]].append(gene_idx)
+        return class_gene
+
+    def rank_gene_overlap(self, verbose=False, plot=False):
+        '''
+        step tp step on how this func works
+        1. for each class, create a set of gene that have edges connected to that class
+        2. find the overlappi of gene between each classes and rank all of them
+            : there will be n*n comparison where n = number of class
+        :return:
+        '''
+
+        class_gene = self.class_gene_dict()
 
         intersect_gene_member = {}
+        multi_class_gene = []
+
         # -- find gene overlap between classes
         count = 0
         for k_out, v_out in class_gene.items():
             for k_in, v_in in class_gene.items():
                 intersect_gene_member[f"{k_out} & {k_in} "] = len(set(v_out) & set(v_in))
+                multi_class_gene += list(set(v_out) & set(v_in))
                 count +=1
                 # print(f"gene intersection between {k_out} and {k_in} = {len(set(v_out) & set(v_in))}")
+
+        multi_class_gene = set(multi_class_gene)
 
         assert count == len(class_gene.keys()) * len(class_gene.keys()), "loop is implemented incorreclty"
 
@@ -336,6 +411,10 @@ class Copd():
 
         for k in intersect_gene_member:
             print(f"gene intersection between {k[0]}= {k[1]}")
+        print(f"number of gene that belongs to more than 1 class = {len(list(multi_class_gene))}")
+
+        ratio = float(len(list(multi_class_gene)))/ float((len(self.nodes2idx().keys()) - len(self.disease2class().keys())))
+        print(f"multi_class_gene to all_gene ratio = {ratio}")
 
         if plot:
             plt.bar([i for i in range(len(intersect_gene_member))],height=[c[1] for c in intersect_gene_member])
@@ -363,63 +442,7 @@ class Copd():
         labels_onehot = np.array(list(map(classes_dict.get, labels)), dtype=np.int32)
         return labels_onehot
 
-    # -- conversion related function
-    def nodes2idx(self):
-        '''
-            geneid and diseaseid are nodes in the graph
-        :return: {geneid or diseaseid : id }
-        '''
 
-        return { **self.disease2idx(), **self.genes2idx()} # concat 2 dictionary
-
-    def disease2class(self):
-        '''
-
-        :return:
-            {cuis: labels}
-        '''
-
-        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.labels)}
-
-        return cuis2labels
-
-    def class2disease(self):
-        '''
-
-        :return:
-            {class_label: [lsit of disease member of the class]}
-        '''
-        class2disease = {k: [] for k in self.labels2idx().keys()}
-        for k,c in self.disease2class().items():
-             class2disease[c].append(k)
-
-        return class2disease
-
-
-    def labels2idx(self):
-        '''
-        :return: {label: label_rep}
-        '''
-        labels = self.labels
-        return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(labels.tolist()).keys()))}
-
-    def disease2idx(self):
-        '''
-        :return: {diseaseid: diseaseid_rep}
-        '''
-        cuis = self.disease
-
-        return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(cuis.tolist()).keys()))}
-
-    def genes2idx(self):
-        '''
-
-        :return: {genesid: diseaseid_rep}
-        '''
-        gene = self.gene
-
-        # 61 is the amount of diseaseid
-        return {l:i+int(self.disease.shape[0]) for i, l in enumerate(list(collections.OrderedDict.fromkeys(gene.tolist()).keys()))}
 
     # -- read, write, convert files
     def create_rep_dataset(self, path='data/gene_disease/'):
@@ -446,6 +469,8 @@ class Copd():
 
         gene_disease = pd.DataFrame([genes,non_uniq_diseases], dtype=np.int32).T
         disease_label = pd.DataFrame([uniq_diseases,labels], dtype=np.int32).T
+
+        # display2screen(max(uniq_diseases), max(labels), max(genes))
         # display2screen(gene_disease.head(), disease_label.head())
 
         # write to rep_copd_label_edges.txt
@@ -502,6 +527,7 @@ class GetData():
             disease_labels = pd.read_csv(path2file, sep='\t', names=['diseaseid', 'label'], header=None).to_numpy().flatten()
             uniq_disease = np.array(disease_labels.tolist()[0::2])
             labels = np.array(disease_labels.tolist()[1::2])
+
         return uniq_disease, labels
 
     @staticmethod

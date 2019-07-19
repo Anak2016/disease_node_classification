@@ -1,4 +1,10 @@
 #todo
+# > build GAT, GrpahSage, logistic regression
+# > git ignore dataset
+# > apply gcn to karate club. it has no features how could GCN. works at all??
+#       : this steps needs to be done, so I can compare result between gcn_emb and node2vec_emb
+#       : after seeing how ti works use GCN on copd dataset with no node embedding
+# > see if i can do cross validation.
 # > FEED THE FILE CREATED ABOVE to attentionWalk.py
 # > FEED THE FILE CREATED ABOVE to bine.py.
 # 0. create dataset for dataLoader with the followin format

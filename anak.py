@@ -19,14 +19,18 @@ import parameters as param
 import time
 import pandas as pd
 import os
+import random
 import collections
+import sys
 
-
+from sklearn.metrics import confusion_matrix
+from datetime import datetime
 from torch_geometric.nn import GCNConv, ChebConv  # noqa
 from node2vec import Node2Vec
 from networkx.algorithms import bipartite
 from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion, create_copd_label_content, create_copd_label_edges, display2screen
 from sys import path
+from visualization import plot_2d
 
 # import sys
 # sys.path.insert(0, r'C:\Users\Anak\PycharmProjects\AttentionWalk')
@@ -97,7 +101,7 @@ def run_node2vec(copd, time_stamp=""):
     # display2screen(len(g.nodes)) #2975
     save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
     # display2screen(len(G.nodes)) #2996
-    save_node2vec_emb(G,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph{time_stamp}.txt" )
+    # save_node2vec_emb(G,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph{time_stamp}.txt" )
 
 def bine_copd_label(time_stamp=''):
     # load data in to dataframe
@@ -366,10 +370,11 @@ def create_pytorch_dataset(path='data/gene_disease/', files=['copd_label_content
 # use GCN in scatch_paper.py as a template to build new GCN for COPD
 class Copd_geomertric_dataset(Data):
 
-    def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None):
+    def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None, split=0.8):
         self.dataset = data
         super(Copd_geomertric_dataset, self).__init__(x,edges_index,edge_attr,y)
-
+        self.split = split
+        self.y = y
         # -- masking
         self.train_mask_set = []
         self.test_mask_set = []
@@ -383,7 +388,7 @@ class Copd_geomertric_dataset(Data):
             max_class_int_rep = self.num_classes - 1 # max int_rep of all classes
             current_class = count % max_class_int_rep
 
-            if ind < int(0.8 * len(copd.disease2class().keys())):  # training set
+            if ind < int(split * len(copd.disease2class().keys())):  # training set
                 next_val = set(copd.class2disease()[current_class]).difference(set(self.train_mask_set))
                 if len(next_val) > 1:
                     next_val = list(next_val)[0]
@@ -391,8 +396,11 @@ class Copd_geomertric_dataset(Data):
                     self.train_mask_set.append(next_val)
                     ind += 1
 
-            if ind == int(0.8 * len(copd.disease2class().keys())):
+            if ind == int(split * len(copd.disease2class().keys())):
                 break
+            # -- debugging
+            # if count % 10 == 0:
+            #     print(count)
 
             count += 1
 
@@ -411,17 +419,23 @@ class Copd_geomertric_dataset(Data):
         # display2screen(self.test_mask_set, self.train_mask_set)
         # display2screen(len(self.test_mask_set), len(self.train_mask_set))
 
+
         # -- convert to torch.tensor
         self.train_mask_set = torch.LongTensor(self.train_mask_set)
         self.test_mask_set = torch.LongTensor(self.test_mask_set)
 
+        # # -- add gene to train and test dataset; NOPE model always predict gene
+        # gene = list(copd.genes2idx().values())
+        # import random
+        # random.shuffle(gene)
+        #
+        # self.train_mask_set = torch.LongTensor(self.train_mask_set + gene[:int(0.8 * len(gene))])
+        # self.test_mask_set = torch.LongTensor(self.test_mask_set + gene[int(0.8 * len(gene)):])
+
     @property
     def num_classes(self):
+        # return np.unique(y.numpy()).shape[0]
         return np.unique(y.numpy()).shape[0]
-
-    # -- inherited property
-    # @num_node_features.setter
-    # def num_features(self):
 
     # -- masking index for x and y
     @property
@@ -434,38 +448,58 @@ class Copd_geomertric_dataset(Data):
         # make sure that all test set ahve all the classes
         return self.test_mask_set
 
-def run_GCN(data = None):
+def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, verbose=False, **kwargs):
 
     class Net(torch.nn.Module):
         def __init__(self):
             super(Net, self).__init__()
 
+            # [1]-- loss function max out really early on the test dataset
+            #   > max out early
             self.conv1 = GCNConv(data.num_features, 16, cached=True)
             self.conv2 = GCNConv(16 , data.num_classes, cached=True)
+
+            # [2]-- very smoth. model stop learning at around epoch 90 but accuracy is only 50-mid50s
+            #   >max out early
+            # self.conv1 = GCNConv(data.num_features, 32, cached=True)
+            # self.conv2 = GCNConv(32 , data.num_classes, cached=True)
+
+            # [3]-- loss function max out slowly compare to the [1], and a lot less smooth
+            #   >max out quite late. 150
+            # self.conv1 = GCNConv(data.num_features, 32, cached=True)
+            # self.conv2 = GCNConv(32, 8, cached=True)
+            # self.conv3 = GCNConv(8 , data.num_classes, cached=True)
 
         def forward(self):
             x, edge_index = data.x, data.edge_index
             x = x.type(torch.float)
             edge_index = edge_index.type(torch.long)
+
+            # todo here>>
+            # display2screen(edge_index.shape, x.shape, torch.max(edge_index))
             # edge_index = torch.transpose(edge_index, 0,1)
 
             x = F.relu(self.conv1(x, edge_index))
-            x = F.dropout(x, training=self.training)
-            x = self.conv2(x, edge_index)
+
+            # -- model [3]
+            # x = F.dropout(x, training=self.training)
+            # --dropout
+            # x = self.conv2(x, edge_index)
+            # x = F.dropout(x, training=self.training)
+            # x = self.conv3(x, edge_index)
+
             return F.log_softmax(x, dim=1)
-
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model= Net().to(device)
-
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
-    # model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch
-
     def train():
         model.train()
         optimizer.zero_grad()
-        # todo create correct train_mask to be used
-        F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
+
+        # display2screen(np.unique(data.y[data.train_mask].numpy()))
+        loss_output = F.nll_loss(model()[data.train_mask], data.y[data.train_mask])
+
+        loss_output.backward()
         optimizer.step()
+
+        return model(), loss_output.data
 
     def test():
         model.eval()
@@ -474,16 +508,219 @@ def run_GCN(data = None):
         # for _,mask in data('train_mask', 'test_mask'):
         for mask in [data.train_mask, data.test_mask]:
             pred = logits[mask].max(1)[1]
-            acc = pred.eq(data.y[mask]).sum().item()/ mask.sum().item()
+
+            acc = pred.eq(data.y[mask]).sum().item()/ mask.shape[0]
             accs.append(acc)
         return accs
 
-    best_val_acc =test_acc = 0
-    for epoch in range(1,201):
-        train()
-        train_acc, test_acc = test()
-        log = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'
-        print(log.format(epoch, train_acc, test_acc))
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model= Net().to(device)
+
+    count = 0
+    curr_time = datetime.now().strftime('%Y_%m_%d_%H_%M')
+    try:
+        if tuning:
+            #-- write to file
+
+            save_path = f'log/gcn/hp_tuning/{emb_name}{curr_time}.txt'
+
+            # todo check how to write file in this style
+            f = open(save_path, 'w')
+
+            best_hp_config = {0:0}
+            write_stat = False
+            while True:
+
+                lr = round(random.uniform(0.01,0.1),2)
+
+                # decay_coeff =  0.1 * torch.FloatTensor([random.randint(1,9)])
+                # decay_power = torch.FloatTensor([random.randint(1,4)])
+                decay_coeff =  round(random.randint(1,9),2)
+                decay_power = random.randint(2,4)
+
+                weight_decay = decay_coeff/10**decay_power
+
+                # optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4) # original before modify
+                # best lr = 0.05 weight_decay=5e-4 ====> around 60-70 percent
+                optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+
+                # model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch
+                best_val_acc =test_acc = 0
+                best_test_acc = [0]
+                log_list = []
+
+                for epoch in range(1,201):
+                    gcn_emb, loss_epoch = train()
+
+                    train_acc, test_acc = test()
+
+                    if verbose:
+                        logging = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'.format(epoch, train_acc, test_acc)
+                        print(logging)
+
+                    if test_acc > best_test_acc[0]:
+                        best_test_acc.insert(0,test_acc)
+                        if len(best_test_acc) > 10:
+                            best_test_acc.pop(-1)
+
+                if sum(best_test_acc)/len(best_test_acc) > list(best_hp_config.values())[0]:
+                    best_hp_config[f"lr = {lr} ; weight_decay = {weight_decay}"] = best_hp_config.pop(list(best_hp_config.keys())[0])
+                    best_hp_config[f"lr = {lr} ; weight_decay = {weight_decay}"] = sum(best_test_acc)/len(best_test_acc)
+                    write_stat = True
+                txt = '\n'.join(["========================",
+                                f"loop = {count}",
+                                f" lr = {lr} ; weight_decay = {weight_decay}",
+                                f"top 10 best acc = {best_test_acc}",
+                                f"average = {sum(best_test_acc)/len(best_test_acc)}",
+                                f"!!! current best config is  **{list(best_hp_config.keys())[0]}** with avg_acc = {best_hp_config[list(best_hp_config.keys())[0]]} !!!"])
+
+                txt = txt + '\n'
+                print(txt)
+
+                # -- write to file
+                if write_stat:
+                    print("writing to file ...")
+                    f.write(txt)
+                    write_stat = False
+
+                count += 1
+
+        else:
+            #==========================
+            #==== NOT TUNING HYPER-PARAMETERS
+            #==========================
+
+            lr = 0.01
+            weight_decay = 5e-4
+            if kwargs.get('lr'):
+                lr = kwargs.get('lr')
+            if kwargs.get('weight_decay'):
+                weight_decay = kwargs.get('weight_decay')
+
+            # original before modify
+            optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+
+            # model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch
+
+            best_val_acc = test_acc = 0
+            log_list = []
+
+            best_epoch = {0: [0]}
+            best_test_acc = [0]
+            # best_epoch = 0
+            loss_hist = []
+            train_acc_hist = []
+            test_acc_hist = []
+
+            for epoch in range(1, 201):
+                if epoch == 1:
+                    gcn_emb_no_train, loss_epoch = train()
+                else:
+                    gcn_emb, loss_epoch = train()
+                # display2screen(gcn_emb.numpy())
+                loss_hist.append(loss_epoch.tolist())
+
+                train_acc, test_acc = test()
+                logging = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'.format(epoch, train_acc, test_acc)
+                log_list.append(logging)
+                train_acc_hist.append(train_acc)
+                test_acc_hist.append(test_acc)
+
+                if test_acc > best_test_acc[0]:
+                    best_test_acc.insert(0, test_acc)
+                    if len(best_test_acc) > 3:
+                        best_test_acc.pop(-1)
+
+                    best_epoch.pop(list(best_epoch.keys())[0])
+                    best_epoch[f"epoch = {epoch}"] = best_test_acc
+
+                if verbose:
+                    print(logging)
+
+            # -- print set of best accuracy and its epoch.
+            if verbose:
+                print(f"!!!!! {list(best_epoch.keys())[0]} = {best_epoch[list(best_epoch.keys())[0]]} !!!!!!! ")
+
+
+            # -- plot loss function as epoch increases.
+            if plot:
+                # ==========================
+                # === plot 2D output GCN embedding
+                # ==========================
+                # todo here>>
+                save_path = f'output/gene_disease/embedding/gcn/'
+                file_gcn_emb = f'gcn_emb_{lr}_{weight_decay}.txt'
+                file_gcn_emb_no_train = f'gcn_emb_no_train{lr}_{weight_decay}.txt'
+
+                # -- df for gcn_emb
+                df = pd.DataFrame(gcn_emb.detach().numpy())
+                df.to_csv(save_path+file_gcn_emb, sep=' ')
+
+                # -- df for gcn_emb_no_train
+                # display2screen(df)
+                df = pd.DataFrame(gcn_emb_no_train.detach().numpy())
+                df.to_csv(save_path + file_gcn_emb_no_train, sep=' ')
+
+                # -- gcn emb with no training feedback
+                print("--gcn emb with no training feedback")
+                plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn', func='tsne')
+                # plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn',with_gene=False, func='tsne')
+                # plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn', with_gene=False,func='pca')
+
+                # -- gcn emb with training feedback
+                print("--gcn emb with training feedback")
+                plot_2d(data.dataset, save_path, file_gcn_emb, emb='gcn', func='tsne')
+                # plot_2d(data.dataset, save_path, file_gcn_emb, emb=emb, with_gene=False, func='tsne')
+                # plot_2d(data.dataset, save_path, file_gcn_emb, emb=emb, with_gene=False, func='pca')
+
+                # ======================
+                # == plot loss and acc vlaue
+                # ======================
+                plt.figure(1)
+                # -- plot loss hist
+                plt.subplot(211)
+                plt.plot(range(len(loss_hist)), loss_hist)
+                plt.ylabel("loss values")
+                plt.title("loss history")
+
+                # -- plot acc hist
+                plt.subplot(212)
+                plt.plot(range(len(train_acc_hist)), train_acc_hist )
+                plt.plot(range(len(test_acc_hist)), test_acc_hist)
+                plt.ylabel("accuracy values")
+                plt.title("accuracy history")
+                plt.show()
+
+            # -- log
+            split = data.split
+            if log:
+                save_path = f'log/gcn/gcn_accuracy_{emb}{time_stamp}_split_{split}.txt'
+                with open(save_path, 'w') as f:
+                    txt = '\n'.join(log_list)
+                    f.write(txt)
+
+            if log:
+                cm_train = confusion_matrix(model()[data.train_mask].max(1)[1], data.y[data.train_mask])
+                cm_test = confusion_matrix(model()[data.test_mask].max(1)[1], data.y[data.test_mask])
+
+                # formatter = {'float_kind': lambda x: "%.2f" % x})
+                cm_train = np.array2string(cm_train)
+                cm_test = np.array2string(cm_test)
+
+
+                save_path = f'log/gcn/gcn_confusion_matrix_{emb}{time_stamp}_split_{split}.txt'
+
+                # txt = 'class int_rep is [' + ','.join(list(map(str, np.unique(data.y.numpy()).tolist()))) + ']'
+                txt = 'class int_rep is [' + ','.join([str(i) for i in range(data.num_classes)]) + ']'
+                txt = txt + '\n\n' + "training cm" + '\n' + cm_train + '\n' + f"training_accuracy={log_list[-1].split(',')[1]}"
+                txt = txt + '\n\n' + "test cm" + '\n' + cm_test + '\n' + f"test_accuracy={log_list[-1].split(',')[2]}"
+
+                with open(save_path, 'w') as f:
+                    f.write(txt)
+
+    except KeyboardInterrupt:
+        f.close()
+        sys.exit()
 
 
 if __name__ == "__main__":
@@ -495,6 +732,7 @@ if __name__ == "__main__":
     # create_copd_label_content(time_stamp=time_stamp, sep=',')
     # create_copd_label_edges(time_stamp=time_stamp, sep=',')
     # bine_copd_label(time_stamp=time_stamp)
+    # display2screen('line 733')
 
     # -- cora dataset
     # create_pytorch_dataset()
@@ -502,10 +740,24 @@ if __name__ == "__main__":
     # -- copd dataset
     # copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp="")
     copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp=time_stamp)
+
+    # display2screen(len(copd.disease2idx()),len(copd.genes2idx()),len(copd.nodes2idx()))
     # copd.create_rep_dataset()
 
+    # -- run_GCN() arguments
     verbose= True
     plot = True
+    tuning = True
+    # tuning = False
+    # log = True
+    log = False
+    # verbose = True
+    verbose = False
+
+    # -- hyper parameters
+    lr = 0.09
+    weight_decay = 0.006
+
     # -- copd report
     # copd.edges2nodes_ratio(verbose=verbose)
     # copd.label_rate(verbose=verbose)
@@ -514,6 +766,7 @@ if __name__ == "__main__":
 
     # -- running model
     # run_node2vec(copd=copd, time_stamp=time_stamp)
+    # display2screen('line 766')
 
     # 2996, 101, 2895
     # display2screen(len(list(copd.nodes2idx().values())), len(copd.disease2class().keys()), len(copd.genes2idx()))
@@ -521,16 +774,42 @@ if __name__ == "__main__":
     # ==============================
     # ==pre arguments to be fed to Copd_geometric_dataset
     # ==============================
-    # -- add node embedding to x
-    emb_path = f'output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph{time_stamp}.txt'
+
+    # -- emb_file
+    emb_name = 'attentionwalk'
+    emb_file = f"{emb_name}/{emb_name}_emb{time_stamp}.txt"
+
+    # emb_name = 'node2vec'
+    # emb_file = f"{emb_name}/{emb_name}_emb_fullgraph{time_stamp}.txt"
+    # emb_file = f"{emb_name}/{emb_name}_emb_subgraph{time_stamp}.txt"
+
+    # emb_name = 'bine'
+    # emb_file = f"{emb_name}/bine{time_stamp}.txt"
+
+    emb_path = f"output/gene_disease/embedding/{emb_file}"
+
     with open(emb_path,'r') as f:
         tmp = f.readlines()
-        tmp = tmp[1:]
-    emb_dict = {int(i.split(' ')[0]):list(map(float,i.split(' ')[1:]))  for i in tmp }
+        if "bine" not in emb_file:
+            tmp = tmp[1:]
+
+    if "attentionwalk" in emb_file:
+        split=','
+    if "node2vec" in emb_file:
+        split=' '
+    if "bine" in emb_file:
+        split=' '
+
+    if "bine" in emb_file:
+        emb_dict = {int(float(i.split(split)[0][1:])): list(map(float, i.split(split)[1:])) for i in tmp}
+    else:
+        emb_dict = {int(float(i.split(split)[0])): list(map(float, i.split(split)[1:])) for i in tmp}
+
     emb = sorted(emb_dict.items(), key= lambda t:t[0])
 
     x = np.array([[j for j in i[1]] for i in emb ], dtype=np.float)
     x = torch.tensor(x, dtype=torch.float) # torch.Size([2996, 64])
+    # display2screen(x.shape)
 
     # -- edge_index
     edge_index = list(map(copd.nodes2idx().get, copd.edges.T.flatten()))
@@ -538,9 +817,17 @@ if __name__ == "__main__":
 
     # -- label
     # label gene with 99
-    y = [copd.disease2class()[i] if i in copd.disease2idx().values() else 99 for i in copd.nodes2idx().values()]
+    y = [copd.disease2class()[i] if i in copd.disease2idx().values() else len(copd.class2disease().keys()) for i in copd.nodes2idx().values()]
     y = torch.tensor(y, dtype=torch.int64) # torch.Size([2996])
     # display2screen(y.shape)
 
-    copd_geometric_dataset = Copd_geomertric_dataset(copd, x=x,edges_index=edge_index,y=y)
-    run_GCN(copd_geometric_dataset)
+    copd_geometric_dataset = Copd_geomertric_dataset(copd, x=x,edges_index=edge_index,y=y, split=0.7)
+    # todo figure out
+    #  > currently having error trying to add gene to mask.
+    #  > how to increase test accuracy.
+    #  > What may contribute to the problems?
+    #       :dataset has too little info to be learnt?
+    #       :what are the changes that can be made so that test acc can be increased?
+    #       : semi-supervised learning vs supervised learning on grpah?
+    #             read: https://openreview.net/pdf?id=SJU4ayYgl
+    run_GCN(data=copd_geometric_dataset,emb_name=emb_name, tuning=tuning, plot=plot, log=log,verbose=verbose, lr=lr,weight_decay=weight_decay)

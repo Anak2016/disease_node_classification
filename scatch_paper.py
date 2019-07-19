@@ -48,18 +48,15 @@ def train():
     model.train()
     optimizer.zero_grad()
 
+    # reg_lambda = 1.0
+    # l2_reg = 0
+    # for W in mdl.parameters():
+    #     l2_reg += *W.norm(2)
+    # batch_loss = (1 / N_train) * (y_pred - batch_ys).pow(2).sum() + reg_lambda * l2_reg
+    # ## BACKARD PASS
+    # batch_loss.backward()  # Use autograd to compute the backward pass. Now w will have gradients
 
-    # model returns F.log_softmax(x, dim=1)
-    # so this is a prediction after trainin is finished
-
-    # the whole dataset are run, but only check 140 value as training dataset.
-    # during training only train_mask is used to evaluate for loss function.
-
-    # print(model()[data.train_mask].shape)
-    # print(data.train_mask)
-    # print(data.train_mask.nonzero().shape)
-    print(data.train_mask.dtype)
-    exit()
+    # print([w for w in model.parameters()]) # weight and bias of each layer
 
     F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
     optimizer.step()
