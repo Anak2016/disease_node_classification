@@ -1,4 +1,6 @@
 #todo
+# > create argments parameters
+# > write code that allow for arbritary amount of layer in pytorch
 # > build GAT, GrpahSage, logistic regression
 # > git ignore dataset
 # > apply gcn to karate club. it has no features how could GCN. works at all??
@@ -17,7 +19,13 @@
 # 3. GraphSage
 # 4. CapsuleGCN
 
-
+>time_stamp
+>copd
+    : path, data
+>emb_file
+    : extract emb_name from emb_file
+>emb_path
+>seed
 
 # --
 # use default setting for all of the deep learning model

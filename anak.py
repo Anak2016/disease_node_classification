@@ -31,6 +31,7 @@ from networkx.algorithms import bipartite
 from my_utils import Cora, Copd, get_subgraph_disconnected, GetData, Conversion, create_copd_label_content, create_copd_label_edges, display2screen
 from sys import path
 from visualization import plot_2d
+from arg_parser import args
 
 # import sys
 # sys.path.insert(0, r'C:\Users\Anak\PycharmProjects\AttentionWalk')
@@ -90,8 +91,9 @@ def run_node2vec(copd, time_stamp=""):
 
     # adj, features, labels, idx_train, idx_val, idx_test = cora.load_data()
     adj, labels, G, g = copd.load_data()
+
     # --color bipartite graph
-    if param.plot:
+    if args.plot:
         left, right = bipartite.sets(g)
         bipartite_color = [0 if i < len(left) else 1 for i, _ in enumerate(left.union(right))]
         pos = nx.circular_layout(g)
@@ -99,7 +101,7 @@ def run_node2vec(copd, time_stamp=""):
 
     #  -- save node2vec embbedding to file
     # display2screen(len(g.nodes)) #2975
-    save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
+    # save_node2vec_emb(g,EMBEDDING_FILENAME=f"node2vec_emb_subgraph{time_stamp}.txt" )
     # display2screen(len(G.nodes)) #2996
     # save_node2vec_emb(G,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph{time_stamp}.txt" )
 
@@ -366,8 +368,6 @@ def create_pytorch_dataset(path='data/gene_disease/', files=['copd_label_content
             plt.show()
             break
 
-# read https://pytorch-geometric.readthedocs.io/en/latest/modules/data.html
-# use GCN in scatch_paper.py as a template to build new GCN for COPD
 class Copd_geomertric_dataset(Data):
 
     def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None, split=0.8):
@@ -448,7 +448,7 @@ class Copd_geomertric_dataset(Data):
         # make sure that all test set ahve all the classes
         return self.test_mask_set
 
-def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, verbose=False, **kwargs):
+def run_GCN(data = None, emb_name=None, time_stamp=None, tuning=False, log=False, plot=False, verbose=False, **kwargs):
 
     class Net(torch.nn.Module):
         def __init__(self):
@@ -475,10 +475,8 @@ def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, ver
             x = x.type(torch.float)
             edge_index = edge_index.type(torch.long)
 
-            # todo here>>
             # display2screen(edge_index.shape, x.shape, torch.max(edge_index))
             # edge_index = torch.transpose(edge_index, 0,1)
-
             x = F.relu(self.conv1(x, edge_index))
 
             # -- model [3]
@@ -644,6 +642,24 @@ def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, ver
 
             # -- plot loss function as epoch increases.
             if plot:
+                # ======================
+                # == plot loss and acc vlaue
+                # ======================
+                plt.figure(1)
+                # -- plot loss hist
+                plt.subplot(211)
+                plt.plot(range(len(loss_hist)), loss_hist)
+                plt.ylabel("loss values")
+                plt.title("loss history")
+
+                # -- plot acc hist
+                plt.subplot(212)
+                plt.plot(range(len(train_acc_hist)), train_acc_hist)
+                plt.plot(range(len(test_acc_hist)), test_acc_hist)
+                plt.ylabel("accuracy values")
+                plt.title("accuracy history")
+                plt.show()
+
                 # ==========================
                 # === plot 2D output GCN embedding
                 # ==========================
@@ -663,33 +679,11 @@ def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, ver
 
                 # -- gcn emb with no training feedback
                 print("--gcn emb with no training feedback")
-                plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn', func='tsne')
-                # plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn',with_gene=False, func='tsne')
-                # plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn', with_gene=False,func='pca')
+                plot_2d(data.dataset, save_path, file_gcn_emb_no_train, emb='gcn', with_gene=args.with_gene, func=args.plot_2d_func)
 
                 # -- gcn emb with training feedback
                 print("--gcn emb with training feedback")
-                plot_2d(data.dataset, save_path, file_gcn_emb, emb='gcn', func='tsne')
-                # plot_2d(data.dataset, save_path, file_gcn_emb, emb=emb, with_gene=False, func='tsne')
-                # plot_2d(data.dataset, save_path, file_gcn_emb, emb=emb, with_gene=False, func='pca')
-
-                # ======================
-                # == plot loss and acc vlaue
-                # ======================
-                plt.figure(1)
-                # -- plot loss hist
-                plt.subplot(211)
-                plt.plot(range(len(loss_hist)), loss_hist)
-                plt.ylabel("loss values")
-                plt.title("loss history")
-
-                # -- plot acc hist
-                plt.subplot(212)
-                plt.plot(range(len(train_acc_hist)), train_acc_hist )
-                plt.plot(range(len(test_acc_hist)), test_acc_hist)
-                plt.ylabel("accuracy values")
-                plt.title("accuracy history")
-                plt.show()
+                plot_2d(data.dataset, save_path, file_gcn_emb, emb='gcn', with_gene=args.with_gene, func=args.plot_2d_func)
 
             # -- log
             split = data.split
@@ -724,83 +718,73 @@ def run_GCN(data = None, emb_name=None, tuning=False, log=False, plot=False, ver
 
 
 if __name__ == "__main__":
-    # --initalization
-    time_stamp = '07_14_19_46'
 
-
-    # -- data manipulation + labeling
+    # ==============================
+    # == data manipulation + labeling
+    # ==============================
     # create_copd_label_content(time_stamp=time_stamp, sep=',')
     # create_copd_label_edges(time_stamp=time_stamp, sep=',')
     # bine_copd_label(time_stamp=time_stamp)
-    # display2screen('line 733')
 
-    # -- cora dataset
+    # ==========================
+    # == cora dataset
+    # ==========================
     # create_pytorch_dataset()
 
-    # -- copd dataset
+    # ========================
+    # == copd dataset
+    # ========================
     # copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp="")
-    copd = Copd(path='data/gene_disease/', data="copd_label", time_stamp=time_stamp)
-
-    # display2screen(len(copd.disease2idx()),len(copd.genes2idx()),len(copd.nodes2idx()))
+    copd = Copd(path=args.copd_path, data=args.copd_data, time_stamp=args.time_stamp)
     # copd.create_rep_dataset()
 
-    # -- run_GCN() arguments
-    verbose= True
-    plot = True
-    tuning = True
-    # tuning = False
-    # log = True
-    log = False
-    # verbose = True
-    verbose = False
+    # ======================
+    # == running model
+    # ======================
+    # run_node2vec(copd=copd, time_stamp=time_stamp)
 
-    # -- hyper parameters
-    lr = 0.09
-    weight_decay = 0.006
-
+    # =========================
+    # == run_GCN()
+    # =========================
     # -- copd report
     # copd.edges2nodes_ratio(verbose=verbose)
     # copd.label_rate(verbose=verbose)
     # copd.class_member_dist(plot=plot, verbose=verbose)
     # copd.rank_gene_overlap(verbose=verbose, plot=plot)
 
-    # -- running model
-    # run_node2vec(copd=copd, time_stamp=time_stamp)
-    # display2screen('line 766')
 
-    # 2996, 101, 2895
-    # display2screen(len(list(copd.nodes2idx().values())), len(copd.disease2class().keys()), len(copd.genes2idx()))
-
-    # ==============================
-    # ==pre arguments to be fed to Copd_geometric_dataset
-    # ==============================
+    # -- copd arguments
 
     # -- emb_file
-    emb_name = 'attentionwalk'
-    emb_file = f"{emb_name}/{emb_name}_emb{time_stamp}.txt"
+    if args.emb_name == 'attentionwalk':
+        emb_file = f"{args.emb_name}/{args.emb_name}_emb{args.time_stamp}.txt"
 
-    # emb_name = 'node2vec'
-    # emb_file = f"{emb_name}/{emb_name}_emb_fullgraph{time_stamp}.txt"
-    # emb_file = f"{emb_name}/{emb_name}_emb_subgraph{time_stamp}.txt"
+    if args.emb_name == 'node2vec':
+        if args.subgraph:
+            emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph{args.time_stamp}.txt"
+        else:
+            emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt"
 
-    # emb_name = 'bine'
-    # emb_file = f"{emb_name}/bine{time_stamp}.txt"
+    if args.emb_name == 'bine':
+        emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt"
 
-    emb_path = f"output/gene_disease/embedding/{emb_file}"
+    # -- emb_path
+    emb_path = args.emb_path + emb_file
 
     with open(emb_path,'r') as f:
         tmp = f.readlines()
         if "bine" not in emb_file:
             tmp = tmp[1:]
 
-    if "attentionwalk" in emb_file:
+    # -- split symbol
+    if args.emb_name == "attentionwalk" :
         split=','
-    if "node2vec" in emb_file:
+    if args.emb_name == "node2vec":
         split=' '
-    if "bine" in emb_file:
+    if args.emb_name == "bine":
         split=' '
 
-    if "bine" in emb_file:
+    if args.emb_name == "bine":
         emb_dict = {int(float(i.split(split)[0][1:])): list(map(float, i.split(split)[1:])) for i in tmp}
     else:
         emb_dict = {int(float(i.split(split)[0])): list(map(float, i.split(split)[1:])) for i in tmp}
@@ -809,25 +793,17 @@ if __name__ == "__main__":
 
     x = np.array([[j for j in i[1]] for i in emb ], dtype=np.float)
     x = torch.tensor(x, dtype=torch.float) # torch.Size([2996, 64])
-    # display2screen(x.shape)
 
     # -- edge_index
     edge_index = list(map(copd.nodes2idx().get, copd.edges.T.flatten()))
     edge_index = torch.tensor(edge_index, dtype=torch.int64).view(2,-1) # torch.Size([2, 4715])
 
     # -- label
-    # label gene with 99
+    # label gene with 6
     y = [copd.disease2class()[i] if i in copd.disease2idx().values() else len(copd.class2disease().keys()) for i in copd.nodes2idx().values()]
     y = torch.tensor(y, dtype=torch.int64) # torch.Size([2996])
-    # display2screen(y.shape)
 
+    # -- Copd_geometric_dataset
     copd_geometric_dataset = Copd_geomertric_dataset(copd, x=x,edges_index=edge_index,y=y, split=0.7)
-    # todo figure out
-    #  > currently having error trying to add gene to mask.
-    #  > how to increase test accuracy.
-    #  > What may contribute to the problems?
-    #       :dataset has too little info to be learnt?
-    #       :what are the changes that can be made so that test acc can be increased?
-    #       : semi-supervised learning vs supervised learning on grpah?
-    #             read: https://openreview.net/pdf?id=SJU4ayYgl
-    run_GCN(data=copd_geometric_dataset,emb_name=emb_name, tuning=tuning, plot=plot, log=log,verbose=verbose, lr=lr,weight_decay=weight_decay)
+
+    run_GCN(data=copd_geometric_dataset,emb_name=args.emb_name, time_stamp=args.time_stamp,tuning=args.tuning, plot=args.plot, log=args.log,verbose=args.verbose, lr=args.lr,weight_decay=args.weight_decay)

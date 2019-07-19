@@ -2,31 +2,15 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" mnemonic="1" />
-    <bookmark url="file://$PROJECT_DIR$/anak.py" line="783" mnemonic="5" />
-    <bookmark url="file://$PROJECT_DIR$/anak.py" line="671" mnemonic="4" />
+    <bookmark url="file://$PROJECT_DIR$/anak.py" line="763" mnemonic="5" />
+    <bookmark url="file://$PROJECT_DIR$/anak.py" line="685" mnemonic="4" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/gene_disease/embedding/bine/bine07_14_19_46.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/gene_disease/embedding/bine/vectors_u07_14_19_46.dat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/gene_disease/embedding/bine/vectors_v07_14_19_46.dat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges07_14_19_46_.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges07_14_19_46_.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges07_14_19_46.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.7.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.7.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.7.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.7.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_fullgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/node2vec_emb_fullgraph07_14_19_46.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_subgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log/node2vec_emb_subgraph07_14_19_46.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/attention_walk/attention_coef.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/attention_walk/attentionwalk_emb.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_fullgraph07_14_19_46.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scatch_paper.py" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualization.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,14 +22,17 @@
     <favorites_list name="disease_node_classification" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.48331594">
+    <splitter split-orientation="horizontal" split-proportion="0.5161893">
       <split-first>
         <leaf>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/.gitignore">
+            <entry file="file://$PROJECT_DIR$/arg_parser.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="144">
-                  <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+                <state relative-caret-position="592">
+                  <caret line="37" column="28" lean-forward="true" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="28" />
+                  <folding>
+                    <element signature="e#0#15#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -55,10 +42,13 @@
       <split-second>
         <leaf>
           <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/todo.py">
+            <entry file="file://$PROJECT_DIR$/anak.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="176">
-                  <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+                <state relative-caret-position="212">
+                  <caret line="784" column="17" lean-forward="true" selection-start-line="784" selection-start-column="17" selection-end-line="784" selection-end-column="17" />
+                  <folding>
+                    <element signature="e#0#47#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -76,15 +66,9 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>plt</find>
-      <find>acc_hist</find>
-      <find>file_list</find>
-      <find>file</find>
-      <find>cur</find>
       <find>kwarg</find>
       <find>train()</find>
       <find>copd</find>
-      <find>path</find>
       <find>Copd_geomertric_dataset</find>
       <find>gcn_emb</find>
       <find>gcn_emb_no_train</find>
@@ -106,6 +90,12 @@
       <find>bine_copd_label</find>
       <find>emb_name</find>
       <find>emb</find>
+      <find>path</find>
+      <find>dropout</find>
+      <find>get_subgraph_disconnected</find>
+      <find>load_data</find>
+      <find>``</find>
+      <find>time_stamp</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -160,17 +150,17 @@
         <option value="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges07_14_19_46_.txt" />
         <option value="$PROJECT_DIR$/output/gene_disease/embedding/bine/bine07_14_19_46.txt" />
         <option value="$PROJECT_DIR$/visualization.py" />
-        <option value="$PROJECT_DIR$/anak.py" />
-        <option value="$PROJECT_DIR$/todo.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/todo.py" />
+        <option value="$PROJECT_DIR$/anak.py" />
+        <option value="$PROJECT_DIR$/arg_parser.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-10" />
-    <option name="y" value="-10" />
-    <option name="width" value="1100" />
-    <option name="height" value="1103" />
+    <option name="x" value="953" />
+    <option name="width" value="974" />
+    <option name="height" value="1047" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -358,7 +348,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49668875" visible="true" weight="0.22471324" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49668875" weight="0.16266945" />
       <window_info id="Structure" order="1" sideWeight="0.5015015" side_tool="true" weight="0.2900844" />
       <window_info id="Favorites" order="2" sideWeight="0.5033113" side_tool="true" weight="0.22471324" />
       <window_info anchor="bottom" id="Messages" />
@@ -371,7 +361,7 @@
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" weight="0.34944612" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32931355" />
-      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2487412" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.2487412" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.3162135" />
       <window_info anchor="bottom" id="Debug" order="12" weight="0.36253777" />
@@ -413,7 +403,7 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>293</line>
+          <line>295</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -612,13 +602,6 @@ print(edge_index.shape)</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/1997200948/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="2900" column="8" selection-start-line="2900" selection-start-column="8" selection-end-line="2900" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="658">
@@ -839,16 +822,6 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/my_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="92" column="4" selection-start-line="92" selection-start-column="4" selection-end-line="92" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content07_14_19_46.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -936,23 +909,6 @@ print(edge_index.shape)</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/anak.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="833" lean-forward="true" selection-start-line="833" selection-end-line="833" />
-          <folding>
-            <element signature="e#0#47#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/todo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/visualization.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="400">
@@ -965,8 +921,45 @@ print(edge_index.shape)</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="160">
+          <caret line="10" column="5" lean-forward="true" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/todo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="66" selection-start-line="2" selection-start-column="66" selection-end-line="2" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/my_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="203" column="12" lean-forward="true" selection-start-line="203" selection-start-column="12" selection-end-line="203" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arg_parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="592">
+          <caret line="37" column="28" lean-forward="true" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/anak.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="784" column="17" lean-forward="true" selection-start-line="784" selection-start-column="17" selection-end-line="784" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#47#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
