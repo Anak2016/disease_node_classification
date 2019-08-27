@@ -5,7 +5,12 @@ import networkx as nx
 import pandas as pd
 import collections
 import matplotlib.pyplot as plt
+import pandas as pd
+import torch.nn as nn
+import torch.nn.functional as F
 
+from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
+from scipy.sparse import csr_matrix
 from collections import OrderedDict
 
 # -- utils
@@ -118,14 +123,831 @@ def get_subgraph_disconnected( G):
     disconnected_graph = [graph for graph, length in disconnected_graph]
 
     return disconnected_graph
+def create_adj_list(edges):
+    '''
+
+    :param edges:
+        [(disease1, gene1), (disease2,gene2.....] where disease are sorted in ascending order
+        eg. [(0,106),(1,400),(1,203),... ]
+
+    :return:adj_list
+            adj_list has the follwoing format must be in the followin format:
+
+        graph = {source_node1: [{target_node: weight}, ... ]
+                source_node2: [{target_node: weight}, ... ]
+                ,....,}
+
+    '''
+    adj_list = {i:[] for (i,j) in edges}
+    for disease, gene in edges:
+        adj_list[disease].append({gene:'1'})
+
+    return adj_list
+
+def create_onehot(adj_list, edges):
+    '''
+    param: adj_list
+        adj_list must be in the followin format:
+        adj_list = {source_node1: [{target_node: weight}, ... ]
+                source_node2: [{target_node: weight}, ... ]
+                ,....,}
+
+    :param edges:
+        [(disease1, gene1), (disease2,gene2.....] where disease are sorted in ascending order
+        eg. [(0,106),(1,400),(1,203),... ]
+
+    :return: onehot is in the following format
+        assuming the followin adj_list is provided as input
+
+            1: [{1: '1'}, {3: '1'}]
+        onehot will be
+            disease_idx: [[0,1,0,0,0,0], [0,0,0,1,0,0]]
+            disease_1 has 2 one hot vector
+                :one hot at index 1 and one hot at index 3
+
+    '''
+    # -- built-in max() give the wrong result
+    # max1, max2 = max(edges)[0], max(edges)[1]
+    # max_idx = max([max1,max2]) # 2955
+    max_idx = np.amax(np.array(edges).flatten()) # 2995
+    identity_matrix = np.identity(max_idx + 1)
+
+    onehot = {i:[] for i in adj_list.keys()}
+    for key, val in adj_list.items():
+        # print(int(key))
+        onehot[int(key)] = np.asarray([identity_matrix[int(list(k.keys())[0]),:] for k in val])
+    # display2screen(onehot[0].shape)
+
+    return onehot
+
+# =======================
+# == BaseLine
+# =======================
+
+# -- logistic regression with node embedding
+def run_logist(config, emb_name):
+    '''
+    run logistic regression
+
+    :param config:
+    :param use_emb: use node embedding in logistic regression
+    :return:
+    '''
+    copd = config["data"]
+    input = config["input"]
+    y = config['label']
+    train_mask = config['train_mask']
+    test_mask = config['test_mask']
+    emb = config['emb']
+    args = config['args']
 
 
+    # -- initialization
+    train_label = y[train_mask]
+    test_label  = y[test_mask]
+    train_input = []
+    test_input = []
+
+    if emb_name != 'no_feat':
+        train_input = emb[train_mask]
+        test_input = emb[test_mask]
+    else:
+        '''
+            convert input(aka onehot_genes) into the following 
+                given disease 1 has 2 onehot_vector at position 1, 3 with dimention = 5
+                disease 1 will vector = [0,1,0,1,0] 
+        '''
+        for key, val in input.items():
+            sum = 0
+            if int(key) in train_mask:
+                for v in val:
+                    sum = np.add(sum,v)
+                input[key] = sum
+                train_input.append(input[key])
+            sum1 = 0
+            if int(key) in test_mask:
+                for v in val:
+                    sum1 = np.add(sum1,v)
+                input[key] = sum1
+                test_input.append(input[key])
+
+    train_input = normalize_features(csr_matrix(np.array(train_input)))
+    test_input = normalize_features(csr_matrix(np.array(test_input)))
+
+    # -- convert to tensor
+    train_input = torch.tensor(train_input, dtype=torch.float ).numpy()
+    test_input  = torch.tensor(test_input, dtype=torch.float ).numpy()
+    train_label = torch.tensor(train_label, dtype=torch.long ).numpy()
+    test_label  = torch.tensor(test_label, dtype=torch.long ).numpy()
+
+    from sklearn import metrics
+    from sklearn.linear_model import LogisticRegression
+
+    model = LogisticRegression(solver = 'lbfgs')
+    model.fit(train_input, train_label)
+
+    y_pred_train = model.predict(train_input)
+    y_pred_test = model.predict(test_input)
+
+
+
+    log_list = []
+    # -- metrix results
+    cm_train = confusion_matrix(y_pred_train, train_label)
+    cm_train = np.array2string(cm_train)
+    count_misclassified = (train_label != y_pred_train).sum()
+    accuracy = metrics.accuracy_score(train_label, y_pred_train)
+
+
+    txt = ["For training data", 'Misclassified samples: {}'.format(count_misclassified), 'Accuracy: {:.2f}'.format(accuracy)]
+    log_list.append('\n'.join(txt))
+    print(log_list[-1])
+
+    # -- metrix results
+    cm_test = confusion_matrix(y_pred_test, test_label)
+    cm_test = np.array2string(cm_test)
+    count_misclassified = (test_label != y_pred_test).sum()
+    accuracy = metrics.accuracy_score(test_label, y_pred_test)
+
+    txt = ["For test data ", 'Misclassified samples: {}'.format(count_misclassified), 'Accuracy: {:.2f}'.format(accuracy)]
+    log_list.append('\n'.join(txt))
+    print(log_list[-1])
+
+    # ===================================
+    # == logging signature initialization
+    # ===================================
+    split = args.split
+    # -- create dir for hyperparameter config if not already exists
+    weighted_class = ''.join(list(map(str, args.weighted_class)))
+
+    folder = f"log/{args.time_stamp}/LogistircRegression/split={split}/"
+
+    import os
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    # -- creat directory if not yet created
+    save_path = f'{folder}img/'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    if args.log:
+        save_path = f'emb_name={emb_name}_LogisticRegression_results.txt'
+        print(f"writing to {save_path}...")
+        with open(save_path, 'w') as f:
+            txt = '\n\n'.join(log_list)
+            f.write(txt)
+
+
+def run_gcn_on_disease_graph(config, emb_name):
+    '''
+    Frame the problem by connect subgraph that has shared nodes
+        ie. diseases that share node will be connected by an edges
+    :param config:
+    :return:
+    '''
+    # -- input arguments
+    copd = config["data"]
+    input = config["input"] # {disease_idx1: [[0,0,0,1,0,0], ....], disease_idx2: [...],... }
+    y = config['label']
+    train_mask = config['train_mask']
+    test_mask = config['test_mask']
+    emb = config['emb']
+    hidden_sizes = config['hidden_layers']
+    epochs = config['epochs']
+    args = config['args']
+    param = config['param']
+
+    len_nodes = len(input.keys()) # amount of all node
+    train_label = y[train_mask]
+    test_label = y[test_mask]
+    train_onehot = []
+    test_onehot = []
+    train_key = []
+    test_key = []
+
+    # -- convert onehot input into the following format
+    # from
+    #   {disease_idx1: [[0,0,0,1,0,0],[0,1,0,0,0,0] ....], disease_idx2: [...],... }
+    # to
+    #   {disease_idx1: [0,1,0,1,0,0], disease_idx2: [...],... }
+    for key, val in input.items():
+        sum = 0
+        if int(key) in train_mask:
+            for v in val:
+                sum = np.add(sum, v)
+            input[key] = sum
+            train_onehot.append(input[key])
+            train_key.append(key)
+        sum1 = 0
+        if int(key) in test_mask:
+            for v in val:
+                sum1 = np.add(sum1, v)
+            input[key] = sum1
+            test_onehot.append(input[key])
+            test_key.append(key)
+
+    # -- normalize feature
+    train_input = normalize_features(csr_matrix(np.array(train_onehot)))
+    test_input = normalize_features(csr_matrix(np.array(test_onehot)))
+
+    # -- edge_index for disease_graph
+    #   1. find overlap value between each disease
+    edge_index = []
+
+    # the higher the threshold, the most overfit to training set it is.
+    # This is because in there will noly have edges to node that have edge sto more genes.
+    th = int(args.th) # default = 100
+    for d_out, k_out in zip(test_input, test_key):
+        for d_in, k_in in zip(test_input, test_key):
+            x = d_out - d_in
+            x = x[x!=0]
+            if x.shape[1] > th:
+                if [k_out, k_in] not in edge_index and [k_in, k_out] not in edge_index:
+                    # print(f"form edges between {k_out} and {k_in}")
+                    edge_index.append([k_out, k_in])
+
+    for d_out, k_out in zip(train_input, train_key):
+        for d_in, k_in in zip(train_input, train_key):
+            x = d_out - d_in
+            x = x[x!=0]
+            if x.shape[1] > th:
+                if [k_out, k_in] not in edge_index and [k_in, k_out] not in edge_index:
+                    # print(f"form edges between {k_out} and {k_in}")
+                    edge_index.append([k_out, k_in])
+
+    import math
+    sparsity =  len(edge_index)/ math.factorial(len_nodes)
+
+    print(f"num_edges = {len(edge_index)}")
+    print(f"edges sparsity = {sparsity}" )
+
+    edge_index = np.array(edge_index).T
+    # display2screen(edge_index.shape, np.amax(edge_index.flatten()))
+
+    # -- create train_input
+    if emb_name != 'no_feat':
+        train_input = emb[train_mask]
+        test_input = emb[test_mask]
+    else:
+        train_input = train_input
+        test_input = test_input
+
+    # -- convert to tensor
+    train_input = torch.tensor(train_input, dtype=torch.float)
+    test_input = torch.tensor(test_input, dtype=torch.float)
+    train_label = torch.tensor(train_label, dtype=torch.long)
+    test_label = torch.tensor(test_label, dtype=torch.long)
+    edge_index = torch.tensor(edge_index, dtype=torch.long)
+    weighted_class = torch.tensor(args.weighted_class, dtype=torch.float)
+
+    x = torch.cat((train_input,test_input), 0)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    # import torch_geometric
+    from torch_geometric.nn import GCNConv, ChebConv, GATConv, SAGEConv
+
+
+    class Net(torch.nn.Module):
+        def __init__(self):
+            super(Net, self).__init__()
+
+            modules = {
+                # "conv1": GCNConv(20, args.hidden, cached=True),
+                "conv1": GCNConv(train_input.shape[1], args.hidden, cached=True),
+                "conv2": GCNConv(args.hidden, len(copd.labels2idx().keys()), cached=True)
+            }
+
+            for name, module in modules.items():
+                self.add_module(name, module)
+
+        def forward(self, x, edge_index):
+
+            x = F.relu(self.conv1(x, edge_index))
+            x = F.dropout(x, p=args.dropout, training=self.training)
+            x = self.conv2(x, edge_index)
+            return F.log_softmax(x, dim=1)
+
+    gcn = Net().to(device)
+    optimizer = torch.optim.Adam(gcn.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+
+    def unlabeled_weight(epochs):
+        alpha = 0.0
+        if epochs > param['T1']:
+            if epochs > param['T2']:
+                alpha = param['af']
+            else:
+                alpha = (epochs - param['T1']) / (param['T2'] - param['T1'] * param['af'])
+        return alpha
+
+    def train():
+        gcn.train()
+        optimizer.zero_grad()
+
+        if args.pseudo_label_topk:
+
+            labeled_loss = F.nll_loss(gcn(x, edge_index)[train_mask], train_label,
+                                     weight=torch.tensor(list(map(int, args.weighted_class)), dtype=torch.float),
+                                     reduction="mean")
+
+            # -- labeled top k most confidence node to be pseduo_labels
+            pseudo_label_pred = gcn(x, edge_index).max(1)[1]
+
+            tmp = gcn(x, edge_index).max(1)[1].detach().flatten().tolist()
+            tmp = [(l, i) for i, l in enumerate(tmp)]
+            tmp = sorted(tmp, key=lambda x: x[0], reverse=True)  # rank label by predicted confidence value
+
+            ranked_labels = [(l, i) for (l, i) in tmp]
+            top_k_tuple = []
+
+            for (l, i) in ranked_labels:
+                if len(top_k_tuple) >= int(args.topk):
+                    break
+
+                top_k_tuple.append((i, l))  # get index of top_k to be masked during loss
+            if len(top_k_tuple) >0:
+                top_k = [t[0] for t in top_k_tuple]
+
+                # -- add top_k to labeld_loss
+                pseudo_label_loss = F.nll_loss(gcn(x, edge_index)[top_k], pseudo_label_pred[top_k], weight=weighted_class,
+                                            reduction='mean')
+            else:
+                pseudo_label_loss = 0
+
+            loss_output = labeled_loss + pseudo_label_loss
+        else:
+            loss_output = F.nll_loss(gcn(x, edge_index)[train_mask], train_label,
+                                 weight=torch.tensor(list(map(int, args.weighted_class)), dtype=torch.float),
+                                 reduction="mean")
+
+        loss_output.backward()
+        optimizer.step()
+        return loss_output.data
+
+    def test():
+        gcn.eval()
+        train_pred = gcn(x, edge_index)[train_mask].max(1)[1]
+        train_acc = train_pred.eq(train_label).sum().item() / train_mask.shape[0]
+
+        test_pred = gcn(x, edge_index)[test_mask].max(1)[1]
+        test_acc = test_pred.eq(test_label).sum().item() / test_mask.shape[0]
+
+        return [train_acc, test_acc]
+
+    train_acc_hist = []
+    test_acc_hist = []
+    loss_hist = []
+    log_list = []
+    for epoch in range(epochs):
+        loss_epoch = train()
+        train_acc, test_acc = test()
+        logging = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'.format(epoch, train_acc, test_acc)
+        if args.verbose:
+            print(logging)
+        log_list.append(logging)
+        loss_hist.append(loss_epoch)
+        train_acc_hist.append(train_acc)
+        test_acc_hist.append(test_acc)
+
+    split = args.split
+    # -- create dir for hyperparameter config if not already exists
+    weighted_class = ''.join(list(map(str, args.weighted_class)))
+
+    HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}'
+    folder = f"log/{args.time_stamp}/gcn_on_disease_graph/split={split}/{HP}/"
+
+    import os
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if args.add_features:
+        feat_stat = "YES"
+    else:
+        feat_stat = "NO"
+
+    if args.pseudo_label_all:
+        pseudo_label_stat = "ALL"
+    elif args.pseudo_label_topk:
+        pseudo_label_stat = "TOP_K"
+    elif args.pseudo_label_topk_with_replacement:
+        pseudo_label_stat = "TOP_K_WITH_REPLACEMENT"
+    else:
+        pseudo_label_stat = "NONE"
+
+    T_param = ','.join([str(param['T1']), str(param['T2'])])
+    # -- creat directory if not yet created
+    save_path = f'{folder}img/'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    if args.plot_all is True:
+        args.plot_loss = True
+        args.plot_no_train = True
+        args.plot_train = True
+
+    if args.plot_loss:
+        # ======================
+        # == plot loss and acc vlaue
+        # ======================
+        plt.figure(1)
+        # -- plot loss hist
+        plt.subplot(211)
+        plt.plot(range(len(loss_hist)), loss_hist)
+        plt.ylabel("loss values")
+        plt.title("loss history")
+
+        # -- plot acc hist
+        plt.subplot(212)
+        plt.plot(range(len(train_acc_hist)), train_acc_hist)
+        plt.plot(range(len(test_acc_hist)), test_acc_hist)
+        plt.ylabel("accuracy values")
+        plt.title("accuracy history")
+        print(
+            "writing to  " + save_path + f"LOSS_ACC_feat={feat_stat}_gene_thresh_hold={th}_wc=[{weighted_class}]_T=[{T_param}].png")
+        plt.savefig(
+            save_path + f'ACC_feat={feat_stat}_gene_thresh_hold={th}_wc=[{weighted_class}]_T=[{T_param}].png')
+        plt.show()
+
+    # --train_mask f1,precision,recall
+    train_pred = gcn(x, edge_index)[train_mask].max(1)[1]
+    train_f1 = f1_score(train_label, train_pred, average='micro')
+    train_precision = precision_score(train_label, train_pred, average='micro')
+    train_recall = recall_score(train_label, train_pred, average='micro')
+
+    # -- test_mask f1,precision,recall
+    test_pred = gcn(x, edge_index)[test_mask].max(1)[1]
+    test_f1 = f1_score(test_label, test_pred, average='micro')
+    test_precision = precision_score(test_label, test_pred, average='micro')
+    test_recall = recall_score(test_label, test_pred, average='micro')
+
+    if args.log:
+        save_path = f'{folder}ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_gene_thresh_hold={th}_wc={weighted_class}.txt'
+        print(f"writing to {save_path}...")
+        with open(save_path, 'w') as f:
+            txt = '\n'.join(log_list)
+            f.write(txt)
+
+    if args.log:
+        cm_train = confusion_matrix(gcn(x, edge_index)[train_mask].max(1)[1], train_label)
+        cm_test = confusion_matrix(gcn(x, edge_index)[test_mask].max(1)[1], test_label)
+
+        # formatter = {'float_kind': lambda x: "%.2f" % x})
+        cm_train = np.array2string(cm_train)
+        cm_test = np.array2string(cm_test)
+
+        save_path = f'{folder}CM_feat={feat_stat}_pseudo_label={pseudo_label_stat}_gene_thresh_hold={th}_wc={weighted_class}.txt'
+        print(f"writing to {save_path}...")
+
+        # txt = 'class int_rep is [' + ','.join(list(map(str, np.unique(data.y.numpy()).tolist()))) + ']'
+        txt = 'class int_rep is [' + ','.join([str(i) for i in range(len(copd.labels2idx().values()))]) + ']'
+        txt = txt + '\n\n' + "training cm" + '\n' + cm_train + '\n' \
+              + f"training_accuracy ={log_list[-1].split(',')[1]}" + '\n' \
+              + f"training_f1       ={train_f1}" + '\n' \
+              + f"training_precision={train_precision}" + '\n' \
+              + f"training_recall   ={train_recall}" + '\n'
+
+        txt = txt + '\n\n' + "test cm" + '\n' + cm_test + '\n' \
+              + f"test_accuracy ={log_list[-1].split(',')[2]}" + '\n' \
+              + f"test_f1       ={test_f1}" + '\n' \
+              + f"test_precision={test_precision}" + '\n' \
+              + f"test_recall   ={test_recall}" + '\n'
+
+        with open(save_path, 'w') as f:
+            f.write(txt)
+
+
+# -- MLP
+def run_mlp(config):
+    '''
+    run multi-layer perceptron
+    input data is node with gene as its features.
+    :return:
+    '''
+    # -- input arguments
+    copd = config["data"]
+    input = config["input"] # {disease_idx1: [[0,0,0,1,0,0],[0,1,0,0,0,0] ....], disease_idx2: [...],... }
+    y = config['label']
+    train_mask = config['train_mask']
+    test_mask = config['test_mask']
+    hidden_sizes = config['hidden_layers']
+    epochs = config['epochs']
+    args = config['args']
+    param = config['param']
+    # display2screen(np.asarray(input[key] for key,val in input.items() if int(key) in train_mask))
+
+    # -- initialization
+    # train_input = [input[key] for key,val in input.items() if int(key) in train_mask]
+    # test_input  = [input[key] for key,val in input.items() if int(key) in test_mask]
+    train_label = y[train_mask]
+    test_label  = y[test_mask]
+    train_input = []
+    test_input = []
+
+    # -- convert onehot input into the following format
+    # from
+    #   {disease_idx1: [[0,0,0,1,0,0],[0,1,0,0,0,0] ....], disease_idx2: [...],... }
+    # to
+    #   {disease_idx1: [0,1,0,1,0,0], disease_idx2: [...],... }
+    for key, val in input.items():
+        sum = 0
+        if int(key) in train_mask:
+            for v in val:
+                sum = np.add(sum,v)
+            input[key] = sum
+            train_input.append(input[key])
+        sum1 = 0
+        if int(key) in test_mask:
+            for v in val:
+                sum1 = np.add(sum1,v)
+            input[key] = sum1
+            test_input.append(input[key])
+
+    # -- normalize features vector
+    train_input = normalize_features(csr_matrix(np.array(train_input)))
+    test_input  = normalize_features(csr_matrix(np.array(test_input)))
+
+    # -- convert to tensor
+    train_input = torch.tensor(train_input, dtype=torch.float )
+    test_input  = torch.tensor(test_input, dtype=torch.float )
+    train_label = torch.tensor(train_label, dtype=torch.long )
+    test_label  = torch.tensor(test_label, dtype=torch.long )
+    weighted_class = torch.tensor(list(map(int,args.weighted_class)), dtype=torch.float)
+
+
+    # model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # mlp = MLP(hidden_sizes).to(device)
+    mlp = nn.Sequential(
+                            nn.Linear(2996, 128),
+                            nn.ReLU(),
+                            nn.Linear(128, 16),
+                            nn.ReLU(),
+                            nn.Linear(16, len(copd.labels2idx().keys())),
+                            nn.LogSoftmax(dim=1)
+                        )
+    optimizer = torch.optim.Adam(mlp.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+
+
+
+    def train():
+        mlp.train()
+        optimizer.zero_grad()
+        if args.pseudo_label_topk:
+            labeled_loss = F.nll_loss(mlp(train_input), train_label,
+                                      weight=torch.tensor(list(map(int, args.weighted_class)), dtype=torch.float),
+                                      reduction="mean")
+
+            # -- labeled top k most confidence node to be pseduo_labels
+            pseudo_label_pred = mlp(train_input).max(1)[1]
+
+            tmp = mlp(train_input).max(1)[1].detach().flatten().tolist()
+            tmp = [(l, i) for i, l in enumerate(tmp)]
+            tmp = sorted(tmp, key=lambda x: x[0], reverse=True)  # rank label by predicted confidence value
+
+            ranked_labels = [(l, i) for (l, i) in tmp]
+            top_k_tuple = []
+
+            for (l, i) in ranked_labels:
+                if len(top_k_tuple) >= int(args.topk):
+                    break
+
+                top_k_tuple.append((i, l))  # get index of top_k to be masked during loss
+            if len(top_k_tuple) > 0:
+                top_k = [t[0] for t in top_k_tuple]
+
+                # -- add top_k to labeld_loss
+                pseudo_label_loss = F.nll_loss(mlp(train_input)[top_k], pseudo_label_pred[top_k],
+                                               weight=weighted_class,
+                                               reduction='mean')
+            else:
+                pseudo_label_loss = 0
+
+            loss_output = labeled_loss + pseudo_label_loss
+        else:
+            loss_output = F.nll_loss(mlp(train_input), train_label, weight=torch.tensor(list(map(int,args.weighted_class)), dtype=torch.float), reduction="mean")
+        loss_output.backward()
+        optimizer.step()
+        return loss_output.data
+    def test():
+        mlp.eval()
+        train_pred = mlp(train_input).max(1)[1]
+        train_acc = train_pred.eq(train_label).sum().item() / train_mask.shape[0]
+
+        test_pred = mlp(test_input).max(1)[1]
+        test_acc = test_pred.eq(test_label).sum().item() / test_mask.shape[0]
+
+        return [train_acc, test_acc]
+
+    train_acc_hist = []
+    test_acc_hist = []
+    loss_hist = []
+    log_list = []
+    for epoch in range(epochs):
+        loss_epoch = train()
+        train_acc, test_acc = test()
+        logging = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'.format(epoch, train_acc, test_acc)
+        if args.verbose:
+            print(logging)
+        log_list.append(logging)
+        loss_hist.append(loss_epoch)
+        train_acc_hist.append(train_acc)
+        test_acc_hist.append(test_acc)
+
+    split = args.split
+    # -- create dir for hyperparameter config if not already exists
+    weighted_class = ''.join(list(map(str, args.weighted_class)))
+
+    HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}'
+    folder = f"log/{args.time_stamp}/mlp/split={split}/{HP}/"
+
+    import os
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    if args.add_features:
+        feat_stat = "YES"
+    else:
+        feat_stat = "NO"
+
+    if args.pseudo_label_all:
+        pseudo_label_stat = "ALL"
+    elif args.pseudo_label_topk:
+        pseudo_label_stat = "TOP_K"
+    elif args.pseudo_label_topk_with_replacement:
+        pseudo_label_stat = "TOP_K_WITH_REPLACEMENT"
+    else:
+        pseudo_label_stat = "NONE"
+
+    T_param = ','.join([str(param['T1']), str(param['T2'])])
+    # -- creat directory if not yet created
+    save_path = f'{folder}img/'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    if args.plot_all is True:
+        args.plot_loss = True
+        args.plot_no_train = True
+        args.plot_train = True
+
+    if args.plot_loss:
+        # ======================
+        # == plot loss and acc vlaue
+        # ======================
+        plt.figure(1)
+        # -- plot loss hist
+        plt.subplot(211)
+        plt.plot(range(len(loss_hist)), loss_hist)
+        plt.ylabel("loss values")
+        plt.title("loss history")
+
+        # -- plot acc hist
+        plt.subplot(212)
+        plt.plot(range(len(train_acc_hist)), train_acc_hist)
+        plt.plot(range(len(test_acc_hist)), test_acc_hist)
+        plt.ylabel("accuracy values")
+        plt.title("accuracy history")
+        print(
+            "writing to  " + save_path + f"LOSS_ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc=[{weighted_class}]_T=[{T_param}]_topk={args.topk}.png")
+        plt.savefig(
+            save_path + f'ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc=[{weighted_class}]_T=[{T_param}]_topk={args.topk}.png')
+        plt.show()
+
+
+    # --train_mask f1,precision,recall
+    train_pred = mlp(train_input).max(1)[1]
+    train_f1 = f1_score(train_label, train_pred, average='micro')
+    train_precision = precision_score(train_label, train_pred, average='micro')
+    train_recall = recall_score(train_label, train_pred, average='micro')
+
+    # -- test_mask f1,precision,recall
+    test_pred = mlp(test_input).max(1)[1]
+    test_f1 = f1_score(test_label, test_pred, average='micro')
+    test_precision = precision_score(test_label, test_pred, average='micro')
+    test_recall = recall_score(test_label, test_pred, average='micro')
+
+    if args.log:
+        # save_path = f'log/{args.arch}/{HP}/{time_stamp}/feat_stat={feat_stat}_{args.arch}_accuracy_{emb_name}{time_stamp}_split_{split}.txt'
+        save_path = f'{folder}ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc={weighted_class}_topk={args.topk}.txt'
+        print(f"writing to {save_path}...")
+        with open(save_path, 'w') as f:
+            txt = '\n'.join(log_list)
+            f.write(txt)
+
+    if args.log:
+        cm_train = confusion_matrix(mlp(train_input).max(1)[1], train_label)
+        cm_test = confusion_matrix(mlp(test_input).max(1)[1], test_label)
+
+        # formatter = {'float_kind': lambda x: "%.2f" % x})
+        cm_train = np.array2string(cm_train)
+        cm_test = np.array2string(cm_test)
+
+        save_path = f'{folder}CM_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc={weighted_class}_topk={args.topk}.txt'
+        print(f"writing to {save_path}...")
+
+        # txt = 'class int_rep is [' + ','.join(list(map(str, np.unique(data.y.numpy()).tolist()))) + ']'
+        txt = 'class int_rep is [' + ','.join([str(i) for i in range(len(copd.labels2idx().values()))]) + ']'
+        txt = txt + '\n\n' + "training cm" + '\n' + cm_train + '\n' \
+              + f"training_accuracy ={log_list[-1].split(',')[1]}" + '\n' \
+              + f"training_f1       ={train_f1}" + '\n' \
+              + f"training_precision={train_precision}" + '\n' \
+              + f"training_recall   ={train_recall}" + '\n'
+
+        txt = txt + '\n\n' + "test cm" + '\n' + cm_test + '\n' \
+              + f"test_accuracy ={log_list[-1].split(',')[2]}" + '\n' \
+              + f"test_f1       ={test_f1}" + '\n' \
+              + f"test_precision={test_precision}" + '\n' \
+              + f"test_recall   ={test_recall}" + '\n'
+
+        with open(save_path, 'w') as f:
+            f.write(txt)
+
+#=================================
+# == preprocessing
+#=================================
+def normalize_features(mx):
+    """
+        Row-normalize sparse matrix
+    :param: mx: csr_matrix
+    :return mx: numpy array
+    """
+
+    rowsum = np.array(mx.sum(1))
+    r_inv = np.power(rowsum, -1).flatten()
+    r_inv[np.isinf(r_inv)] = 0.
+    r_mat_inv = sp.diags(r_inv)
+    mx = r_mat_inv.dot(mx)
+    return mx.todense()
+
+def normalize_adj(mx):
+    """Row-normalize sparse matrix"""
+    rowsum = np.array(mx.sum(1))
+    r_inv_sqrt = np.power(rowsum, -0.5).flatten()
+    r_inv_sqrt[np.isinf(r_inv_sqrt)] = 0.
+    r_mat_inv_sqrt = sp.diags(r_inv_sqrt)
+    return mx.dot(r_mat_inv_sqrt).transpose().dot(r_mat_inv_sqrt) # D^0-5 * A * D^0.5
+
+def add_features(args):
+    # ===========================
+    # === add embedding as features
+    # ===========================
+    emb_name = args.emb_name
+    emb_file = None
+    # -- emb_file
+    if args.emb_name == 'attentionwalk':
+        emb_file = f"{args.emb_name}/{args.emb_name}_emb{args.time_stamp}.txt"
+
+    elif args.emb_name == 'node2vec':
+        if args.subgraph:
+            emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph{args.time_stamp}.txt"
+        else:
+            emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt"
+
+    elif args.emb_name == 'bine':
+        emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt"
+
+    else:
+        raise ValueError("provided emb_name is not supported!")
+    assert emb_file is not None, f"{args.emb_name} is not available"
+
+    # -- emb_path
+    emb_path = args.emb_path + emb_file
+
+    with open(emb_path, 'r') as f:
+        tmp = f.readlines()
+        if "bine" not in emb_file:
+            tmp = tmp[1:]
+
+    # -- split symbol
+    if args.emb_name == "attentionwalk":
+        split = ','
+    if args.emb_name == "node2vec":
+        split = ' '
+    if args.emb_name == "bine":
+        split = ' '
+
+    if args.emb_name == "bine":
+        emb_dict = {int(float(i.split(split)[0][1:])): list(map(float, i.split(split)[1:])) for i in tmp}
+    else:
+        emb_dict = {int(float(i.split(split)[0])): list(map(float, i.split(split)[1:])) for i in tmp}
+
+    # -- make sure that node embs are in ordered
+    emb = sorted(emb_dict.items(), key=lambda t: t[0])
+    x = np.array([[j for j in i[1]] for i in emb], dtype=np.float)
+    x = torch.tensor(x, dtype=torch.float)  # torch.Size([2996, 64])
+
+    return x
+# ====================
+# == dataset
+# ====================
 class Cora():
     def __init__(self):
         pass
 
+    # todo here>> check feature in cora why each node only have at most 1 feature???????
     def load_data(self, path="./data/cora/", dataset="cora"):
-        """Load citation network dataset (cora only for now)"""
+        """Load citation network dataset (cora only for now)
+        return:
+            features is unormalized
+        """
         print('Loading {} dataset...'.format(dataset))
 
         idx_features_labels = np.genfromtxt("{}{}.content".format(path, dataset), dtype='U')
@@ -134,17 +956,16 @@ class Cora():
 
         # build graph
         idx = np.array(idx_features_labels[:, 0], dtype=np.int32)
-        idx_map = {j: i for i, j in enumerate(idx)}
+        idx_map = {str(j): i for i, j in enumerate(idx)}
         edges_unordered = np.genfromtxt("{}{}.cites".format(path, dataset), dtype='U')
-        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype='U').reshape(
-            edges_unordered.shape)
+        edges = np.array(list(map(idx_map.get, edges_unordered.flatten())), dtype='U').reshape(edges_unordered.shape)
         adj = sp.coo_matrix((np.ones(edges.shape[0]), (edges[:, 0], edges[:, 1])),
                             shape=(labels.shape[0], labels.shape[0]), dtype=np.float32)
 
         # build symmetric adjacency matrix
         adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-
-        features = self.normalize_features(features)
+        # features = self.normalize_features(features)
+        unnormalize_adj = adj
         adj = self.normalize_adj(adj + sp.eye(adj.shape[0])) # add self loop
 
         idx_train = range(140)
@@ -159,15 +980,16 @@ class Cora():
         idx_val = torch.LongTensor(idx_val)
         idx_test = torch.LongTensor(idx_test)
 
-        return adj, features, labels, idx_train, idx_val, idx_test
+
+        return adj, features, labels, idx_train, idx_val, idx_test, unnormalize_adj
 
     def normalize_adj(self,mx):
         """Row-normalize sparse matrix"""
         rowsum = np.array(mx.sum(1))
-        r_inv_sqrt = np.power(rowsum, -0.5).flatten() # D^0-5 * A * D^0.5
+        r_inv_sqrt = np.power(rowsum, -0.5).flatten()
         r_inv_sqrt[np.isinf(r_inv_sqrt)] = 0.
         r_mat_inv_sqrt = sp.diags(r_inv_sqrt)
-        return mx.dot(r_mat_inv_sqrt).transpose().dot(r_mat_inv_sqrt)
+        return mx.dot(r_mat_inv_sqrt).transpose().dot(r_mat_inv_sqrt) # D^0-5 * A * D^0.5
 
     def encode_onehot(self, labels):
         classes = set(labels)
@@ -200,6 +1022,7 @@ class Copd():
         self.edges = GetData.edges(path=path, time_stamp=time_stamp)
 
         # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
+
 
     def load_data(self, path="./data/gene_disease/", dataset="copd_label", time_stamp=''):
         """
@@ -245,7 +1068,41 @@ class Copd():
 
         return adj, labels, G, g
 
+    # -- rename "conversion related function" (can be under this section)
+    def labels2class(self):
+        '''
+            rename for diseases2class
+
+        :return:
+            {cuis: labels}
+        '''
+        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.labels)}
+
+        return cuis2labels
+
+    def class2labels(self):
+        '''
+            rename for class2disease
+        :return:
+            {class_label: [lsit of disease member of the class]}
+        '''
+        class2disease = {k: [] for k in self.labels2idx().keys()}
+        for k, c in self.disease2class().items():
+            class2disease[c].append(k)
+
+        return class2disease
+
+    def labelnodes2idx(self):
+        '''
+            rename for disease2idx
+        :return: {label: label_rep}
+        '''
+        cuis = self.disease
+
+        return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(cuis.tolist()).keys()))}
+
     # -- conversion related function
+    #   :this must not be deleted for compatibility reason
     def nodes2idx(self):
         '''
             geneid and diseaseid are nodes in the graph

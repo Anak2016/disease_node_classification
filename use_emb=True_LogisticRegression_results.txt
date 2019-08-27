@@ -1,0 +1,7 @@
+For training data
+Misclassified samples: 0
+Accuracy: 1.00
+
+For test data 
+Misclassified samples: 11
+Accuracy: 0.65

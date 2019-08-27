@@ -7,6 +7,7 @@ from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 
 def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
+
     print("=======================")
     print("plotting 2d emb...")
     x = None
@@ -15,7 +16,7 @@ def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
 
     s = time.time()
     if isinstance(file_list, list):
-
+        # saving image to path is not yet implemented in here
         for file in file_list:
             x = pd.read_csv(path + file, sep=' ', header=None)
 
@@ -40,23 +41,24 @@ def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
             # for i, n in enumerate(nodes[:61]):
             for i, n in enumerate(nodes):
                 try:
-                    condition = True if copd.disease2class()[n] in class2nodes.keys() else False
+                    condition = True if copd.labels2class()[n] in class2nodes.keys() else False
                 except:
-                    condition = True if len(copd.disease2class().keys()) in class2nodes.keys() else False
+                    condition = True if len(copd.labels2class().keys()) in class2nodes.keys() else False
 
                 if condition:
-                    if n in copd.disease2class().keys():
-                        class2nodes[copd.disease2class()[n]].append([n, emb[i]])
+                    if n in copd.labels2class().keys():
+                        class2nodes[copd.labels2class()[n]].append([n, emb[i]])
                     else:
-                        class2nodes[len(copd.disease2class().keys())].append([n, emb[i]])
+                        class2nodes[len(copd.labels2class().keys())].append([n, emb[i]])
                 else:
-                    if n in copd.disease2class().keys():
-                        class2nodes[copd.disease2class()[n]] = [[n, emb[i]]]
+                    if n in copd.labels2class().keys():
+                        class2nodes[copd.labels2class()[n]] = [[n, emb[i]]]
                     else:
-                        class2nodes[len(copd.disease2class().keys())] = [[n, emb[i]]]
+                        class2nodes[len(copd.labels2class().keys())] = [[n, emb[i]]]
 
             # emb.shape = (# of keys, -1)
             emb = np.array([np.array([tuple[1] for tuple in class2nodes[k]]) for k in class2nodes.keys()])
+
 
             for emb_arr, label in zip(emb, class2nodes.keys()):
                 plt.scatter(emb_arr[:, 0], emb_arr[:, 1], label=label)
@@ -65,11 +67,15 @@ def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
             f = time.time()
             total = f - s
             print(f'running time {total}')
+
         plt.show()
 
     else:
         file = file_list
 
+
+
+        # read noe emb from file
         if kwargs.get('emb'):
             if kwargs.get('emb') == 'attentionwalk':
                 x = pd.read_csv(path + file, sep=',', header=None)
@@ -112,6 +118,8 @@ def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
                 emb = PCA(n_components=2).fit_transform(x)
             # apply dimensional reduction to 2 D
 
+
+
         # -- labels nodes in order
         class2nodes = {}
 
@@ -119,42 +127,73 @@ def plot_2d(copd, path, file_list, with_gene=True, **kwargs):
         if with_gene:
             included_nodes = max(nodes)
         else:
-            included_nodes = len(copd.disease2idx().keys()) - 1
+            included_nodes = len(copd.labels2class().keys()) - 1
 
         # -- label nodes in
         for i, n in enumerate(nodes):
 
             if n <= included_nodes:
                 try:
-                    condition = True if copd.disease2class()[n] in class2nodes.keys() else False
+                    condition = True if copd.labels2class()[n] in class2nodes.keys() else False
                 except:
-                    condition = True if len(copd.disease2class().keys()) in class2nodes.keys() else False
+                    condition = True if len(copd.labels2class().keys()) in class2nodes.keys() else False
 
                 if condition:
-                    if n in copd.disease2class().keys():
-                        class2nodes[copd.disease2class()[n]].append([n, emb[i]])
+                    if n in copd.labels2class().keys():
+                        class2nodes[copd.labels2class()[n]].append([n, emb[i]])
                     else:
-                        class2nodes[len(copd.disease2class().keys())].append([n, emb[i]])
+                        class2nodes[len(copd.labels2class().keys())].append([n, emb[i]])
                 else:
-                    if n in copd.disease2class().keys():
-                        class2nodes[copd.disease2class()[n]] = [[n, emb[i]]]
+                    if n in copd.labels2class().keys():
+                        class2nodes[copd.labels2class()[n]] = [[n, emb[i]]]
                     else:
-                        class2nodes[len(copd.disease2class().keys())] = [[n, emb[i]]]
+                        class2nodes[len(copd.labels2class().keys())] = [[n, emb[i]]]
 
-        # emb.shape = (# of keys, -1)
-        emb = np.array([np.array([tuple[1] for tuple in class2nodes[k]]) for k in class2nodes.keys() ])
-        # display2screen(emb) # sorted by disease and only plot disease
+        # emb.shape = (# of class, # of node emb in each class)
 
-        for emb_arr, label in zip(emb, class2nodes.keys()):
-            plt.scatter(emb_arr[:, 0], emb_arr[:, 1], label=label)
-        plt.legend()
+        emb_reordered = np.array([np.array([tuple[1] for tuple in class2nodes[k]]) for k in class2nodes.keys() ])
+        # display2screen(em_reoredered) # sorted by disease and only plot disease
+
+        if kwargs['pred_label'] is not None:
+            # pred_label is expected to have the same order as emb that is read from path+file
+            pred_label = kwargs['pred_label'].to_numpy().flatten().tolist()
+
+            if with_gene is False:
+                pred_label = pred_label[:included_nodes]
+                emb = emb[:included_nodes]
+
+            # todo here>> legends is not correct and figure are not in the same plot
+            plt.figure(1)
+            plt.subplot(121)
+            # for n, p in zip(emb, pred_label):
+            # group node up with its label
+            label_node = {l:[] for l in set(pred_label)}
+            for i,l in enumerate(pred_label):
+                label_node[l].append(i)
+
+            for l,n in label_node.items():
+                plt.scatter(emb[n,0], emb[n,1], label=l)
+            # plt.scatter(emb[:,0], emb[:,1], c=pred_label)
+            plt.legend()
+
+            plt.subplot(122)
+            for emb_arr, label in zip(emb_reordered, class2nodes.keys()):
+                plt.scatter(emb_arr[:, 0], emb_arr[:, 1], label=label)
+            plt.legend()
+        else:
+            for emb_arr, label in zip(emb_reordered, class2nodes.keys()):
+                plt.scatter(emb_arr[:, 0], emb_arr[:, 1], label=label)
+            plt.legend()
 
     f = time.time()
     total = f-s
     print(f'total running time {total}')
+
+    if kwargs['log'] is True:
+        print(f"writing to {path + kwargs['save_img']}...")
+        plt.savefig(path + kwargs["save_img"])
+
     plt.show()
-
-
 
 if __name__ == "__main__":
     # =======================

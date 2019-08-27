@@ -2,29 +2,61 @@ import argparse
 import torch
 import random
 import numpy as np
-
+'''
+example command
+ --run_gcn  --verbose --t1_t2_alpha 10000 10000  0.3 --log  --plot_loss --epoch 200 --pseudo_label_topk --topk 1 --epoch 400
+'''
 #--Training settings
 parser = argparse.ArgumentParser()
+parser.add_argument('--dataset', type=str, default='gene_disease', help='specify type of dataset to be used')
 parser.add_argument('--time_stamp', type=str, default='07_14_19_46', help='time_stamp version of copd_data')
 parser.add_argument('--copd_path', type=str, default='data/gene_disease/', help='path containing copd_label{time_stamp} dataset')
 parser.add_argument('--copd_data', type=str, default='copd_label', help='name of the gene_disease dataset; default = copd_label')
-parser.add_argument('--emb_name', type=str, default='node2vec', help='name of embedding type being used')
+parser.add_argument('--emb_name', type=str, default='no_feat', help='name of embedding type being used')
 parser.add_argument('--emb_path', type=str, default=f"output/gene_disease/embedding/", help='name of the gene_disease dataset; default = copd_label')
 parser.add_argument('--subgraph', action="store_true", help='NOT CURRENTLY COMPATIBLE WITH THE PROGRAM;Use only node in the largest connected component instead of all nodes disconnected graphs')
 parser.add_argument('--with_gene', action="store_true", help='plot_2d() with genes')
 parser.add_argument('--plot_2d_func', type=str, default='tsne', help='plot_2d() with genes')
+parser.add_argument('--arch', type=str, default='gcn', help='architecutre name to be run eg. GAT, GCN ')
+parser.add_argument('--add_features', action='store_true', help='added_features to the nodes')
+parser.add_argument('--run_logist', action='store_true', help='run logistic regression with grpah embedding of choice node2vec, bine, gcn,and attentionwalk')
+parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
+parser.add_argument('--run_gcn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
+parser.add_argument('--run_gcn_on_disease_graph', action='store_true', help='run gcn on disease only graph where edges between diseases are form iff they share at least 1 gene')
+parser.add_argument('--th', default=200, help='amount of shared gene requires to form an edge in disease graph')
 
 # -- hyper paramters
 parser.add_argument('--epochs', type=int, default=200, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.09, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=0.006, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=16, help='Number of hidden units.')
-parser.add_argument('--dropout', type=float, default=0.6, help='Dropout rate (1 - keep probability).')
+parser.add_argument('--dropout', type=float, default=0.5, help='Dropout rate (1 - keep probability).')
+parser.add_argument('--split', type=float, default=0.7, help='training split with range=[0,1] ')
+parser.add_argument('--weighted_class', default=[1,1,1,1,1], nargs='+', help='list of weighted_class of diseases only in order <0,1,2,3,4,5>')
+
+# -- psuedo_lable specific hyper parrameters
+parser.add_argument('--pseudo_label_all', action='store_true', help='psudo_label_all ')
+parser.add_argument('--pseudo_label_topk', action='store_true', help='psudo_label_topk add top k most confidence; --topk must be specified')
+parser.add_argument('--topk', default="50", help='amount of topk to be label every epoch')
+parser.add_argument('--t1_t2_alpha', default=[10000,10000,0.3], nargs='+', help='[T1, T2, af] followed literature in pseudo_label where T1 and T2 are threshold for epcoh which will determine specific alpha value to be used')
+
+# -- not shown to improve the output
+parser.add_argument('--pseudo_label_topk_with_replacement', action='store_true', help='psudo_label_topk add top k most confidence; --topk must be specified')
+
+
+# -- GAT specific hyper parameters
+parser.add_argument('--heads', type=int, default=8, help='number of heads to neighbors important for GAT')
+
+# -- GraphSage Specific hyper parameters
+parser.add_argument('--aggr', type=str, default='mean', help="aggregator for graphsage: ['add', 'mean', 'max']")
 
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
 parser.add_argument('--verbose', action="store_true", help='verbose status')
-parser.add_argument('--plot', action="store_true", help='plot graph')
+parser.add_argument('--plot_all', action="store_true", help='plot loss, notrain, train')
+parser.add_argument('--plot_loss', action="store_true", help='plot loss')
+parser.add_argument('--plot_no_train', action="store_true", help='plot no_train graph ')
+parser.add_argument('--plot_train', action="store_true", help='plot train_graph ')
 parser.add_argument('--tuning', action="store_true", help='hyper-paramter tuning')
 parser.add_argument('--log', action="store_true",  help='logging training infomation such as accuracy and confusino matrix')
 parser.add_argument('--no_cuda', action="store_true",  help='Disable cuda training ')
