@@ -1,0 +1,2 @@
+>find an app that can search and store snippet code
+>merge the app to my_utility repo

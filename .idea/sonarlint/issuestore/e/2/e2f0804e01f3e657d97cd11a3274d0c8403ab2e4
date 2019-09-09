@@ -1,44 +1,23 @@
 
-lpython:S3776¼"TRefactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.(Ù¿ì*
-Ipython:S1481÷"0Remove the unused local variable "hidden_sizes".(óÊ¾«
-;python:S125Q"Remove this commented out code.(ÛÞ²òÿÿÿÿÿ
-<python:S125Î"Remove this commented out code.(¥éšùÿÿÿÿ
-Jpython:S1481;"-Remove the unused local variable "save_file".(ðØè°ûÿÿÿÿ
-Hpython:S1481¥"*Remove the unused local variable "device".(Žú‰Ëùÿÿÿÿ
 upython:S117™"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ
-<python:S125§"Remove this commented out code.(…îìèøÿÿÿÿ
-;python:S1258"Remove this commented out code.(ÛÞ²òÿÿÿÿÿ
-Epython:S1481˜",Remove the unused local variable "ChebConv".(Žó•¶
-7python:S125ý"Remove this commented out code.(½Í‰ô
-<python:S125™"Remove this commented out code.(ñê¼ºüÿÿÿÿ
-Epython:S1481˜",Remove the unused local variable "SAGEConv".(Žó•¶
-<python:S125Ç"Remove this commented out code.(îÁ§Ìÿÿÿÿÿ
-Dpython:S1481˜"+Remove the unused local variable "GATConv".(Žó•¶
-Mpython:S1066÷"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ
-7python:S125¢"Remove this commented out code.(Ò¨Ðô
-<python:S125¼"Remove this commented out code.(ù²šúÿÿÿÿ
-Jpython:S1481T"-Remove the unused local variable "save_file".(ÞÁÆ­úÿÿÿÿ
-Jpython:S1481™"2Remove the unused local variable "weighted_class".(ê5
-<python:S125Ø"Remove this commented out code.(¥éšùÿÿÿÿ
-<python:S125À	"Remove this commented out code.(òÉ¨¨ûÿÿÿÿ
-<python:S125¨
-"Remove this commented out code.(…º¹…øÿÿÿÿ
-<python:S125—"Remove this commented out code.(™ÛÂ´øÿÿÿÿ
-7python:S125"Remove this commented out code.(¸Ãø¼
-mpython:S3776®"TRefactor this function to reduce its Cognitive Complexity from 72 to the 15 allowed.(ºÁß‹
+Hpython:S1481¥"*Remove the unused local variable "device".(Žú‰Ëùÿÿÿÿ
 Apython:S1481Ä"(Remove the unused local variable "copd".(¢Ë¤æ
-<python:S125²
-"Remove this commented out code.(ëÖëˆûÿÿÿÿ
-7python:S125è"Remove this commented out code.(å€­»
 Ipython:S1481¼"0Remove the unused local variable "hidden_sizes".(óÊ¾«
-Bpython:S1481¹	")Remove the unused local variable "nodes".(ç¤Œ
-Mpython:S1656‰"/Remove or correct this useless self-assignment.(½ÜˆÊûÿÿÿÿ
-ipython:S117q"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÉžÂïøÿÿÿÿ
-Mpython:S1066î"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ
-7python:S125Ÿ"Remove this commented out code.(ÑÊðŒ
-upython:S117"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ
-‚python:S1871û"dEither merge this branch with the identical one on line "1017" or change one of the implementations.(¬­‚þÿÿÿÿ
 mpython:S3776ë"TRefactor this function to reduce its Cognitive Complexity from 41 to the 15 allowed.(é—ùæ
+Ipython:S1481÷"0Remove the unused local variable "hidden_sizes".(óÊ¾«
+ipython:S117q"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÉžÂïøÿÿÿÿ
+Jpython:S1481T"-Remove the unused local variable "save_file".(ÞÁÆ­úÿÿÿÿ
+Epython:S1481˜",Remove the unused local variable "ChebConv".(Žó•¶
+Mpython:S1066î"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ
+Mpython:S1656‰"/Remove or correct this useless self-assignment.(½ÜˆÊûÿÿÿÿ
+Dpython:S1481˜"+Remove the unused local variable "GATConv".(Žó•¶
+‚python:S1871û"dEither merge this branch with the identical one on line "1017" or change one of the implementations.(¬­‚þÿÿÿÿ
+mpython:S3776®"TRefactor this function to reduce its Cognitive Complexity from 72 to the 15 allowed.(ºÁß‹
+lpython:S3776¼"TRefactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.(Ù¿ì*
+Bpython:S1481¹	")Remove the unused local variable "nodes".(ç¤Œ
+Jpython:S1481™"2Remove the unused local variable "weighted_class".(ê5
+Mpython:S1066÷"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ
+upython:S117"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ
 Mpython:S1656Š"/Remove or correct this useless self-assignment.(µÌœÖüÿÿÿÿ
-<python:S125Ù
-"Remove this commented out code.(Óþ¢æøÿÿÿÿ
+Epython:S1481˜",Remove the unused local variable "SAGEConv".(Žó•¶
+Jpython:S1481;"-Remove the unused local variable "save_file".(ðØè°ûÿÿÿÿ

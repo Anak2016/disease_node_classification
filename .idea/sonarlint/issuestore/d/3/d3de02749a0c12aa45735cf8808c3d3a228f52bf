@@ -1,0 +1,16 @@
+
+dpython:S107×"LFunction "run_GCN" has 8 parameters, which is greater than the 7 authorized.(ìˆÍ—
+Npython:S1481"0Remove the unused local variable "best_val_acc".(ØÂ§¤ûÿÿÿÿ
+dpython:S117M"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(éù¾×
+npython:S3776×"URefactor this function to reduce its Cognitive Complexity from 172 to the 15 allowed.(ìˆÍ—
+python:S1871¤"cEither merge this branch with the identical one on line "665" or change one of the implementations.(€Â¬ˆÿÿÿÿÿ
+dpython:S1170"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(™Ú¯
+upython:S1170"^Rename this parameter "EMBEDDING_FILENAME" to match the regular expression ^[_a-z][a-z0-9_]*$.(™Ú¯
+ipython:S1542×"PRename function "run_GCN" to match the regular expression ^[a-z_][a-z0-9_]{2,}$.(ìˆÍ—
+opython:S101ö"WRename class "geomertric_dataset" to match the regular expression ^[A-Z_][a-zA-Z0-9]+$.( ùèƒ
+Epython:S1481",Remove the unused local variable "img_name".(ÅÓ´
+Npython:S1481²"0Remove the unused local variable "best_val_acc".(ØÂ§¤ûÿÿÿÿ
+upython:S117Î"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ
+python:S1871æ"cEither merge this branch with the identical one on line "731" or change one of the implementations.(°öğÿÿÿÿÿ
+Ipython:S1481¨"0Remove the unused local variable "face_dataset".(ãÖÊº
+Dpython:S1481‘"+Remove the unused local variable "arr_ind".(˜¿ò

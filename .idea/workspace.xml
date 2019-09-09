@@ -2,10 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/3/c30ebe8934a987ce1e192d7f67d076fc0635e14b" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hyper_params_search/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/hyper_params_search/hp_tuning.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/baseline/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/README.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/python_lib_essential.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/to_be_merged_to_meta/priority_list.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility_code/to_be_merged_to_meta/todo_list.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/disease_node_classification.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/disease_node_classification.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -86,24 +96,24 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive - Florida Atlantic University/my_utility" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="settings.editor.splitter.proportion" value="0.22960725" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\zachary" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\bine" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\attention_walk" />
-      <recent name="C:\Users\Anak\PycharmProjects\disease_node_classification\data\gene_disease" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\sage\node2vec\split=0.7\lr=0.09_d=0.5_wd=0.006" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\sage\node2vec\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\node2vec" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gcn" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\zachary" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\bine" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\attention_walk" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -118,7 +128,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.anak">
+  <component name="RunManager" selected="Python.tmp">
     <configuration name="anak" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -184,7 +194,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="tmp" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -196,8 +206,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tmp.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -231,16 +240,16 @@
       <item itemvalue="Python.anak" />
       <item itemvalue="Python.graph_feature" />
       <item itemvalue="Python.scatch_paper" />
-      <item itemvalue="Python.utils" />
       <item itemvalue="Python.visualization" />
+      <item itemvalue="Python.tmp" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.tmp" />
         <item itemvalue="Python.anak" />
         <item itemvalue="Python.graph_feature" />
         <item itemvalue="Python.scatch_paper" />
         <item itemvalue="Python.visualization" />
-        <item itemvalue="Python.utils" />
       </list>
     </recent_temporary>
   </component>
