@@ -1,0 +1,29 @@
+#=====================
+#==Dataset
+#=====================
+
+copd
+    >torch.Size([2490, 2490])
+    >torch.Size([1495])
+    >torch.Size([1495, 2490])
+
+cora
+    >torch.Size([2708, 7])
+    >torch.Size([2708])
+    >torch.Size([140, 7])
+
+#=====================
+#==pytorch_geometric dataset
+#=====================
+
+data.x: shape = [num_nodes, num_nodes_features]
+data.edge_index: shape = [2, num_edges] # 2 => number of node of an edge, num_edges = num of total edges
+data.edge_attr: shape = [num_edges, num_edge_features]
+data.y : shape= [ num_nodes, *] # label; target to train against
+data.pos: shape = [num_nodes, num_dimensions] # position matrix??
+data.face: [3, num_faces] # 3 => 3 nodes that create a face, num_faces =>  number of faces that has the node is attached to
+
+
+
+
+

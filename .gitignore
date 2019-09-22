@@ -4,8 +4,5 @@ data/
 # ignore log
 log/
 
-#ignore output
-output/
-
 # ignore pycharm auto generated folders
 idea/

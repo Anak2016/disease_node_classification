@@ -2,21 +2,161 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hyper_params_search/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/hyper_params_search/hp_tuning.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/baseline/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/README.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/python_lib_essential.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/to_be_merged_to_meta/priority_list.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility_code/to_be_merged_to_meta/todo_list.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/all_models/embedding/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/performance_metrics/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/disease_node_classification.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/disease_node_classification.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/b/db6be63797c4122733703f8d55b7177000656dc0" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LogisticRegression_results.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.txt" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/processed/data.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.allx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.ally" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.graph" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.test.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.tx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.ty" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.x" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Planetoid/Cora/raw/ind.cora.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/anak_note" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/cora.cites" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/cora.content" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/processed/data.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.allx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.ally" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.graph" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.test.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.tx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.ty" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.x" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cora/raw/ind.cora.y" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/0805personali01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/1084239450_e76e00b7e7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/10comm-decarlo.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/110276240_bec305da91.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/1198_0_861.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/137341995_e7c48e9a75.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/1383023626_8a49e4879a.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/144044282_87cf3ff76e.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/152601997_ec6429a43c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/1549040388_b99e9fa295.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/1878519279_f905d4f34e.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2046713398_91aaa6fe1c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2173711035_dbd53b4f9f.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2210514040_6b03ff2629.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2322901504_08122b01ba.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2327253037_66a61ea6fe.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2328398005_d328a70b4c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2370961440_6bc8ce346c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2382SJ8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/252418361_440b75751b.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/262007783_943bbcf613.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2633371780_45b740b670.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2647088981_60e9fe40cd.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2711409561_a0786a3d3d.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2722779845_7fcb64a096.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2795838930_0cc5aa5f41.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2902323565_100017b63c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2902760364_89c50bde40.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/2956581526_cd803f2daa.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/297448785_b2dda4b2c0.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/299733036_fff5ea6f8e.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/303808204_1f744bc407.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3074791551_baee7fa0c1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3152653555_68322314f3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3264867945_fe18d442c1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3273658251_b95f65c244.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3298715079_5af7c78fcb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3325611505_ddc7beffa1.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3362762930_24f76cb89c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/343583208_e986824d77.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3461016494_56cce9c984.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/348272697_832ce65324.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3534188114_2108895291.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3534189272_8ef88ba368.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3555944509_7b477069c6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3574737496_6ee8207045.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/362167809_d5a5dcbfdb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/363149951_8be04dc6c0.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3638950581_3387685d3a.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3646828311_bfeb429ef7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3689162471_5f9ffb5aa0.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3718903026_c1bf5dfcf8.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3790616528_297c0ac935.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3855944735_e252959937.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3856149136_d4595ffdd4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/3872768751_e60d7fdbd5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/529447797_0f9d2fb756.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/57635685_d41c98f8ca.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/809285949_6889026b53.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/92053278_be61a225d2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/96063776_bdb3617b64.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/97308305_4b737d0873.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/britney-bald.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/create_landmark_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/deeny.peggy.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/face_landmarks.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/matt-mathes.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/person-7.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/person.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/person_TjahjonoDGondhowiardjo.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/faces/personalpic.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges07_14_19_46_.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/bine/cope_label_edges_.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label_content.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label_content07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label_edges.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/copd_label_edges07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/note" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_content07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/gene_disease/rep/rep_copd_label_edges07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset_info.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/graph_feature.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hyper_params_search/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/hyper_params_search/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hyper_params_search/hp_tuning.py" beforeDir="false" afterPath="$PROJECT_DIR$/hyper_params_search/hp_tuning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/info.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/karate club with no features GCN.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy07_14_19_46_split_0.9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_accuracy_07_11_15_41.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.3.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.6.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.7.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.8.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix07_14_19_46_split_0.9.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/gcn/gcn_confusion_matrix_07_11_15_41.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/nod2vec_emd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec/nod2vec_emd.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_fullgraph.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_fullgraph07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/log/node2vec_emb_subgraph07_14_19_46.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/baseline/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/my_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/scatch_paper.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper.py" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/scatch_paper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/use_emb=True_LogisticRegression_results.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility_code/my_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility_code/python_lib_essential.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/python_lib_essential.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualization.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,60 +174,9 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>node2vec_emb</find>
-      <find>node2vec</find>
-      <find>tmp</find>
-      <find>4041</find>
-      <find>4141</find>
-      <find>4142</find>
-      <find>edge_index</find>
-      <find>log</find>
-      <find>run_log</find>
-      <find>plot_no_train</find>
-      <find>df</find>
-      <find>untrain_model</find>
-      <find>target</find>
-      <find>labeled_index</find>
-      <find>model</find>
-      <find>run_gcn</find>
-      <find>self.x</find>
-      <find>x</find>
-      <find>def add_</find>
-      <find>plot_no_</find>
-      <find>plot_</find>
-      <find>data</find>
-      <find>plot_all</find>
-      <find>weighted_class</find>
-      <find>use_emb</find>
-      <find>add_features</find>
-      <find>feat_stat</find>
-      <find>emb_name</find>
-      <find>e</find>
-      <find>args.add_fe</find>
-    </findStrings>
-    <replaceStrings>
-      <replace />
-      <replace>collections.OrderedDict</replace>
-      <replace>collections.OrderedDict.fromkeys</replace>
-      <replace>OrderedDict.fromkeys</replace>
-      <replace>disease_labels</replace>
-      <replace>edges</replace>
-      <replace>output/gene_disease/embedding</replace>
-      <replace>self.x</replace>
-      <replace>self.edges_index</replace>
-      <replace>self.edge_index</replace>
-      <replace>self.y</replace>
-      <replace>test_disease</replace>
-      <replace>\</replace>
-      <replace>/</replace>
-      <replace>nodes</replace>
-      <replace>geomertric_dataset</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
   <component name="ProjectId" id="1Q0Hf2xFWUcDcgdmohJsvOzT8jK" />
   <component name="ProjectLevelVcsManager">
@@ -95,25 +184,26 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../my_utility" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.22960725" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\sage\node2vec\split=0.7\lr=0.09_d=0.5_wd=0.006" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\sage\node2vec\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\node2vec" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gcn" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\zachary" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\bine" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\embedding\attention_walk" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\bine" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn\emb" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\lr\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -128,7 +218,49 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.tmp">
+  <component name="RunManager" selected="Python.__init__">
+    <configuration name="__init__ (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="disease_node_classification" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotting" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotting/__init__.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="disease_node_classification" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
+      <option name="PARAMETERS" value="--run_node2vec --common_nodes_feat" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="anak" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -143,7 +275,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/anak.py" />
-      <option name="PARAMETERS" value="--run_gcn  --verbose --plot_no_train --epochs 5 --with_gene --emb_name attentionwalk" />
+      <option name="PARAMETERS" value="--run_svm" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -163,30 +295,8 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/graph_feature.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\idea\graph_feature.py" />
       <option name="PARAMETERS" value="--dataset cora" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scatch_paper" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="disease_node_classification" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scatch_paper.py" />
-      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -215,41 +325,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="visualization" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="disease_node_classification" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/visualization.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Python.anak" />
       <item itemvalue="Python.graph_feature" />
-      <item itemvalue="Python.scatch_paper" />
-      <item itemvalue="Python.visualization" />
       <item itemvalue="Python.tmp" />
+      <item itemvalue="Python.__init__" />
+      <item itemvalue="Python.__init__ (1)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.tmp" />
+        <item itemvalue="Python.__init__" />
+        <item itemvalue="Python.__init__ (1)" />
         <item itemvalue="Python.anak" />
+        <item itemvalue="Python.tmp" />
         <item itemvalue="Python.graph_feature" />
-        <item itemvalue="Python.scatch_paper" />
-        <item itemvalue="Python.visualization" />
       </list>
     </recent_temporary>
   </component>
@@ -265,19 +354,25 @@
       <updated>1561559747748</updated>
       <workItem from="1562723103993" duration="458000" />
     </task>
+    <task id="LOCAL-00001" summary="&quot;cannot download torchvision to my labtop&quot;">
+      <created>1568157282396</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1568157282396</updated>
+    </task>
+    <task id="LOCAL-00002" summary="&quot;cannot download torchvision to my labtop&quot;">
+      <created>1568157387387</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1568157387387</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="458000" />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -295,16 +390,20 @@
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="&quot;cannot download torchvision to my labtop&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;cannot download torchvision to my labtop&quot;" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>299</line>
+          <line>320</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/scatch_paper.py</url>
+          <url>file://$PROJECT_DIR$/scatch_paper/scatch_paper.py</url>
           <line>69</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
@@ -314,17 +413,7 @@
           <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>1327</line>
-          <option name="timeStamp" value="174" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>1281</line>
-          <option name="timeStamp" value="179" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/visualization.py</url>
+          <url>file://$PROJECT_DIR$/plotting/visualization.py</url>
           <line>108</line>
           <option name="timeStamp" value="193" />
         </line-breakpoint>
@@ -334,266 +423,170 @@
           <option name="timeStamp" value="198" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/visualization.py</url>
+          <url>file://$PROJECT_DIR$/plotting/visualization.py</url>
           <line>167</line>
           <option name="timeStamp" value="216" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>571</line>
+          <line>376</line>
           <option name="timeStamp" value="240" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>668</line>
-          <option name="timeStamp" value="245" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>448</line>
+          <line>252</line>
           <option name="timeStamp" value="246" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>381</line>
+          <line>185</line>
           <option name="timeStamp" value="252" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>620</line>
+          <line>385</line>
           <option name="timeStamp" value="280" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/graph_feature.py</url>
-          <line>104</line>
+          <url>file://$PROJECT_DIR$/idea/graph_feature.py</url>
+          <line>107</line>
           <option name="timeStamp" value="284" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/graph_feature.py</url>
-          <line>275</line>
+          <url>file://$PROJECT_DIR$/idea/graph_feature.py</url>
+          <line>278</line>
           <option name="timeStamp" value="292" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>1020</line>
-          <option name="timeStamp" value="297" />
+          <url>file://$PROJECT_DIR$/model/baseline/__init__.py</url>
+          <line>161</line>
+          <option name="timeStamp" value="312" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>894</line>
-          <option name="timeStamp" value="298" />
+          <url>file://$PROJECT_DIR$/models/baseline/__init__.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="314" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>1159</line>
-          <option name="timeStamp" value="300" />
+          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
+          <line>442</line>
+          <option name="timeStamp" value="381" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>592</line>
-          <option name="timeStamp" value="304" />
+          <url>file://$PROJECT_DIR$/plotting/__init__.py</url>
+          <line>122</line>
+          <option name="timeStamp" value="385" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/plotting/__init__.py</url>
+          <line>205</line>
+          <option name="timeStamp" value="387" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>161</line>
+          <option name="timeStamp" value="410" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
+          <line>745</line>
+          <option name="timeStamp" value="435" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>260</line>
+          <option name="timeStamp" value="445" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="450" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>137</line>
+          <option name="timeStamp" value="452" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>153</line>
+          <option name="timeStamp" value="453" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>174</line>
+          <option name="timeStamp" value="454" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>196</line>
+          <option name="timeStamp" value="455" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/parameters.py</url>
+          <line>4</line>
+          <option name="timeStamp" value="457" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>236</line>
+          <option name="timeStamp" value="468" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>238</line>
+          <option name="timeStamp" value="470" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>149</line>
+          <option name="timeStamp" value="474" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>776</line>
+          <option name="timeStamp" value="476" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
+          <line>218</line>
+          <option name="timeStamp" value="479" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>62</line>
+          <option name="timeStamp" value="480" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
+          <line>160</line>
+          <option name="timeStamp" value="481" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>119</line>
+          <option name="timeStamp" value="493" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="self.train_mask_set" language="Python" />
-        <watch expression="count" language="Python" />
-        <watch expression="len(self.train_mask_set)" language="Python" />
-        <watch expression="next_val" language="Python" />
-        <watch expression="self.children()" language="Python" />
-        <watch expression="model" language="Python" />
-        <watch expression="model()" language="Python" />
-        <watch expression="model.parameters()" language="Python" />
-        <watch expression="__py_debug_temp_var_1012862041" />
+        <watch expression="avg_train_metrics" language="Python" />
+        <watch expression="avg_test_metrics" language="Python" />
+        <watch expression="avg_train_metrics.divide(n_splits)" language="Python" />
+        <watch expression="avg_train_metrics" language="Python" />
+        <watch expression="support" language="Python" />
+        <watch expression="total" language="Python" />
+        <watch expression="class_report_df['avg / total']" language="Python" />
+        <watch expression="G.edges" language="Python" />
+        <watch expression="len(G.edges)" language="Python" />
+        <watch expression="len(list(copd.genes2idx().keys()))" language="Python" />
+        <watch expression="np.nonzero(adj)" language="Python" />
+        <watch expression="len(g.edges)" language="Python" />
+        <watch expression="len(g.nodes)" language="Python" />
+        <watch expression="g.edges" language="Python" />
+        <watch expression="all_x_input" language="Python" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="evaluateCodeFragment">
-      <expression>
-        <expression-string>pd.DataFrame(data.x.numpy())</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>df = pd.DataFrame(data.x.numpy())</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data.x.numpy()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data.x</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = []
-for i in tmp:
-    t.append(int(i.split(' ')[0]))
-# # print(len(t))
-xx = {i for i in range(4141)}
-d = set(t).symmetric_difference(xx)
-print(d)
-# print(1 in t)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = []
-for i in tmp:
-    t.append(int(i.split(' ')[0]))
-# # print(len(t))
-xx = {i for i in range(4141)}
-d = set(t).symmetric_difference(xx)
-print(len(d))
-# print(1 in t)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = []
-for i in tmp:
-    t.append(int(i.split(' ')[0]))
-# # print(len(t))
-# xx = {i for i in range(4141)}
-# d = set(t).symmetric_difference(xx)
-# print(len(d))
-print(1 in t
-      )</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = []
-for i in tmp:
-    t.append(int(i.split(' ')[0]))
-# print(len(t))
-xx = {i for i in range(4141)}
-d = set(t).symmetric_difference(xx)
-print(len(d))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>t = []
-for i in tmp:
-    t.append(int(i[0]))
-# print(len(t))
-xx = {i for i in range(4141)}
-d = set(t).symmetric_difference(xx)
-print(len(d))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-    </expressions>
-    <expressions id="watch">
-      <expression>
-        <expression-string>model.parameters()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>model()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>model</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>self.children()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>next_val</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>len(self.train_mask_set)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>count</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>self.train_mask_set</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>class_gene</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>gene_idx</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-    <expressions id="evaluateExpression">
-      <expression>
-        <expression-string>x = ff_row + nf_row + nf_col</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ff_row + nf_row + nf_col</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ff_val</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string># print(input.shape)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print(input.shape)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print(input)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>input</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>args[0]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>np.amax(data.train_mask.numpy().tolist() + data.test_mask.numpy().tolist())</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>data.train_mask + data.test_mask</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
   </component>
 </project>

@@ -1,8 +1,0 @@
-> all nodes in a grpah are connected
-> words that has freq less than 10 are not included
-
-.content
-    <paper_id> <word_attributes>+ <class_label>
-
-.cited
-    <ID of cited paper> <ID of citing paper>

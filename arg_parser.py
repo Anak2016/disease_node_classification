@@ -6,22 +6,27 @@ import numpy as np
 example command
  --run_gcn  --verbose --t1_t2_alpha 10000 10000  0.3 --log  --plot_loss --epoch 200 --pseudo_label_topk --topk 1 --epoch 400
 '''
+
 #--Training settings
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', type=str, default='gene_disease', help='specify type of dataset to be used')
 parser.add_argument('--time_stamp', type=str, default='07_14_19_46', help='time_stamp version of copd_data')
-parser.add_argument('--copd_path', type=str, default='data/gene_disease/', help='path containing copd_label{time_stamp} dataset')
+parser.add_argument('--copd_path', type=str, default=f'data/gene_disease/07_14_19_46/raw/', help='path containing copd_label{time_stamp} dataset')
 parser.add_argument('--copd_data', type=str, default='copd_label', help='name of the gene_disease dataset; default = copd_label')
-parser.add_argument('--emb_name', type=str, default='no_feat', help='name of embedding type being used')
-parser.add_argument('--emb_path', type=str, default=f"output/gene_disease/embedding/", help='name of the gene_disease dataset; default = copd_label')
+parser.add_argument('--emb_name', type=str, default='no_feat', help='name of embedding type being used eg attentionwalk, bine, node2vec, (gcn, gat, graph sage)')
+# parser.add_argument('--emb_path', type=str, default=f"data/gene_disease/07_14_19_46/gene_disease/processed/embedding/", help='name of the gene_disease dataset; default = copd_label')
+# parser.add_argument('--emb_path', type=str, default=f"data/gene_disease/07_14_19_46/gene_disease/processed/embedding/", help='name of the gene_disease dataset; default = copd_label')
+parser.add_argument('--emb_path', type=str, default=None, help='name of the gene_disease dataset; default = copd_label')
 parser.add_argument('--subgraph', action="store_true", help='NOT CURRENTLY COMPATIBLE WITH THE PROGRAM;Use only node in the largest connected component instead of all nodes disconnected graphs')
-parser.add_argument('--with_gene', action="store_true", help='plot_2d() with genes')
-parser.add_argument('--plot_2d_func', type=str, default='tsne', help='plot_2d() with genes')
-parser.add_argument('--arch', type=str, default='gcn', help='architecutre name to be run eg. GAT, GCN ')
+parser.add_argument('--with_gene', action="store_true", help='plot plot_2d() with genes')
+parser.add_argument('--plot_2d_func', type=str, default='tsne', help='plotting.plot_2d() with genes')
+parser.add_argument('--arch', type=str, default='gcn', help='architecutre name to be run eg. GAT, GCN ') #todo graph_sage is not supported yet
 parser.add_argument('--add_features', action='store_true', help='added_features to the nodes')
-parser.add_argument('--run_logist', action='store_true', help='run logistic regression with grpah embedding of choice node2vec, bine, gcn,and attentionwalk')
+parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
+parser.add_argument('--run_lr', action='store_true', help='run logistic regression with grpah embedding of choice node2vec, bine, gcn,and attentionwalk')
 parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
-parser.add_argument('--run_gcn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
+parser.add_argument('--run_gnn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
+parser.add_argument('--run_node2vec', action='store_true', help='run node2vec on raw copd data.')
 parser.add_argument('--run_gcn_on_disease_graph', action='store_true', help='run gcn on disease only graph where edges between diseases are form iff they share at least 1 gene')
 parser.add_argument('--th', default=200, help='amount of shared gene requires to form an edge in disease graph')
 
@@ -50,17 +55,26 @@ parser.add_argument('--heads', type=int, default=8, help='number of heads to nei
 # -- GraphSage Specific hyper parameters
 parser.add_argument('--aggr', type=str, default='mean', help="aggregator for graphsage: ['add', 'mean', 'max']")
 
+#--------baseline
+parser.add_argument('--run_svm', action='store_true', help="run svm baseline")
+parser.add_argument('--run_rf', action='store_true', help="run svm random forest")
+
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
 parser.add_argument('--verbose', action="store_true", help='verbose status')
+parser.add_argument('--plot_reports', action="store_true", help='plot all of the function related to report including datasets and models')
+parser.add_argument('--report_performance', action="store_true", help='report precision recall f1-score pred auc')
 parser.add_argument('--plot_all', action="store_true", help='plot loss, notrain, train')
+parser.add_argument('--plot_emb', action="store_true", help='plot nodes emb')
 parser.add_argument('--plot_loss', action="store_true", help='plot loss')
 parser.add_argument('--plot_no_train', action="store_true", help='plot no_train graph ')
 parser.add_argument('--plot_train', action="store_true", help='plot train_graph ')
 parser.add_argument('--tuning', action="store_true", help='hyper-paramter tuning')
 parser.add_argument('--log', action="store_true",  help='logging training infomation such as accuracy and confusino matrix')
 parser.add_argument('--no_cuda', action="store_true",  help='Disable cuda training ')
-
+parser.add_argument('--check_condition', default=None, nargs='+', help='checking for error by applying the same conditions to all models')
+# parser.add_argument('--check_condition', action="store_true",  help='checking for error by applying the same conditions to all models')
+parser.add_argument('--cv', type=str, default=None,  help='activate crossvalidation input must have between positive integer')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()

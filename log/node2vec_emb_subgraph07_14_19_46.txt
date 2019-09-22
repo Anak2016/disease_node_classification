@@ -1,2 +1,0 @@
- --output/gene_disease/embedding/node2vec/node2vec_emb_subgraph07_14_19_46.txt
-total running time 221.48028349876404

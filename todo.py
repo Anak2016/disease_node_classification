@@ -1,3 +1,5 @@
+conda activate pytorch_python3.7
+
 #todo (final decision, in order )
 # > run gcn on new copd_label data with added dsi and dpi and edge features
 # > run pseudo label on the the best one and see decide if I choose try it with other model
