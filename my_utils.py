@@ -82,8 +82,8 @@ def create_edges_dict(edges):
         [(disease1, gene1), (disease2,gene2.....] where disease are sorted in ascending order
         eg. [(0,106),(1,400),(1,203),... ]
 
-    :return:adj_list
-            adj_list has the follwoing format must be in the followin format:
+    :return:_list
+            _list has the follwoing format must be in the followin format:
 
         graph = {source_node1: [{target_node: weight}, ... ]
                 source_node2: [{target_node: weight}, ... ]

@@ -15,7 +15,7 @@ import plotting
 #=====================
 #==full performance report
 #=====================
-def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_auc=True, save_path =None, file_name=None, get_avg_total=False):
+def report_performances(y_true, y_pred, y_score=None, average='micro', save_path =None, file_name=None, get_avg_total=False):
     '''
     this function is an improvement on "classification_report" (function in sklearn.metrics)
 
@@ -128,7 +128,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
         # =====================
         # == plot_roc_auc
         # =====================
-        if plot_roc_auc:
+        if args.plot_roc:
             plotting.plot_figures(config, f'{save_path}img/', file_name)
 
         if average == 'micro':

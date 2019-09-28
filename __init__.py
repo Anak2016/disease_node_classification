@@ -22,7 +22,8 @@ if __name__ == "__main__":
     # create_pytorch_dataset()
 
     #--------copd
-    copd = all_datasets.Copd(path=args.copd_path, data=args.copd_data, time_stamp=args.time_stamp)
+
+    copd = all_datasets.Copd(path=args.copd_path, data=args.copd_data, time_stamp=args.time_stamp, undirected=not args.directed)
     # copd.create_rep_dataset()
 
     #=====================
@@ -42,8 +43,8 @@ if __name__ == "__main__":
     #==Copd_geometric_dataset
     #=====================
     #--------create Dataset object to be used with torch model
-    copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x,edges_index=edge_index,y=y, split=args.split )
-
+    copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x,edges_index=edge_index,y=y, split=args.split, undirected=not args.directed )
+    # display2screen(copd_geometric_dataset.is_undirected())
     param = {
             #Pseudo-Label
             'T1':int(args.t1_t2_alpha[0]),
@@ -55,12 +56,12 @@ if __name__ == "__main__":
     # ====================
     def run_model():
         if args.run_node2vec:
-            run_node2vec(copd, copd_geometric_dataset)
+            run_node2vec(copd, copd_geometric_dataset, args.time_stamp)
 
         if args.run_svm:
-            if args.emb_name == "no_feat" and args.common_nodes_feat:
-                # train_input, test_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
-                all_x_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
+            if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
+                # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
+                all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, use=args.common_nodes_feat)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
@@ -86,9 +87,9 @@ if __name__ == "__main__":
             print(f'total running time of baseline.svm == {svm_runtime}')
 
         if args.run_rf:
-            if args.emb_name == "no_feat" and args.common_nodes_feat:
+            if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
 
-                all_x_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
+                all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, use=args.common_nodes_feat)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
@@ -129,12 +130,12 @@ if __name__ == "__main__":
             print(f'total running time of baseline.gnn == {gcn_runtime}')
 
         if args.run_mlp:
-            if args.emb_name == "no_feat" and args.common_nodes_feat:
-                all_x_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
+            if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
+                all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,use=args.common_nodes_feat)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-
+                # display2screen(all_x_input.shape)
                 config = {
                     "data": copd,
                     "label": y.numpy(),  # tensor
@@ -143,7 +144,14 @@ if __name__ == "__main__":
                     "train_label": y.numpy()[copd_geometric_dataset.train_mask],
                     "test_label": y.numpy()[copd_geometric_dataset.test_mask],
                     # change value of hidden_layers to be used in nn.sequential
-                    "hidden_layers": [2996, 2996, 128, 16, len(copd.labels2idx().keys())],
+                    'sequential_layers': [
+                        nn.Linear(2996, 512),
+                        nn.ReLU(),
+                        nn.Linear(512, 64),
+                        nn.ReLU(),
+                        nn.Linear(64, len(copd.labels2idx().keys())),
+                        nn.LogSoftmax(dim=1)
+                    ],
                     "epochs": 200,
                     "args": args,
                     "param": param
@@ -241,10 +249,10 @@ if __name__ == "__main__":
             print(f'total running time of baseline.mlp == {mlp_runtime}')
 
         if args.run_lr:
-            # train_input, test_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
+            # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
 
-            if args.emb_name == "no_feat" and args.common_nodes_feat:
-                all_x_input = preprocessing.create_common_genes_as_features(copd, copd_geometric_dataset)
+            if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
+                all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, use=args.common_nodes_feat)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))

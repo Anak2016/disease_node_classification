@@ -1,3 +1,4 @@
 
-ypython:S3776¬"TRefactor this function to reduce its Cognitive Complexity from 25 to the 15 allowed.(ñıĞ„ıÿÿÿÿ8ç…¡Ó-
-Dpython:S14813"%Remove the unused local variable "G".(”€†•8ÓË”Ò-
+Cpython:S1763•"$Remove the code after this "return".(¢âşr8÷š“ºÕ-
+ypython:S3776á"TRefactor this function to reduce its Cognitive Complexity from 25 to the 15 allowed.(ñıĞ„ıÿÿÿÿ8¸×¹¸Õ-
+xpython:S3776<"TRefactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.(Š“¿üÿÿÿÿ8¶Ø’ÀÕ-

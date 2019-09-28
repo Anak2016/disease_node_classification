@@ -11,7 +11,7 @@ import my_utils
 
 class GeometricDataset(Data):
 
-    def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None, split=0.8):
+    def __init__(self, data, x=None, edges_index=None, edge_attr=None, y=None, split=0.8, undirected=True):
         '''
             all parameters must have type of torch.tensor expect split and data
         :param data: copd
@@ -21,6 +21,10 @@ class GeometricDataset(Data):
         :param y:  n where n = $ of nodes
         :param split:
         '''
+        if undirected:
+            df = pd.DataFrame(edges_index.numpy().T, columns=['source','target'])
+            edges_index = torch.tensor(list(nx.from_pandas_edgelist(df, "source", "target", create_using=nx.Graph()).edges)).transpose(0,1) # edges are undirected
+
         super(GeometricDataset, self).__init__(x, edges_index, edge_attr, y)
         self.dataset = data
         self.subgraph = self.dataset.subgraph
@@ -138,32 +142,37 @@ class GeometricDataset(Data):
         self.test_mask_set = value
 
 class Copd():
-    def __init__(self, path=None, data=None, time_stamp=None):
+    def __init__(self, path=None, data=None, time_stamp=None, undirected=True):
 
         self.time_stamp = time_stamp
         # todo here>> check which file does GetData read from. and what is the max_int_rep of nodes in these files
         # --numpy data
         if path is not None and data is not None:
-            self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
+            self.disease, self.non_uniq_labels, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
         else:
-            self.disease, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
+            self.disease, self.non_uniq_labels, self.labels = GetData.disease_labels(path=path, time_stamp=time_stamp)
 
+        #TODO here>> check gene, non_uniq_disease, edges, labels, disease
+        # > what do they suppose to look like in undirected vs in directed.?????
         self.gene, self.non_uniq_diseases = GetData.gene_disease(path=path, time_stamp=time_stamp)
-        self.edges = GetData.edges(path=path, time_stamp=time_stamp)
+        self.edges = GetData.edges(path=path, time_stamp=time_stamp, undirected=undirected)
 
         edges = np.array(list(map(self.nodes2idx().get, self.edges.T.flatten())), dtype=np.int32).reshape(-1, 2).T
         edges = pd.DataFrame(edges.T, columns=['geneid', 'diseaseid'])
 
         #--------add networkx graph and subgraph from edges
-        self.graph, self.subgraph = self.get_graph(edges)
+        self.graph, self.subgraph = self.get_graph(edges, undirected=undirected)
         #--------add adj
         self.adj =  self.create_adj(edges, undirected=True) #normalized adj undirected
 
         # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
-    def get_graph(self, edges):
-
-        graph = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid')
+    def get_graph(self, edges, undirected=True):
+        if undirected:
+            graph = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid') # always have unqiue edges
+        else:
+            graph = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid', create_using=nx.DiGraph()) # edges have direction so to have undirected edges, soruce t0 target and target to source must be input edges.
         subgraph = my_utils.get_subgraph_disconnected(graph)[0]
+
         return graph, subgraph
 
     def create_adj(self, edges, undirected=True):
@@ -177,50 +186,50 @@ class Copd():
         adj = torch.FloatTensor(np.array(adj.todense()))
         return adj
 
-    def load_data(self, path=f"./data/gene_disease/{args.time_stamp}/raw/", dataset="copd_label", time_stamp=''):
-        """
-        load data of cpod for full grpah and largest connected component
-        return: adj = adj of subgraph
-                labels = lables of subgraph # one diseaseid is not connected to the largest componenet
-                g = subgraph of type networkx.Graph()
-        """
-        print('Loading {} dataset...'.format(dataset))
-
-        edges = self.edges
-        # only use largest connected component
-
-        # edges_unordered = pd.DataFrame(edges_unordered.T, columns=['geneid', 'diseaseid'])
-        # edges_unordered = np.array(list(map(self.nodes2idx().get, edges_unordered.to_numpy().flatten())), dtype=np.int32).reshape(-1,2).T
-        edges = np.array(list(map(self.nodes2idx().get, edges.T.flatten())), dtype=np.int32).reshape(-1,2).T
-
-        edges = pd.DataFrame(edges.T, columns=['geneid', 'diseaseid'])
-
-        G = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid')
-        g = my_utils.get_subgraph_disconnected(G)[0]
-
-        edges = [np.array((x, y), dtype=np.int32) for x, y in g.edges]
-        edges = np.array(edges, dtype=np.int32).T  # shape = (2, 3678)
-
-        # label = 8 represent no class; it is used to label geneid
-        # todo ???how should I label nodes that has no label? as None
-        labels = set(map(self.disease2class().get, g.nodes))# {0, 1, 2, 3, 4, 5, 6, 7, None}
-
-        # labels = {i for i in labels if i is not None}
-        labels = self.encode_onehot(labels)
-
-        # len(g.nodes()) = 2489
-        adj = sp.coo_matrix((np.ones(edges.T.shape[0]), (edges.T[:, 0], edges.T[:, 1])),
-                            shape=(len(G.nodes()), len(G.nodes())), dtype=np.float32) # 7374
-
-        # build symmetric adjacency matrix
-        adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
-        adj = self.normalize_adj(adj)
-
-        adj = torch.FloatTensor(np.array(adj.todense()))
-        labels = torch.LongTensor(np.where(labels)[1])  # label is of type int NOT type one_hot
-
-
-        return adj, labels, G, g
+    # def load_data(self, path=f"./data/gene_disease/{args.time_stamp}/raw/", dataset="copd_label", time_stamp=''):
+    #     """
+    #     load data of cpod for full grpah and largest connected component
+    #     return: adj = adj of subgraph
+    #             labels = lables of subgraph # one diseaseid is not connected to the largest componenet
+    #             g = subgraph of type networkx.Graph()
+    #     """
+    #     print('Loading {} dataset...'.format(dataset))
+    #
+    #     edges = self.edges
+    #     # only use largest connected component
+    #
+    #     # edges_unordered = pd.DataFrame(edges_unordered.T, columns=['geneid', 'diseaseid'])
+    #     # edges_unordered = np.array(list(map(self.nodes2idx().get, edges_unordered.to_numpy().flatten())), dtype=np.int32).reshape(-1,2).T
+    #     edges = np.array(list(map(self.nodes2idx().get, edges.T.flatten())), dtype=np.int32).reshape(-1,2).T
+    #
+    #     edges = pd.DataFrame(edges.T, columns=['geneid', 'diseaseid'])
+    #
+    #     G = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid')
+    #     g = my_utils.get_subgraph_disconnected(G)[0]
+    #
+    #     edges = [np.array((x, y), dtype=np.int32) for x, y in g.edges]
+    #     edges = np.array(edges, dtype=np.int32).T  # shape = (2, 3678)
+    #
+    #     # label = 8 represent no class; it is used to label geneid
+    #     # todo ???how should I label nodes that has no label? as None
+    #     labels = set(map(self.disease2class().get, g.nodes))# {0, 1, 2, 3, 4, 5, 6, 7, None}
+    #
+    #     # labels = {i for i in labels if i is not None}
+    #     labels = self.encode_onehot(labels)
+    #
+    #     # len(g.nodes()) = 2489
+    #     adj = sp.coo_matrix((np.ones(edges.T.shape[0]), (edges.T[:, 0], edges.T[:, 1])),
+    #                         shape=(len(G.nodes()), len(G.nodes())), dtype=np.float32) # 7374
+    #
+    #     # build symmetric adjacency matrix
+    #     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
+    #     adj = self.normalize_adj(adj)
+    #
+    #     adj = torch.FloatTensor(np.array(adj.todense()))
+    #     labels = torch.LongTensor(np.where(labels)[1])  # label is of type int NOT type one_hot
+    #
+    #
+    #     return adj, labels, G, g
 
     # -- rename "conversion related function" (can be under this section)
     def labels2class(self):
@@ -230,7 +239,7 @@ class Copd():
         :return:
             {cuis: labels}
         '''
-        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.labels)}
+        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.non_uniq_labels)}
 
         return cuis2labels
 
@@ -272,7 +281,7 @@ class Copd():
             {cuis: labels}
         '''
 
-        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.labels)}
+        cuis2labels = {self.disease2idx()[c]: self.labels2idx()[l] for c, l in zip(self.disease, self.non_uniq_labels)}
 
         return cuis2labels
 
@@ -292,7 +301,7 @@ class Copd():
         '''
         :return: {label: label_rep}
         '''
-        labels = self.labels
+        labels = self.non_uniq_labels
         return {l: i for i, l in enumerate(list(collections.OrderedDict.fromkeys(labels.tolist()).keys()))}
 
     def disease2idx(self):
@@ -491,7 +500,7 @@ class Copd():
 
         # --copd_label_content.txt
         # uniq_diseases, labels = GetData.disease_labels()
-        uniq_diseases, labels = self.disease, self.labels
+        uniq_diseases, labels = self.disease, self.non_uniq_labels
 
         uniq_diseases = list(map(self.disease2idx().get, uniq_diseases))
         labels = list(map(self.labels2idx().get, labels ))
@@ -513,7 +522,7 @@ class GetData():
         pass
 
     @staticmethod
-    def edges(path=f'data/gene_disease/{args.time_stamp}/raw/', data='copd_label_edges', time_stamp=''):
+    def edges(path=f'data/gene_disease/{args.time_stamp}/raw/', data='copd_label_edges', time_stamp='', undirected=True):
     # def edges(path=f'data/gene_disease/{args.time_stamp}/raw/', data='copd_label_edges.txt'):
         '''
 
@@ -538,6 +547,13 @@ class GetData():
 
         edges = [np.array((x, y), dtype='U') for x, y in G.edges]
         edges = np.array(edges, dtype='U').T  # shape = (2, 3687)
+        if undirected:
+            # edges are no longer sorted
+            inverse_edge = edges.copy()
+            inverse_edge[[0,1]] = inverse_edge[[1,0]]
+
+            edges = np.hstack((edges,inverse_edge))
+
         return edges
 
     @staticmethod
@@ -554,9 +570,10 @@ class GetData():
         with open(path2file, 'r') as f:
             disease_labels = pd.read_csv(path2file, sep='\t', names=['diseaseid', 'label'], header=None).to_numpy().flatten()
             uniq_disease = np.array(disease_labels.tolist()[0::2])
-            labels = np.array(disease_labels.tolist()[1::2])
+            non_uniq_labels = np.array(disease_labels.tolist()[1::2])
+            uniq_labels = np.unique(non_uniq_labels)
 
-        return uniq_disease, labels
+        return uniq_disease, non_uniq_labels, uniq_labels
 
     @staticmethod
     def gene_disease(path=f'data/gene_disease/{args.time_stamp}/raw/', data='copd_label_edges', time_stamp=''):

@@ -22,7 +22,9 @@ parser.add_argument('--with_gene', action="store_true", help='plot plot_2d() wit
 parser.add_argument('--plot_2d_func', type=str, default='tsne', help='plotting.plot_2d() with genes')
 parser.add_argument('--arch', type=str, default='gcn', help='architecutre name to be run eg. GAT, GCN ') #todo graph_sage is not supported yet
 parser.add_argument('--add_features', action='store_true', help='added_features to the nodes')
-parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
+# parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
+# parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
+parser.add_argument('--common_nodes_feat', type=str, default='all', help='all => use gene and disease; gene => create edges between gene, disease => create edges between disease')
 parser.add_argument('--run_lr', action='store_true', help='run logistic regression with grpah embedding of choice node2vec, bine, gcn,and attentionwalk')
 parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
 parser.add_argument('--run_gnn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
@@ -61,6 +63,7 @@ parser.add_argument('--run_rf', action='store_true', help="run svm random forest
 
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
+parser.add_argument('--directed', action='store_true', help="directed == True")
 parser.add_argument('--verbose', action="store_true", help='verbose status')
 parser.add_argument('--plot_reports', action="store_true", help='plot all of the function related to report including datasets and models')
 parser.add_argument('--report_performance', action="store_true", help='report precision recall f1-score pred auc')
@@ -69,6 +72,7 @@ parser.add_argument('--plot_emb', action="store_true", help='plot nodes emb')
 parser.add_argument('--plot_loss', action="store_true", help='plot loss')
 parser.add_argument('--plot_no_train', action="store_true", help='plot no_train graph ')
 parser.add_argument('--plot_train', action="store_true", help='plot train_graph ')
+parser.add_argument('--plot_roc', action="store_true", help='plot roc for report performancce')
 parser.add_argument('--tuning', action="store_true", help='hyper-paramter tuning')
 parser.add_argument('--log', action="store_true",  help='logging training infomation such as accuracy and confusino matrix')
 parser.add_argument('--no_cuda', action="store_true",  help='Disable cuda training ')

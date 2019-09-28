@@ -75,7 +75,7 @@ def logistic_regression(config, emb_name):
 
         log_list = []
 
-        args.cv = "NO"
+        # args.cv = "NO"
         print(f"running {logistic_regression.__name__} without cross validation ")
         y_pred_train = model.predict(train_input)
         y_pred_test = model.predict(test_input)
@@ -225,7 +225,7 @@ def svm(data, config, decision_func='ovr', verbose=True):
     else:
         clf.fit(x_train, label_train)
 
-        args.cv = "NO"
+        # args.cv = "NO"
         print(f"running {svm.__name__} without cross validation ")
         accs = []
         # --------train
@@ -318,7 +318,6 @@ def mlp(data, config):
 
         if all_train_labels is not None:
             train_label = all_train_labels
-
 
         model.train()
         optimizer.zero_grad()
@@ -417,13 +416,16 @@ def mlp(data, config):
 
         all_x = np.concatenate((train_input.numpy(), test_input.numpy()), axis=0)
         all_labels = np.concatenate((train_label.numpy(), test_label.numpy()), axis=0)
-        n_splits = int(all_x.shape[0]/int(args.cv)) + 1 if all_x.shape[0]%int(args.cv) != 0 else int(all_x.shape[0]/int(args.cv))
-        assert n_splits * int(args.cv) >= all_x.shape[0], "n_splits * args.cv >= all_x.shape[0]"
+        n_splits = int(args.cv)
+        # n_splits = int(all_x.shape[0]/int(args.cv)) + 1 if all_x.shape[0]%int(args.cv) != 0 else int(all_x.shape[0]/int(args.cv))
+        # assert n_splits * int(all_x.shape[0]/n_splits) >= all_x.shape[0], "n_splits * args.cv <= all_x.shape[0]"
+
         #--------convert to torch
         all_x = torch.tensor(all_x).type(torch.float)
         all_labels = torch.tensor(all_labels).type(torch.long)
 
-        avg_train_metrics = None
+        # avg_metrics = None
+        # avg_train_metrics = None
         avg_test_metrics = None
         np.random.seed(args.seed)
         cv = StratifiedKFold(n_splits=n_splits)
@@ -435,27 +437,28 @@ def mlp(data, config):
             #==get performance metrics (no plot, no print to screen)
             #=====================
             #--------training
-            train_measurement_metrics = performance_metrics.report_performances(all_train_label.numpy(),
-                                                                                train_pred.numpy(),
-                                                                                train_prob.detach().numpy(),
-                                                                                plot_roc_auc=False,
-                                                                                get_avg_total=True)
-            # --------testing
+            # train_measurement_metrics = performance_metrics.report_performances(all_train_label.numpy(),
+            #                                                                     train_pred.numpy(),
+            #                                                                     train_prob.detach().numpy(),
+            #                                                                     get_avg_total=True)
+            # # --------testing
             test_measurement_metrics = performance_metrics.report_performances(all_test_label.numpy(),
                                                                                test_pred.numpy(),
                                                                                test_prob.detach().numpy(),
-                                                                               plot_roc_auc=False,
                                                                                get_avg_total=True)
 
 
-            avg_train_metrics = avg_train_metrics.add(train_measurement_metrics) if avg_train_metrics is not None else train_measurement_metrics
+            # avg_metrics = avg_metrics.add(train_measurement_metrics) if avg_metrics is not None else train_measurement_metrics
+            # avg_train_metrics = avg_train_metrics.add(train_measurement_metrics) if avg_train_metrics is not None else train_measurement_metrics
             avg_test_metrics = avg_test_metrics.add(test_measurement_metrics) if avg_test_metrics is not None else test_measurement_metrics
             # print('here')
 
         if args.report_performance:
-            avg_train_metrics = avg_train_metrics.divide(n_splits)
-            print(avg_train_metrics.__repr__())
-            print('\n')
+            # avg_metrics = avg_metrics.divide(n_splits)
+            # print(avg_metrics.__repr__())
+            # avg_train_metrics = avg_train_metrics.divide(n_splits)
+            # print(avg_train_metrics.__repr__())
+            # print('\n')
             avg_test_metrics = avg_test_metrics.divide(n_splits)
             print(avg_test_metrics.__repr__())
 
@@ -466,14 +469,14 @@ def mlp(data, config):
         file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
         import os
         os.makedirs(save_path, exist_ok=True)
-        df = pd.DataFrame(avg_train_metrics)
-        df.to_csv(save_path+ file_name, header=True, index=False, sep='\t', mode='w')
+        # df = pd.DataFrame(avg_train_metrics)
+        # df.to_csv(save_path+ file_name, header=True, index=False, sep='\t', mode='w')
         # os.makedirs(save_path + 'train/', exist_ok=True)
         # os.makedirs(save_path + 'test/', exist_ok=True)
         # df = pd.DataFrame(avg_train_metrics)
         # df.to_csv(save_path + 'train/' + file_name, header=True, index=False, sep='\t', mode='w')
-        # df = pd.DataFrame(avg_test_metrics)
-        # df.to_csv(save_path + 'test/' + file_name, header=True, index=False, sep='\t', mode='w')
+        df = pd.DataFrame(avg_test_metrics)
+        df.to_csv(save_path + 'test/' + file_name, header=True, index=False, sep='\t', mode='w')
 
     else:
         # train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label = run_epochs(all_x[train_index], all_labels[train_index], all_x[test_index], all_labels[test_index])
@@ -492,14 +495,12 @@ def mlp(data, config):
             report = performance_metrics.report_performances(all_train_label.numpy(),
                                                             train_pred.numpy(),
                                                             train_prob.detach().numpy(),
-                                                            plot_roc_auc=False,
                                                             get_avg_total=True)
             print(report)
             #--------test
             report = performance_metrics.report_performances(all_test_label.numpy(),
                                                            test_pred.numpy(),
                                                            test_prob.detach().numpy(),
-                                                           plot_roc_auc=False,
                                                            get_avg_total=True)
             print(report)
             # report = performance_metrics.report_performances(
@@ -772,8 +773,6 @@ def random_forest(data, config, evaluate=False):
         s = time.time()
         # pred_train = cross_val_predict(clf, x_train, label_train, cv=int(args.cv)) # cv deafault = 3
 
-        #ValueError: invalid literal for int() with base 10: 'NO'
-
         proba = cross_val_predict(model, np.concatenate((x_train, x_test), axis=0), np.concatenate((label_train, label_test), axis=0), cv=int(args.cv), method='predict_proba')
         pred = proba.argmax(1)
 
@@ -816,7 +815,7 @@ def random_forest(data, config, evaluate=False):
         print(f'Average number of nodes {int(np.mean(n_nodes))}')
         print(f'Average maximum depth {int(np.mean(max_depths))}')
 
-        args.cv = "NO"
+        # args.cv = "NO"
         print(f"running {random_forest.__name__} without cross validation ")
         # Training predictions (to demonstrate overfitting)
         train_rf_predictions = model.predict(x_train)

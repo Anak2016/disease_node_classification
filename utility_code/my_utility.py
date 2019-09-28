@@ -36,11 +36,9 @@ def setup_essential(ROOT_DIR =None, ignore_root=False):
 #==plotting
 #=====================
 def plot_figures(config, save_path=None, file_name=None):
-    if file_name is not None:
-        file_name = file_name.split('.')[:-1]
-        file_name = '/'.join(file_name) + ".png"
-        print(f"save plot to {save_path}{file_name}...")
-
+    file_name = file_name.split('.')[:-1]
+    file_name = '/'.join(file_name) + ".png"
+    print(f"save plot to {save_path}{file_name}...")
     num_fig = len(config.keys())
 
     if num_fig <= 3:
@@ -126,15 +124,18 @@ def plot_figures(config, save_path=None, file_name=None):
             axes[row, col].set_ylabel(y_label)
             axes[row, col].set_title(title)
 
+    os.makedirs(f'{save_path}', exist_ok=True)
+
     if save_path is not None:
-        os.makedirs(f'{save_path}', exist_ok=True)
         print(f"writing to {save_path}{file_name}")
         plt.savefig(f'{save_path}{file_name}')
     plt.show()
+
+
 #=====================
 #==report performance
 #=====================
-def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_auc=True, save_path =None, file_name=None):
+def report_performances(y_true, y_pred, y_score=None, average='micro', save_path =None, file_name=None, get_avg_total=False):
     '''
     this function is an improvement on "classification_report" (function in sklearn.metrics)
 
@@ -142,6 +143,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
     while
     report_performance does report roc_curve
 
+    note that accuracy can be calculated by sum pred of all the classes and divide it by avg pred. (this fact need to be confirmede!)
     usecase:
         report_with_auc = class_report(
                             y_true=y_test,
@@ -152,6 +154,9 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
     :param y_pred:
     :param y_score:
     :param average:
+    :param get_avg_total:
+        if true: return roc_auc['avg/total']
+        if false: return str representation of roc_auc
     :return:
     '''
     if y_true.shape != y_pred.shape:
@@ -169,7 +174,8 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
     #Value counts of predictions
     labels, cnt = np.unique(y_pred,return_counts=True)
 
-    n_classes = len(labels)
+    # n_classes = len(labels)
+    n_classes = len(np.unique(y_true))
     pred_cnt = pd.Series(cnt, index=labels)
 
 
@@ -195,13 +201,25 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
         index=metrics_sum_index,
         columns=labels)
 
-    support = class_report_df.loc['support'] # The support is the number of occurrences of each class in y_true.
+    support = class_report_df.loc['support'] # The support is the number of occurrences of each class in y_true. todo why is it not a full number
     total = support.sum()
     class_report_df['avg / total'] = avg[:-1] + [total]
 
     class_report_df = class_report_df.T
     class_report_df['pred'] = pred_cnt # total number of pred of each class
     class_report_df['pred'].iloc[-1] = total
+
+    #--------accuracy
+    true_label_per_class_ind = [np.where(y_true == i)[0] for i in labels]
+    pred_score_per_class = np.array([y_score[i].argmax(1) for i in true_label_per_class_ind])
+    true_label_per_class = np.array([y_true[i] for i in true_label_per_class_ind])
+
+    # class_report_df['acc'] = pd.Series(
+    #     [np.sum(np.equal(i, j)) / j.shape[0] for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+    class_report_df['acc'] = pd.Series(
+        [np.sum(np.equal(i, j)) for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+    class_report_df.loc['avg / total']['acc'] =  class_report_df['acc'].sum() / (y_true.shape[0])
+    class_report_df['acc'][:-1] = class_report_df['acc'][:-1].divide(class_report_df['support'][:-1])
     config = {}
     if not (y_score is None):
         fpr = dict()
@@ -230,31 +248,31 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
         # =====================
         # == plot_roc_auc
         # =====================
-        if plot_roc_auc:
+        if args.plot_roc:
             plotting.plot_figures(config, f'{save_path}img/', file_name)
 
         if average == 'micro':
-            # if n_classes <= 2:
-            #     fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
-            #         lb.transform(y_true).ravel(),
-            #         y_score[:, 1].ravel())
-            # else:
-            #     fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
-            #             lb.transform(y_true).ravel(),
-            #             y_score.ravel())
-
             '''none_class is assumed to be at the end of the
              eg. if there are 3 classes,
                  1 row of y_score with out none class has the followin format
                           [class1, class2,class3]
                  1 row of y_score with none class has the followin format
                           [class1, class2,class3, none_class]'''
-            if np.unique(y_true).shape[0] != y_score.shape[1]:
+            if np.unique(y_true).shape[0] != y_score.shape[1]: # this helps with None class
                 y_score = y_score[:, :np.unique(y_true).shape[0]]
 
-            fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
-                lb.transform(y_true).ravel(),
-                y_score.ravel())
+            if n_classes <= 2:
+                fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
+                    lb.transform(y_true).ravel(),
+                    y_score[:, 1].ravel())
+            else:
+                fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
+                        lb.transform(y_true).ravel(),
+                        y_score.ravel())
+
+            # fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
+            #     lb.transform(y_true).ravel(),
+            #     y_score.ravel())
 
             roc_auc["avg / total"] = auc( fpr["avg / total"], tpr["avg / total"])
 
@@ -279,10 +297,13 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', plot_roc_
 
         class_report_df['AUC'] = pd.Series(roc_auc)
 
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    if get_avg_total:
+        return class_report_df
 
     if save_path is not None:
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+
         df = pd.DataFrame(class_report_df)  # output before first epoch
         # tmp = save_path+file_name
         # with open(tmp,'w') as f:
@@ -326,6 +347,23 @@ def write2files(data, path="./data/{args.time_stamp}/gene_disease/", file_name=N
         data.to_csv(path + file_name, sep='\t', index=False, header=None)
     else:
         raise ValueError('type of given data are not accpeted by write2files function')
+
+
+
+def flatten(container):
+    '''
+    usecase example
+        nests = [1, 2, [3, 4, [5],['hi']], [6, [[[7, 'hello']]]]]
+        print list(flatten(nests))
+    :param container:
+    :return:
+    '''
+    for i in container:
+        if isinstance(i, (list,tuple)):
+            for j in flatten(i):
+                yield j
+        else:
+            yield i
 
 
 def flatten_list(alist):

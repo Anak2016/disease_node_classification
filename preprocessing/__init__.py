@@ -28,8 +28,9 @@ def data_preprocessing(dataset = None, name='copd'):
 
         # --------edge_index
         # tmp = np.unique(copd.edges)
+        # todo this is not in order
         edge_index = list(map(dataset.nodes2idx().get, dataset.edges.T.flatten()))
-        edge_index = torch.tensor(edge_index, dtype=torch.int64).view(2, -1)  # torch.Size([2, 4715])
+        edge_index = torch.tensor(edge_index, dtype=torch.int64).view(-1,2 ).transpose(0,1)  # torch.Size([2, 4715])
 
         # --------label gene with 0, 1, 2, 3, 4, 5
         # note that order of node2idx is maintain (you can check in dataset.node2idx())
@@ -57,18 +58,27 @@ def create_onehot(edges_dict, geometric_dataset, edges):
     # test_input = torch.tensor(test_input)
     # return train_input, test_input
 
-def create_common_genes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False):
+def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, use='all'):
     '''
         gene is a feat of disease if there exist edges between gene and disease nodes
     :param dataset:
     :param edge_index:
+    :param gene: common genes as feature (create edges between disease nodes)
+    :param disease: common disease as feature (create edge between genes nodes)
     :return:
     '''
-
-    edges = [[i, j] if int(i) < len(dataset.disease2idx().values()) else (j, i) for (i, j) in
-             zip(geometric_dataset.edge_index[0].numpy(), geometric_dataset.edge_index[1].numpy())]  # [(disease_id, gene_id), ... ]
-    edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
-    edges = sorted(edges, reverse=False, key=lambda t: t[0])
+    assert use != "no", "--common_nodes_feat must be specifed option = ['all', 'gene', 'disease']"
+    if use == 'all':
+        #TODO here>> check if this effect svm, lr, rf, mlp, gnn
+        # > create compatible format for each model in this function.
+        edges = [[i, j] if int(i) < len(dataset.disease2idx().values()) else (j, i) for (i, j) in
+                 zip(geometric_dataset.edge_index[0].numpy(), geometric_dataset.edge_index[1].numpy())]  # [(disease_id, gene_id), ... ]
+        edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
+        edges = sorted(edges, reverse=False, key=lambda t: t[0])
+    if use == 'disease':
+        pass
+    if use == 'gene':
+        pass
 
     # create edges between disease if it has shared genes
     # get distribution of number of gene shared between mulitple disease nodes
@@ -237,12 +247,14 @@ def add_features():
         elif args.emb_name == 'node2vec':
             if args.subgraph:
                 emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
+                # emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
             else:
                 emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
+                # emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
 
         elif args.emb_name == 'bine':
             emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
-
+            #
         elif args.emb_name == 'gcn':
             raise ValueError("Please provide path to gcn_emb file. "
                              "Provided emb_name == gcn is not YET supported! (I cannot come but with default name for gcn)")

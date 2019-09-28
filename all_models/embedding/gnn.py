@@ -44,8 +44,10 @@ class Net(torch.nn.Module):
     def forward(self):
         data = self.data
         x, edge_index = data.x, data.edge_index
+
         # display2screen(x[1,:])
         # display2screen(x.shape, edge_index.shape, np.amax(edge_index.numpy()))
+
         x = x.type(torch.float)
         edge_index = edge_index.type(torch.long)
 
@@ -831,6 +833,7 @@ class GNN:
             gcn_emb_output = self.model.get_emb_output().detach().numpy()
             df = pd.DataFrame(gcn_emb_output)
 
+            import os
             if not os.path.exists(save_path + 'emb'):
                 os.mkdir(save_path + 'emb')
             print(f'save gcn_emb_output to {save_path + "emb/" + file_gcn_emb}')
