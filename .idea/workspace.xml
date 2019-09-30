@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/preprocessing/node similarity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/5/45c327270c97a8f2881f4eb23e0c84358ed1a36d" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/5/45c327270c97a8f2881f4eb23e0c84358ed1a36d" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" afterDir="false" />
@@ -18,12 +17,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_datasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_datasets/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_models/baseline/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/baseline/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_models/embedding/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/embedding/gnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/my_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/performance_metrics/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/performance_metrics/metrics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
@@ -58,7 +53,7 @@
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="settings.editor.splitter.proportion" value="0.22960725" />
   </component>
   <component name="RecentsManager">
@@ -124,7 +119,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
-      <option name="PARAMETERS" value="--check_condition gnn --verbose --report_performance --common_nodes_feat all" />
+      <option name="PARAMETERS" value="--check_condition gnn --report_performance --common_nodes_feat gene" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -300,17 +295,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>376</line>
+          <line>401</line>
           <option name="timeStamp" value="240" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>252</line>
+          <line>277</line>
           <option name="timeStamp" value="246" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/my_utils.py</url>
-          <line>185</line>
+          <line>210</line>
           <option name="timeStamp" value="252" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -365,32 +360,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>268</line>
+          <line>291</line>
           <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>69</line>
-          <option name="timeStamp" value="450" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>138</line>
+          <line>161</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>161</line>
+          <line>184</line>
           <option name="timeStamp" value="453" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>182</line>
+          <line>205</line>
           <option name="timeStamp" value="454" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>204</line>
+          <line>227</line>
           <option name="timeStamp" value="455" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -399,24 +389,14 @@
           <option name="timeStamp" value="457" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
-          <line>236</line>
-          <option name="timeStamp" value="468" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>159</line>
+          <line>295</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>227</line>
+          <line>235</line>
           <option name="timeStamp" value="479" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>63</line>
-          <option name="timeStamp" value="480" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
@@ -454,53 +434,131 @@
           <option name="timeStamp" value="515" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>27</line>
-          <option name="timeStamp" value="516" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>73</line>
-          <option name="timeStamp" value="525" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>56</line>
-          <option name="timeStamp" value="532" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>46</line>
-          <option name="timeStamp" value="533" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/undirected.py</url>
           <line>18</line>
           <option name="timeStamp" value="534" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="535" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>170</line>
-          <option name="timeStamp" value="536" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/loop.py</url>
           <line>95</line>
           <option name="timeStamp" value="537" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/numpy/core/numeric.py</url>
+          <line>541</line>
+          <option name="timeStamp" value="565" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>199</line>
+          <option name="timeStamp" value="577" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="581" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>132</line>
+          <option name="timeStamp" value="588" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>129</line>
+          <option name="timeStamp" value="590" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
+          <line>139</line>
+          <option name="timeStamp" value="591" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>91</line>
+          <option name="timeStamp" value="592" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
+          <line>124</line>
+          <option name="timeStamp" value="595" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/networkx/algorithms/link_prediction.py</url>
+          <line>142</line>
+          <option name="timeStamp" value="597" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>265</line>
+          <option name="timeStamp" value="601" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>41</line>
+          <option name="timeStamp" value="602" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>127</line>
+          <option name="timeStamp" value="603" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>254</line>
+          <option name="timeStamp" value="604" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="item.size(self.__cat_dim__(key, item))" language="Python" />
-        <watch expression="edge_index" language="Python" />
-        <watch expression="index" language="Python" />
-        <watch expression="G = nx.from_pandas_edgelist(df, 0, 'b', ['weight', 'cost'])" language="Python" />
+        <watch expression="use_nodes" language="Python" />
+        <watch expression="edges_weight" language="Python" />
+        <watch expression="weighted_adj_matrix" language="Python" />
+        <watch expression="edges_weight" language="Python" />
+        <watch expression="added_edges" language="Python" />
+        <watch expression="all_x_input" language="Python" />
+        <watch expression="copd_geometric_dataset.x" language="Python" />
+        <watch expression="edges_dict" language="Python" />
+        <watch expression="edges[0]" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="edgse[1]" language="Python" />
+        <watch expression="G.edges" language="Python" />
+        <watch expression="list(preds)" language="Python" />
+        <watch expression="data.x" language="Python" />
+        <watch expression="self.edges_index" language="Python" />
+        <watch expression="edges_weight_option" language="Python" />
+        <watch expression="data.num_features" language="Python" />
+        <watch expression="type(data)" language="Python" />
+        <watch expression="data.x" language="Python" />
+        <watch expression="args.common_nodes_feat" language="Python" />
+        <watch expression="data.num_features" language="Python" />
+        <watch expression="type(self.x)" language="Python" />
+        <watch expression="self.x" language="Python" />
+        <watch expression="shared_gene_dist" language="Python" />
+        <watch expression="len(adj_list)" language="Python" />
+        <watch expression="len(nodes_with_shared_genes)" language="Python" />
+        <watch expression="d1" language="Python" />
+        <watch expression="d2" language="Python" />
+        <watch expression="g1" language="Python" />
+        <watch expression="g2" language="Python" />
+        <watch expression="nodes_shared_count" language="Python" />
+        <watch expression="nodes_with_shared_genes" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="len(edges)" language="Python" />
+        <watch expression="len(nodes_with_shared_genes[1])" language="Python" />
+        <watch expression="len(nodes_with_shared_genes[2])" language="Python" />
+        <watch expression="nodes_with_shared_genes" language="Python" />
+        <watch expression="added_edges" language="Python" />
+        <watch expression="len(nodes_with_shared_genes)" language="Python" />
+        <watch expression="edges_dict" language="Python" />
+        <watch expression="len(edges_dict)" language="Python" />
+        <watch expression="all_x_input" language="Python" />
+        <watch expression="all_x_input" language="Python" />
+        <watch expression="copd_geometric_dataset.x" language="Python" />
+        <watch expression="all_x_input" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="edges" language="Python" />
       </configuration>
     </watches-manager>
   </component>

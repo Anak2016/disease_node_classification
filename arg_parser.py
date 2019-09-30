@@ -24,7 +24,7 @@ parser.add_argument('--arch', type=str, default='gcn', help='architecutre name t
 parser.add_argument('--add_features', action='store_true', help='added_features to the nodes')
 # parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
 # parser.add_argument('--common_nodes_feat', action='store_true', help='use common nodes as feature to nodes')
-parser.add_argument('--common_nodes_feat', type=str, default='all', help='all => use gene and disease; gene => create edges between gene, disease => create edges between disease')
+parser.add_argument('--common_nodes_feat', type=str, default='no', help='all => use gene and disease; gene => create edges between gene, disease => create edges between disease')
 parser.add_argument('--run_lr', action='store_true', help='run logistic regression with grpah embedding of choice node2vec, bine, gcn,and attentionwalk')
 parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
 parser.add_argument('--run_gnn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')

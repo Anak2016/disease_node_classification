@@ -25,6 +25,8 @@ class GeometricDataset(Data):
             df = pd.DataFrame(edges_index.numpy().T, columns=['source','target'])
             edges_index = torch.tensor(list(nx.from_pandas_edgelist(df, "source", "target", create_using=nx.Graph()).edges)).transpose(0,1) # edges are undirected
 
+        self.edges_index = edges_index
+        self.edges_weight = self.get_edges_weight(edges_weight_option="jaccard")
         super(GeometricDataset, self).__init__(x, edges_index, edge_attr, y)
         self.dataset = data
         self.subgraph = self.dataset.subgraph
@@ -115,6 +117,12 @@ class GeometricDataset(Data):
         #
         # self.train_mask_set = torch.LongTensor(self.train_mask_set + gene[:int(0.8 * len(gene))])
         # self.test_mask_set = torch.LongTensor(self.test_mask_set + gene[int(0.8 * len(gene)):])
+    def get_edges_weight(self, edges_weight_option=None):
+        '''skip until i need to use it '''
+        return None
+        # if edges_weight_option == 'jaccard':
+        #     from edge_weight import jaccard_coeff
+        #     jaccard_coeff(self.edges_index.numpy())
 
     @property
     def num_classes(self):
@@ -156,7 +164,6 @@ class Copd():
         # > what do they suppose to look like in undirected vs in directed.?????
         self.gene, self.non_uniq_diseases = GetData.gene_disease(path=path, time_stamp=time_stamp)
         self.edges = GetData.edges(path=path, time_stamp=time_stamp, undirected=undirected)
-
         edges = np.array(list(map(self.nodes2idx().get, self.edges.T.flatten())), dtype=np.int32).reshape(-1, 2).T
         edges = pd.DataFrame(edges.T, columns=['geneid', 'diseaseid'])
 
@@ -166,6 +173,7 @@ class Copd():
         self.adj =  self.create_adj(edges, undirected=True) #normalized adj undirected
 
         # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
+
     def get_graph(self, edges, undirected=True):
         if undirected:
             graph = nx.from_pandas_edgelist(edges, 'geneid', 'diseaseid') # always have unqiue edges

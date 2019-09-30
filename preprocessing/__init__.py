@@ -58,7 +58,109 @@ def create_onehot(edges_dict, geometric_dataset, edges):
     # test_input = torch.tensor(test_input)
     # return train_input, test_input
 
-def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, use='all'):
+def plot_shared_nodes_distribution(nodes_with_shared_genes=None, used_nodes=None):
+    '''
+
+    :param use:
+    :return:
+    '''
+
+    shared_gene_dist = []
+    shared_disease_dist = []
+    for th in range(0, len(nodes_with_shared_genes)):
+        disease = []
+        gene = []
+        for d1, g1 in nodes_with_shared_genes.items():
+            if d1 <= 101:  # disease
+                # all_diseases = [i for i in nodes_with_shared_genes.items()]
+                for i, (d2, g2) in enumerate(nodes_with_shared_genes.items()):
+                    if i >= 101:
+                        break
+
+                    if len(set(g1).intersection(set(g2))) > th and d1 != d2 and (d1, d2) not in disease and (
+                            d2, d1) not in disease:
+                        disease.append([d1, d2])
+
+            if d1 > 101:
+                for i, (d2, g2) in enumerate(nodes_with_shared_genes.items()):
+                    if i >= 101:
+                        if len(set(g1).intersection(set(g2))) > th and d1 != d2 and (d1, d2) not in gene and (
+                                d2, d1) not in gene:
+                            gene.append([d1, d2])
+
+        shared_gene_dist.append({th: len(disease)}) # diseases taht shared genes
+        shared_disease_dist.append({th: len(gene)}) # diseases taht shared genes
+
+        # nodes_with_shared_genes = tmp
+    disease_x = []
+    disease_y = []
+    gene_x = []
+    gene_y = []
+    for i,j in zip(shared_gene_dist, shared_disease_dist): # todo  this is not currently correct
+        disease_x.append(list(i.keys())[0])
+        disease_y.append(list(i.values())[0])
+        gene_x.append(list(j.keys())[0])
+        gene_y.append(list(j.values())[0])
+
+    disease_gene = {}
+    if len(disease_x) > 0:
+        disease_gene['disease'] = [disease_x,disease_y]
+    if len(gene_x) > 0:
+        disease_gene['gene'] = [gene_x, gene_y]
+
+    config = {
+        f'nodes_with_shared_genes_dist {used_nodes}': {
+            'x_label': 'number of shared genes',
+            'y_label': 'number of nodes',
+            'legend': [{"kwargs": {"loc": "lower right"}}],
+            'plot': [{'args':j, "kwargs": {'label': f'{i}'}} for i,j in disease_gene.items()]
+        }
+    }
+    plot_figures(config)
+
+    # if used_nodes == 'all':
+    #     disease_x = []
+    #     disease_y = []
+    #     gene_x = []
+    #     gene_y = []
+    #     for i in shared_gene_dist:
+    #         if i <= 101:
+    #             disease_x.append(list(i.keys())[0])
+    #             disease_y.append(list(i.keys())[1])
+    #         else:
+    #             gene_x.append(list(i.keys())[0])
+    #             gene_y.append(list(i.keys())[1])
+    #
+    #     config = {
+    #         f'nodes_with_shared_genes_dist {used_nodes}': {
+    #             'x_label': 'number of shared genes',
+    #             'y_label': 'number of nodes',
+    #             'legend': [{"kwargs": {"loc": "lower right"}}],
+    #             'plot': [
+    #                 {"args": [[list(i.keys())[0] for i in shared_gene_dist],
+    #                           [list(i.values())[0] for i in shared_gene_dist]]},
+    #                 {"args": [[list(i.keys())[0] for i in shared_gene_dist] ,
+    #                           [list(i.values())[0] for i in shared_gene_dist]]},
+    #             ]
+    #         }
+    #     }
+    # else:
+    #     config = {
+    #         f'nodes_with_shared_genes_dist {used_nodes}': {
+    #             'x_label': 'number of shared genes',
+    #             'y_label': 'number of nodes',
+    #             'legend': [{"kwargs": {"loc": "lower right"}}],
+    #             'plot': [
+    #                 {"args": [[list(i.keys())[0] for i in shared_gene_dist],
+    #                           [list(i.values())[0] for i in shared_gene_dist]]},
+    #                 # {"args": [ list(range(0, len(shared_gene_dist))), [0 for i in range(0,len(shared_gene_dist))]]},
+    #             ]
+    #         }
+    #     }
+    # plot_figures(config)
+
+
+def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes='all', edges_weight_option='jaccard'):
     '''
         gene is a feat of disease if there exist edges between gene and disease nodes
     :param dataset:
@@ -67,18 +169,13 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     :param disease: common disease as feature (create edge between genes nodes)
     :return:
     '''
-    assert use != "no", "--common_nodes_feat must be specifed option = ['all', 'gene', 'disease']"
-    if use == 'all':
-        #TODO here>> check if this effect svm, lr, rf, mlp, gnn
-        # > create compatible format for each model in this function.
-        edges = [[i, j] if int(i) < len(dataset.disease2idx().values()) else (j, i) for (i, j) in
-                 zip(geometric_dataset.edge_index[0].numpy(), geometric_dataset.edge_index[1].numpy())]  # [(disease_id, gene_id), ... ]
-        edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
-        edges = sorted(edges, reverse=False, key=lambda t: t[0])
-    if use == 'disease':
-        pass
-    if use == 'gene':
-        pass
+    assert used_nodes != "no", "--common_nodes_feat must be specifed option = ['all', 'gene', 'disease']"
+    #--------convert edges to acceptable format
+    edges = [[i, j] if int(i) < len(dataset.disease2idx().values()) else (j, i) for (i, j) in
+             zip(geometric_dataset.edge_index[0].numpy(), geometric_dataset.edge_index[1].numpy())]  # [(disease_id, gene_id), ... ]
+    edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
+    edges = sorted(edges, reverse=False, key=lambda t: t[0])
+
 
     # create edges between disease if it has shared genes
     # get distribution of number of gene shared between mulitple disease nodes
@@ -87,49 +184,88 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
                 source_node2: [{target_node: weight}, ... ]
                 ,....,}
     '''
-    edges_dict = my_utils.create_edges_dict(edges)
-    nodes_with_shared_genes = { key: [list(i.keys())[0]  for i in j ] for key, j in edges_dict.items()}
+    #=====================
+    #==code below is really really bad and slow.
+    #=====================
 
-    tmp = []
+    #TODO here>> create_edges_dict support option use=all, gene, disease??
+    edges_dict, nodes_with_shared_genes = my_utils.create_edges_dict(edges, used_nodes) # return {disease: [{gene, weight}, ... ]} where list of genes are genese that connected to disease by an edge.
+    # nodes_with_shared_genes = { key: [list(i.keys())[0]  for i in j ] for key, j in edges_dict.items()} # rearrange to {disease: [genes,...]}
+
     # plot_shared_gene_dist = True
-
+    #--------plot_shread_nodes_distribution
+    # plot_shared_gene_dist = True
     if plot_shared_gene_dist:
-        shared_gene_dist = []
-        for th in range(0,101):
-            tmp=[]
-            for d1, g1 in nodes_with_shared_genes.items():
-                for d2, g2 in nodes_with_shared_genes.items():
-                    if len(set(g1).intersection(set(g2))) > th and d1 != d2 and (d1,d2) not in tmp and (d2,d1) not in tmp:
-                        tmp.append([d1,d2])
+        #TODO here>> takes too long for gene and disease
+        run_time = timer(plot_shared_nodes_distribution, nodes_with_shared_genes,  used_nodes) # plot and choose th for gene and disease)
+        print(f"plot_shared_nodes_distribution takes {run_time} ms to run ")
 
-            shared_gene_dist.append({ th : len(tmp)})
-            # nodes_with_shared_genes = tmp
+    def get_added_edges(nodes_with_shared_genes, used_nodes):
+        # the function is created for readability
+        tmp = []
+        # selected = []
+        nodes_shared_count = {}
+        for i, (d1, g1) in enumerate(nodes_with_shared_genes.items()):
+            if len(list(nodes_with_shared_genes.items())[i+1:]) == 0:
+                break
+            else:
+                for d2, g2 in list(nodes_with_shared_genes.items())[i+1:]:
+                    nodes_shared_count.setdefault(  d1*d2, len(set(g1).intersection(set(g2)))) # key = g1 * g2 because it produce unique number for each pair
+                    if used_nodes == 'gene':
+                        if nodes_shared_count.get(d1*d2) > 0 : # this is slow
+                            tmp.append((d1,d2))
+                    elif used_nodes == 'disease':
+                        if nodes_shared_count.get(g1*g2) > 0 : # this is slow
+                            tmp.append((g1,g2))
+                    else:
+                        if nodes_shared_count.get(d1*d2) > 0 : # this is slow
+                            tmp.append((d1,d2))
+                        if nodes_shared_count.get(g1*g2) > 0 : # this is slow
+                            tmp.append((g1,g2))
 
-        config = {
-            'nodes_with_shared_genes_dist': {
-                'x_label': 'number of shared genes',
-                'y_label': 'number of nodes',
-                'legend': [{"kwargs": {"loc": "lower right"}}],
-                'plot': [
-                        {"args": [ [list(i.keys())[0] for i in shared_gene_dist],[list(i.values())[0] for i in shared_gene_dist]] },
-                        # {"args": [ list(range(0, len(shared_gene_dist))), [0 for i in range(0,len(shared_gene_dist))]]},
-                         ]
-            }
-        }
-        plot_figures(config)
+                    # if nodes_shared_count.get(d1*d2) > 0 and d1 != d2 and d1*d2 not in selected: # this is slow
+                    #     tmp.append((d1,d2))
+                        # selected.append(d1*d2)
 
-    for d1, g1 in nodes_with_shared_genes.items():
-        for d2, g2 in nodes_with_shared_genes.items():
-            if len(set(g1).intersection(set(g2))) > 0 and d1 != d2 and (d1,d2) not in tmp and (d2,d1) not in tmp:
-                tmp.append((d1,d2))
+                    # if len(set(g1).intersection(set(g2))) > 0 and d1 != d2 and (d1,d2) not in tmp and (d2,d1) not in tmp: # this is slow
+                    #     tmp.append((d1,d2))
+        return tmp
 
-    nodes_with_shared_genes = tmp
-    edges = edges + nodes_with_shared_genes
-    edges_dict = my_utils.create_edges_dict(edges)
 
-    all_x_input = create_onehot(edges_dict, geometric_dataset, edges)
+    added_edges = get_added_edges(nodes_with_shared_genes, used_nodes)
 
-    return all_x_input
+    max_node = len(list(dataset.nodes2idx()))
+    before_added_edges = edges
+    # original_adj = csr_matrix((1, (edges[0], edges[1])), shape=(max(max_node), max(max_node)))
+
+    edges = edges + added_edges
+    #--------get weight edges (networkx function should preserve order)
+    edges_weight = None
+    weighted_adj = None
+    if edges_weight_option == 'jaccard':
+        from edge_weight import jaccard_coeff
+        weighted_adj, edges_weight = jaccard_coeff(np.array(edges).T)
+
+    #TODO here>> trying out differnet weight for edges between diseases
+    # > create gene to gene nodes and apply the same edge weight criteria
+    # >
+    weighted_adj[before_added_edges[0], before_added_edges[1]] = np.ones([len(before_added_edges[0]),len(before_added_edges[1])])
+    # np.where(weighted_adj)
+    weighted_adj
+    edges_dict, _ = my_utils.create_edges_dict(edges, use_nodes=used_nodes)
+
+    #--------convert to n*p format where n = number of nodes and p = nmber of features.
+    # all_x_input = create_onehot(edges_dict, geometric_dataset, edges) #TODO here>> what do i expect as input and output of this??
+
+    if used_nodes == 'gene':
+        # dim = number of disease * num_all_nodes
+        weighted_adj = weighted_adj[range(0,geometric_dataset.x.shape[0])]
+
+    # networkx.convert_matrix.to_numpy_matrix
+    #TODO here>> weighted_adj when all_x_input  = 101 vs all_x_input = all nodes
+    return weighted_adj, edges_weight
+
+    # return all_x_input, edges_weight
     # =====================
     # ==preprocessing
     # =====================

@@ -36,9 +36,10 @@ def setup_essential(ROOT_DIR =None, ignore_root=False):
 #==plotting
 #=====================
 def plot_figures(config, save_path=None, file_name=None):
-    file_name = file_name.split('.')[:-1]
-    file_name = '/'.join(file_name) + ".png"
-    print(f"save plot to {save_path}{file_name}...")
+    if file_name is not None:
+        file_name = file_name.split('.')[:-1]
+        file_name = '/'.join(file_name) + ".png"
+        print(f"save plot to {save_path}{file_name}...")
     num_fig = len(config.keys())
 
     if num_fig <= 3:
@@ -124,9 +125,8 @@ def plot_figures(config, save_path=None, file_name=None):
             axes[row, col].set_ylabel(y_label)
             axes[row, col].set_title(title)
 
-    os.makedirs(f'{save_path}', exist_ok=True)
-
     if save_path is not None:
+        os.makedirs(f'{save_path}', exist_ok=True)
         print(f"writing to {save_path}{file_name}")
         plt.savefig(f'{save_path}{file_name}')
     plt.show()

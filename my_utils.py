@@ -75,7 +75,7 @@ def get_subgraph_disconnected( G):
 
     return disconnected_graph
 
-def create_edges_dict(edges):
+def create_edges_dict(edges=None, use_nodes=None):
     '''
 
     :param edges:
@@ -88,13 +88,38 @@ def create_edges_dict(edges):
         graph = {source_node1: [{target_node: weight}, ... ]
                 source_node2: [{target_node: weight}, ... ]
                 ,....,}
-
+        nodes_with_shared_genes =
+                {source_node1: [target_node, ... ]
+                source_node2: [target_node, ... ]
+                ,....,}
     '''
-    adj_list = {i:[] for (i,j) in edges}
-    for disease, gene in edges:
-        adj_list[disease].append({gene:'1'})
+    # adj_list = {i: [] for (i, j) in set(flatten(edges)) }
+    if use_nodes == 'all':
+        tmp = set(flatten(edges))
+        adj_list = dict.fromkeys(tmp, [])
+        nodes_with_shared_genes = {i: [] for i in set(flatten(edges)) }
+        for disease, gene in edges:
+            adj_list[disease].append({gene:'1'})
+            adj_list[gene].append({disease:'1'})
+            nodes_with_shared_genes[disease].append(gene)
+            nodes_with_shared_genes[gene].append(disease)
+    elif use_nodes=='gene':
+        adj_list = dict.fromkeys(list(i[0] for i in edges), [])
+        # nodes_with_shared_genes = dict.fromkeys(list(i[0] for i in edges), [])
+        nodes_with_shared_genes = {i: [] for (i, j) in edges}
+        for disease, gene in edges:
+            adj_list[disease].append({gene:'1'})
+            #TODO here>> nodes_with_shared_genes are wrong here
+            nodes_with_shared_genes[disease].append(gene)
+    elif use_nodes=='disease':
+        adj_list = dict.fromkeys(list(i[1] for i in edges), [])
+        nodes_with_shared_genes = {j: [] for (i, j) in edges}
+        # nodes_with_shared_genes = dict.fromkeys(list(i[0] for i in edges), [])
+        for disease, gene in edges:
+            adj_list[gene].append({disease:'1'})
+            nodes_with_shared_genes[gene].append(disease)
 
-    return adj_list
+    return adj_list, nodes_with_shared_genes
 
 
 
