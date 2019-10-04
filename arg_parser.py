@@ -14,6 +14,7 @@ parser.add_argument('--time_stamp', type=str, default='07_14_19_46', help='time_
 parser.add_argument('--copd_path', type=str, default=f'data/gene_disease/07_14_19_46/raw/', help='path containing copd_label{time_stamp} dataset')
 parser.add_argument('--copd_data', type=str, default='copd_label', help='name of the gene_disease dataset; default = copd_label')
 parser.add_argument('--emb_name', type=str, default='no_feat', help='name of embedding type being used eg attentionwalk, bine, node2vec, (gcn, gat, graph sage)')
+parser.add_argument('--edges_weight_option', type=str, default='no', help='edges_weight option such as jaccards etc. ')
 # parser.add_argument('--emb_path', type=str, default=f"data/gene_disease/07_14_19_46/gene_disease/processed/embedding/", help='name of the gene_disease dataset; default = copd_label')
 # parser.add_argument('--emb_path', type=str, default=f"data/gene_disease/07_14_19_46/gene_disease/processed/embedding/", help='name of the gene_disease dataset; default = copd_label')
 parser.add_argument('--emb_path', type=str, default=None, help='name of the gene_disease dataset; default = copd_label')

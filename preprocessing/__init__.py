@@ -211,13 +211,14 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
             else:
                 for d2, g2 in list(nodes_with_shared_genes.items())[i+1:]:
                     nodes_shared_count.setdefault(  d1*d2, len(set(g1).intersection(set(g2)))) # key = g1 * g2 because it produce unique number for each pair
-                    if used_nodes == 'gene':
+                    if used_nodes == 'gene': # add edges between disease
                         if nodes_shared_count.get(d1*d2) > 0 : # this is slow
                             tmp.append((d1,d2))
-                    elif used_nodes == 'disease':
+                    elif used_nodes == 'disease': # add edges between genes
                         if nodes_shared_count.get(g1*g2) > 0 : # this is slow
                             tmp.append((g1,g2))
                     else:
+                        # add edges between genes-genes and diseases-diseases
                         if nodes_shared_count.get(d1*d2) > 0 : # this is slow
                             tmp.append((d1,d2))
                         if nodes_shared_count.get(g1*g2) > 0 : # this is slow
@@ -235,44 +236,50 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     added_edges = get_added_edges(nodes_with_shared_genes, used_nodes)
 
     max_node = len(list(dataset.nodes2idx()))
-    before_added_edges = edges
-    # original_adj = csr_matrix((1, (edges[0], edges[1])), shape=(max(max_node), max(max_node)))
 
-    edges = edges + added_edges
+    #--------create symmetric adj
+    before_added_edges = np.array(edges).T
+    before_added_edges_adj = csr_matrix((np.ones_like(before_added_edges)[0], (before_added_edges[0], before_added_edges[1]))).todense() # dim = num_disease * num_nodes
+    before_added_edges_adj = np.vstack((before_added_edges_adj, np.zeros((max_node - before_added_edges_adj.shape[0], before_added_edges_adj.shape[1])))) # dim = num_nodes * num_nodes
+    before_added_edges_adj = before_added_edges_adj + before_added_edges_adj.transpose() - before_added_edges_adj.diagonal() # symmetric_adj ; dim = num_nodes * num_nodes
+
+    edges = edges + added_edges # (edges= 4715 + added_edges = 539) = 5254
+    edges = np.array(edges).T
     #--------get weight edges (networkx function should preserve order)
     edges_weight = None
     weighted_adj = None
     if edges_weight_option == 'jaccard':
         from edge_weight import jaccard_coeff
-        weighted_adj, edges_weight = jaccard_coeff(np.array(edges).T)
+        weighted_adj, edges_weight = jaccard_coeff(edges)
+
+    if edges_weight_option == 'no':
+        G = nx.Graph()
+        G.add_edges_from(zip(edges[0], edges[1]))  # 5254
+        weighted_adj = nx.to_numpy_matrix(G) # all edges have equal weight of 1
+        edges_weight = np.ones((weighted_adj.nonzero()[0].shape[0]))
 
     #TODO here>> trying out differnet weight for edges between diseases
     # > create gene to gene nodes and apply the same edge weight criteria
-    # >
-    weighted_adj[before_added_edges[0], before_added_edges[1]] = np.ones([len(before_added_edges[0]),len(before_added_edges[1])])
-    # np.where(weighted_adj)
-    weighted_adj
-    edges_dict, _ = my_utils.create_edges_dict(edges, use_nodes=used_nodes)
+
+    #--------mask symmetric adj of original edges to weighted_adj where nodes of the same type are connected (there is no need to mask because jaccard value of edges between disease and nodes are no longer zero after edges are added)
+    # weighted_adj = csr_matrix((1, (edges[0], edges[1])), shape=(max(max_node), max(max_node))).todense()
 
     #--------convert to n*p format where n = number of nodes and p = nmber of features.
-    # all_x_input = create_onehot(edges_dict, geometric_dataset, edges) #TODO here>> what do i expect as input and output of this??
+    # edges_dict, _ = my_utils.create_edges_dict(edges, use_nodes=used_nodes)
+    # all_x_input = create_onehot(edges_dict, geometric_dataset, edges)
 
-    if used_nodes == 'gene':
-        # dim = number of disease * num_all_nodes
-        weighted_adj = weighted_adj[range(0,geometric_dataset.x.shape[0])]
+    # if used_nodes == 'gene': # i am not sure if this is needed
+    #     # dim = number of disease * num_all_nodes
+    #     weighted_adj = weighted_adj[range(0,geometric_dataset.x.shape[0])]
 
-    # networkx.convert_matrix.to_numpy_matrix
-    #TODO here>> weighted_adj when all_x_input  = 101 vs all_x_input = all nodes
-    return weighted_adj, edges_weight
+    #--------update copd_geometric_dataset
+    geometric_dataset.edges_index = torch.from_numpy(edges)
+    geometric_dataset.edges_weight = torch.from_numpy(edges_weight).type(torch.float64)
+    geometric_dataset.x = torch.from_numpy(weighted_adj).type(torch.float64)
 
-    # return all_x_input, edges_weight
-    # =====================
-    # ==preprocessing
-    # =====================
-    # train_input, test_input = create_onehot(geometric_dataset,adj_list, edges)
+    return weighted_adj, edges_weight, edges
 
-    # return train_input, test_input
-    # return  [adj, edges_index, G, g]
+
 
 def merge_onehot(onehot_matrix, geometric_dataset):
     '''

@@ -171,7 +171,9 @@ class Copd():
         self.graph, self.subgraph = self.get_graph(edges, undirected=undirected)
         #--------add adj
         self.adj =  self.create_adj(edges, undirected=True) #normalized adj undirected
-
+        self.num_diseases = len(self.genes2idx())
+        self.num_genes = len(self.disease2idx())
+        self.num_nodes = len(self.nodes2idx())
         # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
 
     def get_graph(self, edges, undirected=True):

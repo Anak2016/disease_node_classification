@@ -2,27 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/3/63c6d7763fb8dc764cc9d620f9f522d054eb4819" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/3/63c6d7763fb8dc764cc9d620f9f522d054eb4819" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/8/78fc5a504799cb439ddb6ac27d896fa2dcead434" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/8/78fc5a504799cb439ddb6ac27d896fa2dcead434" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/1/e169885a11615130928e01926a23f66c13e9fbea" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/1/e169885a11615130928e01926a23f66c13e9fbea" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/2/e2f0804e01f3e657d97cd11a3274d0c8403ab2e4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_datasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_datasets/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_models/baseline/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/baseline/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_models/embedding/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/embedding/gnn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/edge_weight/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility_code/my_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -119,7 +107,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
-      <option name="PARAMETERS" value="--check_condition gnn --report_performance --common_nodes_feat gene" />
+      <option name="PARAMETERS" value="--check_condition all --report_performance --common_nodes_feat gene --edges_weight_option no --cv 5 --emb_name node2vec" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -355,32 +343,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
-          <line>747</line>
+          <line>748</line>
           <option name="timeStamp" value="435" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>291</line>
+          <line>287</line>
           <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>161</line>
+          <line>157</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>184</line>
+          <line>180</line>
           <option name="timeStamp" value="453" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>205</line>
+          <line>201</line>
           <option name="timeStamp" value="454" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>227</line>
+          <line>223</line>
           <option name="timeStamp" value="455" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -390,12 +378,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>295</line>
+          <line>302</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>235</line>
+          <line>237</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -459,24 +447,9 @@
           <option name="timeStamp" value="581" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>132</line>
-          <option name="timeStamp" value="588" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>129</line>
-          <option name="timeStamp" value="590" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
           <line>139</line>
           <option name="timeStamp" value="591" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>91</line>
-          <option name="timeStamp" value="592" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
@@ -490,32 +463,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>265</line>
+          <line>279</line>
           <option name="timeStamp" value="601" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>41</line>
-          <option name="timeStamp" value="602" />
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>72</line>
+          <option name="timeStamp" value="611" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>127</line>
-          <option name="timeStamp" value="603" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>254</line>
-          <option name="timeStamp" value="604" />
+          <line>77</line>
+          <option name="timeStamp" value="617" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="use_nodes" language="Python" />
+        <watch expression="np.array(edges).shape" language="Python" />
+        <watch expression="np.ones_like(edges)[0]" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="before_added_edges" language="Python" />
         <watch expression="edges_weight" language="Python" />
-        <watch expression="weighted_adj_matrix" language="Python" />
         <watch expression="edges_weight" language="Python" />
+        <watch expression="weighted_adj.shape" language="Python" />
+        <watch expression="before_added_edges.shape" language="Python" />
         <watch expression="added_edges" language="Python" />
         <watch expression="all_x_input" language="Python" />
         <watch expression="copd_geometric_dataset.x" language="Python" />
@@ -559,6 +532,10 @@
         <watch expression="all_x_input" language="Python" />
         <watch expression="edges" language="Python" />
         <watch expression="edges" language="Python" />
+        <watch expression="before_added_edges" language="Python" />
+        <watch expression="copd_geometric_dataset.train_mask" language="Python" />
+        <watch expression="__py_debug_temp_var_449641134" />
+        <watch expression="__py_debug_temp_var_449641134" />
       </configuration>
     </watches-manager>
   </component>

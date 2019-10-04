@@ -476,7 +476,7 @@ def mlp(data, config):
         # df = pd.DataFrame(avg_train_metrics)
         # df.to_csv(save_path + 'train/' + file_name, header=True, index=False, sep='\t', mode='w')
         df = pd.DataFrame(avg_test_metrics)
-        df.to_csv(save_path + 'test/' + file_name, header=True, index=False, sep='\t', mode='w')
+        df.to_csv(save_path + file_name, header=True, index=False, sep='\t', mode='w')
 
     else:
         # train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label = run_epochs(all_x[train_index], all_labels[train_index], all_x[test_index], all_labels[test_index])

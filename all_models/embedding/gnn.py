@@ -719,9 +719,10 @@ class GNN:
                 all_labels = torch.cat((data.y[data.train_mask], data.y[data.test_mask]), dim=0).type(torch.long)
 
                 from sklearn.model_selection import StratifiedKFold
-                n_splits = int(all_x.shape[0] / int(args.cv)) + 1 if all_x.shape[0] % int(args.cv) != 0 else int(
-                    all_x.shape[0] / int(args.cv))
-                assert n_splits * int(args.cv) >= all_x.shape[0], "n_splits * args.cv >= all_x.shape[0]"
+                # n_splits = int(all_x.shape[0] / int(args.cv)) + 1 if all_x.shape[0] % int(args.cv) != 0 else int(
+                #     all_x.shape[0] / int(args.cv))
+                # assert n_splits * int(args.cv) >= all_x.shape[0], "n_splits * args.cv >= all_x.shape[0]"
+                n_splits = int(args.cv)
 
                 avg_train_metrics = None
                 avg_test_metrics = None
@@ -746,18 +747,23 @@ class GNN:
 
                     if i == 7 or i ==1:
                         print("")
+
+                    #TODO here>> change below to fit
+                    save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.arch}/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+                    file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+
                     # --------training
                     train_measurement_metrics = performance_metrics.report_performances(data.y[train_index].numpy(),
                                                                                         y_train_pred.numpy(),
                                                                                         y_train_score.detach().numpy(),
-                                                                                        plot_roc_auc=False,
-                                                                                        get_avg_total=True)
+                                                                                        save_path=save_path,
+                                                                                        file_name=file_name)
                     # --------testing
                     test_measurement_metrics = performance_metrics.report_performances(data.y[test_index].numpy(),
                                                                                        y_test_pred.numpy(),
                                                                                        y_test_score .detach().numpy(),
-                                                                                       plot_roc_auc=False,
-                                                                                       get_avg_total=True)
+                                                                                       save_path=save_path,
+                                                                                       file_name=file_name)
 
                     avg_train_metrics = avg_train_metrics.add(
                         train_measurement_metrics) if avg_train_metrics is not None else train_measurement_metrics

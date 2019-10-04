@@ -21,16 +21,17 @@ def jaccard_coeff( edges):
                 type = numpy arry dim = 2 * num_edges
     '''
     G = nx.Graph()
-    G.add_edges_from(zip(edges[0], edges[1]))
+    G.add_edges_from(zip(edges[0], edges[1])) # 5254
     # original_adj_matrix = nx.to_numpy_matrix(G)
 
-    preds = nx.jaccard_coefficient(G, [tuple(i.tolist()) for i in edges.T])
+    preds = nx.jaccard_coefficient(G, [tuple(i.tolist()) for i in edges.T]) # because added_edges, jaccard between disease and gene are no longer 0
     edges_weight = []
     max_weight = 0
     for u,v,p in preds:
         if args.verbose:
             print('(%d, %d) -> %.8f' % (u, v, p))
-        weight = 1/p if p != 0 else 0
+        # weight = 1/p if p != 0 else 0
+        weight = p
         if weight > max_weight:
             max_weight = weight
         G.add_weighted_edges_from([(u,v,weight)], weight='jaccard_coeff')
@@ -38,8 +39,9 @@ def jaccard_coeff( edges):
 
 
     weighted_adj_matrix = nx.to_numpy_matrix(G, weight='jaccard_coeff')/max_weight  # normalized edges by max_weight
+    edges_weight = np.array(edges_weight) / max_weight
 
-    return weighted_adj_matrix, np.array(edges_weight)
+    return weighted_adj_matrix, edges_weight
 
     # return np.array(edges_weight)
     # return np.array([i[2] for i in preds])

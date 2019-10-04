@@ -26,6 +26,7 @@ if __name__ == "__main__":
     copd = all_datasets.Copd(path=args.copd_path, data=args.copd_data, time_stamp=args.time_stamp, undirected=not args.directed)
     # copd.create_rep_dataset()
 
+
     #=====================
     #==report dataste characteristics
     #=====================
@@ -64,9 +65,8 @@ if __name__ == "__main__":
         if args.run_svm:
             if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
                 # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
-                all_x_input, edges_weight = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene')
+                all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
-                # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
 
                 config = {
@@ -92,10 +92,11 @@ if __name__ == "__main__":
         if args.run_rf:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
 
-                all_x_input,edges_weight = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene')
+                all_x_input,edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+
 
                 config = {
                     "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
@@ -121,16 +122,10 @@ if __name__ == "__main__":
         if args.run_gnn:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
 
-                all_x_input, edges_weight = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene')
+                all_x_input, edges_weight,edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-                copd_geometric_dataset.x = torch.from_numpy(all_x_input).type(copd_geometric_dataset.x.dtype)
-                # if all_x_input.shape[0] == len(copd.disease2idx()):
-                #     # replace diseases feature
-                #     copd_geometric_dataset.x[[range(0,all_x_input.shape[0])]] = torch.from_numpy(all_x_input).type(copd_geometric_dataset.x.dtype)
-                # else:
-                #     # replace genes features
-                #     copd_geometric_dataset.x[[range(len(copd.disease2idx()), copd_geometric_dataset.x.shape[0])]] = torch.from_numpy(all_x_input).type(copd_geometric_dataset.x.dtype)
+
 
             elif args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine']:
                 '''this pass is already supported by gnn model in class Net()'''
@@ -154,10 +149,11 @@ if __name__ == "__main__":
 
         if args.run_mlp:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
-                all_x_input, edges_weight = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,used_nodes='gene')
+                all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+
                 # display2screen(all_x_input.shape)
                 config = {
                     "data": copd,
@@ -275,7 +271,7 @@ if __name__ == "__main__":
             # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
 
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
-                all_x_input, edges_weight = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene')
+                all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
                 # -- normalize features vector
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
