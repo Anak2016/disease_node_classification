@@ -49,9 +49,9 @@ def pause():
     exit()
 
 def save_node2vec_emb(G, save_path = f'data/gene_disease/{args.time_stamp}/processed/embedding/node2vec/', EMBEDDING_FILENAME = 'node2vec_emb.txt', log=True):
-    # display2screen(save_path + EMBEDDING_FILENAME)
+    #TODO here>>
     with open(save_path + EMBEDDING_FILENAME, 'w') as f:
-        print("path is ok")
+        print(f"save node2vec emb to {save_path + EMBEDDING_FILENAME}")
 
     # Precompute probabilities and generate walks - **ON WINDOWS ONLY WORKS WITH workers=1**
     node2vec = Node2Vec(G, dimensions=64, walk_length=30, num_walks=200,
@@ -93,22 +93,29 @@ def run_node2vec(copd, copd_geometric, time_stamp=args.time_stamp):
 
     :return:
     '''
-    if args.common_nodes_feat != 'gene':
-        adj = np.zeros((len(list(copd.nodes2idx().keys())), (len(list(copd.nodes2idx().keys())))))
-        all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric, plot_shared_gene_dist=True)
-        adj[:all_x_input.shape[0], :all_x_input.shape[1]] = adj[:all_x_input.shape[0], :all_x_input.shape[1]] + all_x_input
-        adj = np.asmatrix(adj)
+    # todo check if this is correct
+    if args.common_nodes_feat == 'gene':
+        # adj = np.zeros((len(list(copd.nodes2idx().keys())), (len(list(copd.nodes2idx().keys())))))
+        # dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes = 'all', edges_weight_option = 'jaccard'):
+        # all_x_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric, edges_weight_option=args.edges_weight_option,plot_shared_gene_dist=True)
+        # adj[:all_x_input.shape[0], :all_x_input.shape[1]] = adj[:all_x_input.shape[0], :all_x_input.shape[1]] + all_x_input
+        # adj = np.asmatrix(adj)
+        # graph = nx.from_numpy_matrix(adj)
+        # subgraph = my_utils.get_subgraph_disconnected(graph)[0]
 
-        graph = nx.from_numpy_matrix(adj)
+        weighted_adj, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric, edges_weight_option=args.edges_weight_option,plot_shared_gene_dist=False)
+        graph = nx.from_numpy_matrix(weighted_adj)
         subgraph = my_utils.get_subgraph_disconnected(graph)[0]
 
         # graph1 = copd_geometric.graph
         # display2screen(list(map(len, [graph1.edges, graph.edges, graph1.nodes, graph1.nodes])))
     elif args.common_nodes_feat != 'disease':
-        pass
+        assert ValueError('not yet support')
     elif args.common_nodes_feat != 'all':
-        pass
+        assert ValueError('not yet support')
     else:
+        assert ValueError('not yet support')
+
         subgraph = copd_geometric.subgraph
         graph = copd_geometric.graph
 
@@ -123,10 +130,12 @@ def run_node2vec(copd, copd_geometric, time_stamp=args.time_stamp):
 
     #  -- save node2vec embbedding to file
     # display2screen(len(g.nodes)) #2975
-    save_node2vec_emb(subgraph,EMBEDDING_FILENAME=f"node2vec_emb_subgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}.txt" )
+    # save_node2vec_emb(subgraph,EMBEDDING_FILENAME=f"node2vec_emb_subgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}.txt" )
 
     # display2screen(len(G.nodes)) #2996
-    save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}.txt" )
+    # def save_node2vec_emb(G, save_path=f'data/gene_disease/{args.time_stamp}/processed/embedding/node2vec/',
+    #                       EMBEDDING_FILENAME='node2vec_emb.txt', log=True):
+    save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_weight_limit={args.edges_weight_limit}_mask={args.mask_edges}_selfloop.txt" )
 
 def bine_copd_label(time_stamp=''):
     # load data in to dataframe

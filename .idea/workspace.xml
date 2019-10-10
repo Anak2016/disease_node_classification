@@ -2,15 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scatch_paper/load_disgenet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_datasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_datasets/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_models/baseline/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/baseline/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_models/embedding/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/embedding/gnn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/edge_weight/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility_code/my_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility_code/python_lib_essential.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/python_lib_essential.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,24 +45,24 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Gene_Disease_Graph" />
+    <property name="settings.editor.selected.configurable" value="editing.templates" />
     <property name="settings.editor.splitter.proportion" value="0.22960725" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\bine" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn\emb" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\lr\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\bine" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -72,49 +77,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.__init__">
-    <configuration name="__init__ (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="disease_node_classification" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/plotting" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/plotting/__init__.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="__init__" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="disease_node_classification" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
-      <option name="PARAMETERS" value="--check_condition all --report_performance --common_nodes_feat gene --edges_weight_option no --cv 5 --emb_name node2vec" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.main_init">
     <configuration name="anak" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -137,7 +100,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="graph_feature" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="load_disgenet" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="disease_node_classification" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scatch_paper" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scatch_paper/load_disgenet.py" />
+      <option name="PARAMETERS" value="--check_condition svm --common_nodes_feat gene --cv 3 --report_performance" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main_init" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -149,8 +133,8 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\idea\graph_feature.py" />
-      <option name="PARAMETERS" value="--dataset cora" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
+      <option name="PARAMETERS" value="--check_condition svm --common_nodes_feat gene --edges_weight_option jaccard --cv 3 --num_run 3" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -181,18 +165,16 @@
     </configuration>
     <list>
       <item itemvalue="Python.anak" />
-      <item itemvalue="Python.graph_feature" />
       <item itemvalue="Python.tmp" />
-      <item itemvalue="Python.__init__" />
-      <item itemvalue="Python.__init__ (1)" />
+      <item itemvalue="Python.load_disgenet" />
+      <item itemvalue="Python.main_init" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.__init__" />
-        <item itemvalue="Python.__init__ (1)" />
+        <item itemvalue="Python.main_init" />
+        <item itemvalue="Python.load_disgenet" />
         <item itemvalue="Python.anak" />
         <item itemvalue="Python.tmp" />
-        <item itemvalue="Python.graph_feature" />
       </list>
     </recent_temporary>
   </component>
@@ -253,7 +235,7 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>327</line>
+          <line>336</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -298,7 +280,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>392</line>
+          <line>401</line>
           <option name="timeStamp" value="280" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -337,38 +319,28 @@
           <option name="timeStamp" value="387" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
-          <line>161</line>
-          <option name="timeStamp" value="410" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
-          <line>748</line>
-          <option name="timeStamp" value="435" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>287</line>
+          <line>321</line>
           <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>157</line>
+          <line>190</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>180</line>
+          <line>212</line>
           <option name="timeStamp" value="453" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>201</line>
+          <line>233</line>
           <option name="timeStamp" value="454" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>223</line>
+          <line>255</line>
           <option name="timeStamp" value="455" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -378,7 +350,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>302</line>
+          <line>325</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -387,49 +359,9 @@
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
-          <line>162</line>
-          <option name="timeStamp" value="481" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
-          <line>775</line>
-          <option name="timeStamp" value="494" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
-          <line>432</line>
-          <option name="timeStamp" value="495" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/message_passing.py</url>
-          <line>97</line>
-          <option name="timeStamp" value="506" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/message_passing.py</url>
-          <line>86</line>
-          <option name="timeStamp" value="507" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/gcn_conv.py</url>
-          <line>80</line>
-          <option name="timeStamp" value="512" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
-          <line>50</line>
-          <option name="timeStamp" value="515" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/undirected.py</url>
           <line>18</line>
           <option name="timeStamp" value="534" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/utils/loop.py</url>
-          <line>95</line>
-          <option name="timeStamp" value="537" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/numpy/core/numeric.py</url>
@@ -438,18 +370,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>199</line>
+          <line>208</line>
           <option name="timeStamp" value="577" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
           <line>118</line>
           <option name="timeStamp" value="581" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
-          <line>139</line>
-          <option name="timeStamp" value="591" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
@@ -463,79 +390,59 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>279</line>
-          <option name="timeStamp" value="601" />
+          <line>280</line>
+          <option name="timeStamp" value="635" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="611" />
+          <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/networkx/classes/coreviews.py</url>
+          <line>101</line>
+          <option name="timeStamp" value="654" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>77</line>
-          <option name="timeStamp" value="617" />
+          <url>file://$PROJECT_DIR$/anak.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="659" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="662" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="use_nodes" language="Python" />
-        <watch expression="np.array(edges).shape" language="Python" />
-        <watch expression="np.ones_like(edges)[0]" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="before_added_edges" language="Python" />
-        <watch expression="edges_weight" language="Python" />
-        <watch expression="edges_weight" language="Python" />
-        <watch expression="weighted_adj.shape" language="Python" />
-        <watch expression="before_added_edges.shape" language="Python" />
         <watch expression="added_edges" language="Python" />
-        <watch expression="all_x_input" language="Python" />
-        <watch expression="copd_geometric_dataset.x" language="Python" />
-        <watch expression="edges_dict" language="Python" />
-        <watch expression="edges[0]" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="edgse[1]" language="Python" />
+        <watch expression="count_original" language="Python" />
+        <watch expression="count_added_edges" language="Python" />
+        <watch expression="count_all_new_edges" language="Python" />
+        <watch expression="weight" language="Python" />
+        <watch expression="p" language="Python" />
+        <watch expression="u" language="Python" />
+        <watch expression="v" language="Python" />
+        <watch expression="len(x)" language="Python" />
         <watch expression="G.edges" language="Python" />
+        <watch expression="G.edges(data='jaccard_coeff')" language="Python" />
+        <watch expression="len(added_edges)" language="Python" />
+        <watch expression="weighted_adj_matrix" language="Python" />
+        <watch expression="edges" language="Python" />
         <watch expression="list(preds)" language="Python" />
-        <watch expression="data.x" language="Python" />
-        <watch expression="self.edges_index" language="Python" />
-        <watch expression="edges_weight_option" language="Python" />
-        <watch expression="data.num_features" language="Python" />
-        <watch expression="type(data)" language="Python" />
-        <watch expression="data.x" language="Python" />
-        <watch expression="args.common_nodes_feat" language="Python" />
-        <watch expression="data.num_features" language="Python" />
-        <watch expression="type(self.x)" language="Python" />
-        <watch expression="self.x" language="Python" />
-        <watch expression="shared_gene_dist" language="Python" />
-        <watch expression="len(adj_list)" language="Python" />
-        <watch expression="len(nodes_with_shared_genes)" language="Python" />
-        <watch expression="d1" language="Python" />
-        <watch expression="d2" language="Python" />
-        <watch expression="g1" language="Python" />
-        <watch expression="g2" language="Python" />
-        <watch expression="nodes_shared_count" language="Python" />
-        <watch expression="nodes_with_shared_genes" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="len(edges)" language="Python" />
-        <watch expression="len(nodes_with_shared_genes[1])" language="Python" />
-        <watch expression="len(nodes_with_shared_genes[2])" language="Python" />
-        <watch expression="nodes_with_shared_genes" language="Python" />
-        <watch expression="added_edges" language="Python" />
-        <watch expression="len(nodes_with_shared_genes)" language="Python" />
-        <watch expression="edges_dict" language="Python" />
-        <watch expression="len(edges_dict)" language="Python" />
-        <watch expression="all_x_input" language="Python" />
-        <watch expression="all_x_input" language="Python" />
-        <watch expression="copd_geometric_dataset.x" language="Python" />
-        <watch expression="all_x_input" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="before_added_edges" language="Python" />
-        <watch expression="copd_geometric_dataset.train_mask" language="Python" />
-        <watch expression="__py_debug_temp_var_449641134" />
-        <watch expression="__py_debug_temp_var_449641134" />
+        <watch expression="len(edges_weight)" language="Python" />
+        <watch expression="weighted_adj_matrix.flatten()[weighted_adj_matrix.flatten() !=0 ]" language="Python" />
+        <watch expression="max_weight" language="Python" />
+        <watch expression="weighted_adj" language="Python" />
+        <watch expression="nx.to_numpy_matrix(G).nonzero()[0].shape" language="Python" />
+        <watch expression="weighted_adj_matrix.nonzero()[0].shape" language="Python" />
+        <watch expression="edges.shape" language="Python" />
+        <watch expression="count" language="Python" />
+        <watch expression="dataset.edges" language="Python" />
+        <watch expression="weighted_adj_matrix[(weighted_adj_matrix&lt;1)]" language="Python" />
+        <watch expression="weighted_adj_matrix[(weighted_adj_matrix&lt;1) &amp; (weighted_adj_matrix&gt;= 1e-100)]" language="Python" />
+        <watch expression="edges_weight" language="Python" />
+        <watch expression="__py_debug_temp_var_418936582" />
+        <watch expression="dataset.num_diseases" language="Python" />
+        <watch expression="geometric_dataset.num_diseases" language="Python" />
+        <watch expression="geometric_dataset.edges_index" language="Python" />
       </configuration>
     </watches-manager>
   </component>

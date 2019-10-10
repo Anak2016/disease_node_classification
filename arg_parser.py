@@ -5,6 +5,7 @@ import numpy as np
 '''
 example command
  --run_gcn  --verbose --t1_t2_alpha 10000 10000  0.3 --log  --plot_loss --epoch 200 --pseudo_label_topk --topk 1 --epoch 400
+ python __init__.py --check_condition all --common_nodes_feat gene --cv 3 --report_performance
 '''
 
 #--Training settings
@@ -64,6 +65,12 @@ parser.add_argument('--run_rf', action='store_true', help="run svm random forest
 
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
+parser.add_argument('--edges_weight_limit', type=float, default=1, help='lower bound of edges weight that will be added')
+parser.add_argument('--edges_percent', type=float, default=1, help='percentage of edges to be selected')
+
+parser.add_argument('--mask_edges', action='store_true', help="mask adj matrix with original edges (before edges of the same types are introduced)")
+parser.add_argument('--self_loop', action='store_true', help="add self loop")
+parser.add_argument('--num_run', type=int, default=1, help='number of run to repeat the experiment')
 parser.add_argument('--directed', action='store_true', help="directed == True")
 parser.add_argument('--verbose', action="store_true", help='verbose status')
 parser.add_argument('--plot_reports', action="store_true", help='plot all of the function related to report including datasets and models')

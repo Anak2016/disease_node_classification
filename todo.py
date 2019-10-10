@@ -1,9 +1,19 @@
 
 conda activate pytorch_python3.7
 
-
-
 #todo (final decision, in order )
+# > once finish with todoo inside of jaccard coeff rerun no_emb, gene, and get performance
+# > check if node2vec use edges weight to calculate embedding
+# > equalize distrition to be more throughtly distributed from 0-1
+# > try stocastically added edges depends on its weight.
+# > run top 5, 25, 50, 100 percent of added edges.
+#   : run it for all models
+# > add weight edges
+#   : preprocess new data set to match with the existing code. including copd and geometric_dataset
+#       >> use new data withon added edges first, (if i have time use onw that have edges)
+#       >> test all models with new dataset
+# > find results by adding more or les sedge betwee ndisease and check the algorithm performance with respect to differnet embeedign
+#       and classifier
 # > run gcn on new copd_label data with added dsi and dpi and edge features
 # > run pseudo label on the the best one and see decide if I choose try it with other model
 # > run cora gcn with node feature on jupyter notebook with trainset = 30 percent and compare if the result is higher than 84.3
@@ -17,7 +27,7 @@ conda activate pytorch_python3.7
 # > check if the implementation is correct
 #       :do I mask classes and no_classes correctly??
 #       :class distribution between each classes
-# > try using feature as graph's strucutre with other bipartite
+# > try using feate as graph's strucutre with other bipartite
 #      : read literature that learn feature in grpah strucutre.
 #      : find bipartite datset to be used
 # > what if i remove outlier in node embedding? will it help improve node classification?

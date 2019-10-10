@@ -466,11 +466,21 @@ def timer(func, *args, **kwargs):
     print(f"running {func.__name__}")
     import time
     s = time.time()
+    # ans = None
+    # try:
     func(*args, **kwargs)
+    # except:
+    #     ans = None
     f = time.time()
     total = f-s
     print(f"{func.__name__} takes in total {total} s to run")
+
     return total
+
+    # if ans is None:
+    #     return total
+    # else:
+    #     return total, ans
 
 # def json_indent(myjson):
 #     return json.dumps({'4': 5, '6': 7}, sort_keys=True, indent=4, separators=(',', ': '))

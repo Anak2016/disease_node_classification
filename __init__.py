@@ -5,6 +5,29 @@ from my_utils import *
 from all_models import baseline, embedding
 import all_datasets
 
+def repeat_model_run(name=None, num_run=1, model=None, *arguments, **kwargs):
+    MODEL_PERFORMANCE[name] = {}
+    for i in range(num_run):
+        print('=================')
+        print(f'  repeat_num={i}')
+        print('=================')
+        args.seed = args.seed + i
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        torch.manual_seed(args.seed)
+        # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
+        performance = model(**kwargs)
+        for i in performance.index:
+            MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
+        # print(f'performance = {performance.to_frame}')
+
+    # TODO here>> how to change seed per run
+    for i in MODEL_PERFORMANCE[name].keys():
+        MODEL_PERFORMANCE[name][i] = mean(MODEL_PERFORMANCE[name][i])
+
+    print(f'model= {name}average of {num_run} runs are')
+    print(MODEL_PERFORMANCE)
+
 if __name__ == "__main__":
 
     # ==============================
@@ -58,7 +81,15 @@ if __name__ == "__main__":
     # ====================
     # == run models
     # ====================
-    def run_model():
+    # MODEL_PERFORMANCE = {i:{} for i in ['svm','rf','lr','gnn','mlp']}
+    MODEL_PERFORMANCE = {}
+
+    def run_model(num_run = 1):
+        '''
+
+        :param num_run: number of time that experiment will be repeat
+        :return:
+        '''
         if args.run_node2vec:
             run_node2vec(copd, copd_geometric_dataset, args.time_stamp)
 
@@ -86,8 +117,7 @@ if __name__ == "__main__":
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
-            svm_runtime = timer(baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
-            print(f'total running time of baseline.svm == {svm_runtime}')
+            repeat_model_run(name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
 
         if args.run_rf:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
@@ -115,8 +145,10 @@ if __name__ == "__main__":
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
-            rf_runtime = timer(baseline.random_forest, data=copd_geometric_dataset, config=config, evaluate=True)
-            print(f'total running time of baseline.rf == {rf_runtime}')
+            repeat_model_run(name=f'rf_{args.emb_name}', num_run=num_run, model=baseline.random_forest, data=copd_geometric_dataset,
+                             config=config, evaluate=True)
+            # rf_runtime = timer(baseline.random_forest, data=copd_geometric_dataset, config=config, evaluate=True)
+            # print(f'total running time of baseline.rf == {rf_runtime}')
 
 
         if args.run_gnn:
@@ -143,9 +175,10 @@ if __name__ == "__main__":
             #TODO here>> cross validation + common_nodes_feat
 
             # gcn_runtime = timer(embedding.run_GCN,data=copd_geometric_dataset, lr=args.lr,weight_decay=args.weight_decay )
-            gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset, config=config).run)
+            repeat_model_run(name=f'gnn_{args.emb_name}', num_run=num_run, model=embedding.GNN(data=copd_geometric_dataset,config=config).run)
 
-            print(f'total running time of baseline.gnn == {gcn_runtime}')
+            # gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset, config=config).run)
+            # print(f'total running time of baseline.gnn == {gcn_runtime}')
 
         if args.run_mlp:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
@@ -163,14 +196,13 @@ if __name__ == "__main__":
                     "train_label": y.numpy()[copd_geometric_dataset.train_mask],
                     "test_label": y.numpy()[copd_geometric_dataset.test_mask],
                     # change value of hidden_layers to be used in nn.sequential
-                    'sequential_layers': [
-                        nn.Linear(2996, 512),
-                        nn.ReLU(),
-                        nn.Linear(512, 64),
-                        nn.ReLU(),
-                        nn.Linear(64, len(copd.labels2idx().keys())),
-                        nn.LogSoftmax(dim=1)
-                    ],
+                    'sequential_layers': [                        nn.Linear(2996, 512),
+                                                                  nn.ReLU(),
+                                                                  nn.Linear(512, 64),
+                                                                  nn.ReLU(),
+                                                                  nn.Linear(64, len(copd.labels2idx().keys())),
+                                                                  nn.LogSoftmax(dim=1)
+                                                                  ],
                     "epochs": 200,
                     "args": args,
                     "param": param
@@ -264,8 +296,10 @@ if __name__ == "__main__":
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
             # baseline.mlp(data=copd_geometric_dataset, config=config)
-            mlp_runtime = timer(baseline.mlp, data=copd_geometric_dataset, config=config)
-            print(f'total running time of baseline.mlp == {mlp_runtime}')
+            repeat_model_run(name=f'mlp_{args.emb_name}', num_run=num_run, model=baseline.mlp, data=copd_geometric_dataset,config=config)
+
+            # mlp_runtime = timer(baseline.mlp, data=copd_geometric_dataset, config=config)
+            # print(f'total running time of baseline.mlp == {mlp_runtime}')
 
         if args.run_lr:
             # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
@@ -292,10 +326,11 @@ if __name__ == "__main__":
                 }
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+            repeat_model_run(name=f'lr_{args.emb_name}', num_run=num_run, model=baseline.logistic_regression, config=config, emb_name=args.emb_name)
 
-            lr_runtime = timer(baseline.logistic_regression,config, emb_name=args.emb_name)
-            print(f'total running time of baseline.lr == {lr_runtime}')
-
+            # lr_runtime = timer(baseline.logistic_regression,config, emb_name=args.emb_name)
+            # print(f'total running time of baseline.lr == {lr_runtime}')
+    # for i in range(args.num_run):
     if args.check_condition is not None:
         #--------check same condision for all base model
         for model in args.check_condition:
@@ -317,8 +352,9 @@ if __name__ == "__main__":
                 args.run_mlp = True
             assert model in ['all', 'svm','lr','rf', 'gnn','mlp'], "selected model to be check is not supported"
 
-        rt = timer(run_model)
-        print(f'\ntotal running time of args.check_condition == {rt}')
+        run_model(args.num_run)
+        # rt = timer(run_model)
+        # print(f'\ntotal running time of args.check_condition == {rt}')
     else:
         #=====================
         #==run a model

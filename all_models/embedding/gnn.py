@@ -770,9 +770,9 @@ class GNN:
                     avg_test_metrics = avg_test_metrics.add(
                         test_measurement_metrics) if avg_test_metrics is not None else test_measurement_metrics
 
+                avg_train_metrics = avg_train_metrics.divide(n_splits)
+                avg_test_metrics = avg_test_metrics.divide(n_splits)
                 if args.report_performance:
-                    avg_train_metrics = avg_train_metrics.divide(n_splits)
-                    avg_test_metrics = avg_test_metrics.divide(n_splits)
                     print(avg_train_metrics.__repr__())
                     print('\n')
                     print(avg_test_metrics.__repr__())
@@ -790,6 +790,8 @@ class GNN:
                 df = pd.DataFrame(avg_test_metrics)
                 df.to_csv(save_path + 'test/' + file_name, header=True, index=False, sep='\t', mode='w')
 
+                return avg_test_metrics.iloc[-1]
+
             else:
                 self.run_epochs()
 
@@ -797,29 +799,30 @@ class GNN:
                 # ==performance report
                 # =====================
                 # TODO here>> make report_performance compatible with mlp
-                if args.report_performance:
-                    save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.arch}/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-                    file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-                    import os
-                    if not os.path.exists(save_path):
-                        os.makedirs(save_path)
+                save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.arch}/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+                file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+                import os
+                if not os.path.exists(save_path):
+                    os.makedirs(save_path)
 
-                    report = performance_metrics.report_performances(
-                        y_true=data.y[data.train_mask].numpy(),
-                        y_pred=self.model()[data.train_mask].max(1)[1].numpy(),
-                        y_score=self.model()[data.train_mask].detach().numpy(),
-                        save_path=f'{save_path}train/',
-                        file_name=file_name
-                    )
-                    print(report)
-                    report = performance_metrics.report_performances(
-                        y_true=data.y[data.test_mask].numpy(),
-                        y_pred=self.model()[data.test_mask].max(1)[1].numpy(),
-                        y_score=self.model()[data.test_mask].detach().numpy(),
-                        save_path=f'{save_path}test/',
-                        file_name=file_name
-                    )
-                    print(report)
+                report_train = performance_metrics.report_performances(
+                    y_true=data.y[data.train_mask].numpy(),
+                    y_pred=self.model()[data.train_mask].max(1)[1].numpy(),
+                    y_score=self.model()[data.train_mask].detach().numpy(),
+                    save_path=f'{save_path}train/',
+                    file_name=file_name
+                )
+                report_test = performance_metrics.report_performances(
+                    y_true=data.y[data.test_mask].numpy(),
+                    y_pred=self.model()[data.test_mask].max(1)[1].numpy(),
+                    y_score=self.model()[data.test_mask].detach().numpy(),
+                    save_path=f'{save_path}test/',
+                    file_name=file_name
+                )
+                if args.report_performance:
+                    print(report_train)
+                    print(report_test)
+                return report_test.iloc[-1]
 
             # display2screen(gcn_emb_output)
             # -- print set of best accuracy and its epoch.
@@ -862,19 +865,21 @@ class GNN:
                 file_gcn_emb = f"epoch={args.epochs}_emb={args.emb_name}_TRAIN=NO_ACC_feat={self.feat_stat}_pseudo_label={self.pseudo_label_stat}_wc={self.weighted_class}_T=[{self.T_param}]_topk={args.topk}.txt"
                 img_gcn_emb = f"img/{file_gcn_emb}.png"
 
+                # --------train report
+                report_train = performance_metrics.report_performances(data.y[data.train_mask].numpy(),
+                                                        self.model()[data.train_mask].max(1)[1].numpy(),
+                                                        self.model()[data.train_mask].detach().numpy(),
+                                                        save_path=save_path + f'report_performance/train/',
+                                                        file_name=f'{file_gcn_emb}')
+                # --------test_report
+                report_test = performance_metrics.report_performances(data.y[data.test_mask].numpy(),
+                                                        self.model()[data.test_mask].max(1)[1].numpy(),
+                                                        self.model()[data.test_mask].detach().numpy(),
+                                                        save_path=save_path + f'report_performance/test/',
+                                                        file_name=f'{file_gcn_emb}')
                 if args.report_performance:
-                    # --------train report
-                    performance_metrics.report_performances(data.y[data.train_mask].numpy(),
-                                                            self.model()[data.train_mask].max(1)[1].numpy(),
-                                                            self.model()[data.train_mask].detach().numpy(),
-                                                            save_path=save_path + f'report_performance/train/',
-                                                            file_name=f'{file_gcn_emb}')
-                    # --------test_report
-                    performance_metrics.report_performances(data.y[data.test_mask].numpy(),
-                                                            self.model()[data.test_mask].max(1)[1].numpy(),
-                                                            self.model()[data.test_mask].detach().numpy(),
-                                                            save_path=save_path + f'report_performance/test/',
-                                                            file_name=f'{file_gcn_emb}')
+                    print(report_train)
+                    print(report_test)
 
                 self.plot(self.gcn_emb_after_classifier, self.gcn_emb_no_train, self.loss_hist, self.train_acc_hist, self.test_acc_hist, file_gcn_emb, img_gcn_emb)
 
@@ -882,19 +887,21 @@ class GNN:
                 file_gcn_emb = f"epoch={args.epochs}_emb={args.emb_name}_TRAIN=YES_ACC_feat={self.feat_stat}_pseudo_label={self.pseudo_label_stat}_wc={self.weighted_class}_T=[{self.T_param}]_topk={args.topk}.txt"
                 img_gcn_emb = f"img/{file_gcn_emb}.png"
 
+                # --------train report
+                report_train = performance_metrics.report_performances(data.y[data.train_mask].numpy(),
+                                                        self.model()[data.train_mask].max(1)[1].numpy(),
+                                                        self.model()[data.train_mask].detach().numpy(),
+                                                        save_path=save_path + f'report_performance/train/',
+                                                        file_name=f'{file_gcn_emb}')
+                # --------test_report
+                report_test = performance_metrics.report_performances(data.y[data.test_mask].numpy(),
+                                                        self.model()[data.test_mask].max(1)[1].numpy(),
+                                                        self.model()[data.test_mask].detach().numpy(),
+                                                        save_path=save_path + f'report_performance/test/',
+                                                        file_name=f'{file_gcn_emb}')
                 if args.report_performance:
-                    # --------train report
-                    performance_metrics.report_performances(data.y[data.train_mask].numpy(),
-                                                            self.model()[data.train_mask].max(1)[1].numpy(),
-                                                            self.model()[data.train_mask].detach().numpy(),
-                                                            save_path=save_path + f'report_performance/train/',
-                                                            file_name=f'{file_gcn_emb}')
-                    # --------test_report
-                    performance_metrics.report_performances(data.y[data.test_mask].numpy(),
-                                                            self.model()[data.test_mask].max(1)[1].numpy(),
-                                                            self.model()[data.test_mask].detach().numpy(),
-                                                            save_path=save_path + f'report_performance/test/',
-                                                            file_name=f'{file_gcn_emb}')
+                    print(report_train)
+                    print(report_test)
 
                 self.plot(self.gcn_emb_after_classifier, self.gcn_emb_no_train, self.loss_hist, self.train_acc_hist, self.test_acc_hist, file_gcn_emb, img_gcn_emb)
 
@@ -903,6 +910,8 @@ class GNN:
             #==========================
             if args.log:
                 self.logging(self.log_list)
+
+        # return
 
 
 

@@ -160,7 +160,7 @@ def plot_shared_nodes_distribution(nodes_with_shared_genes=None, used_nodes=None
     # plot_figures(config)
 
 
-def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes='all', edges_weight_option='jaccard'):
+def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes='gene', edges_weight_option='jaccard'):
     '''
         gene is a feat of disease if there exist edges between gene and disease nodes
     :param dataset:
@@ -170,12 +170,21 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     :return:
     '''
     assert used_nodes != "no", "--common_nodes_feat must be specifed option = ['all', 'gene', 'disease']"
+    save_path = r"C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\numpy"
+    weight_adj_file = f"\weighted_adj_option={args.edges_weight_option}.txt.npy"
+    edges_weight_file = f'\edges_weight_option={args.edges_weight_option}.txt.npy'
+
+    # if os.path.isfile(save_path+weight_adj_file) and os.path.isfile(save_path+edges_weight_file):
+    #     weight_adj = np.load(save_path+weight_adj_file)
+    #     edges_weight = np.load(save_path+weight_adj_file)
+    #     print(f'load weight_adj and edge_weight (option={edges_weight_option})from {save_path}')
+    #     return weight_adj, edges_weight, None
+
     #--------convert edges to acceptable format
     edges = [[i, j] if int(i) < len(dataset.disease2idx().values()) else (j, i) for (i, j) in
              zip(geometric_dataset.edge_index[0].numpy(), geometric_dataset.edge_index[1].numpy())]  # [(disease_id, gene_id), ... ]
     edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
     edges = sorted(edges, reverse=False, key=lambda t: t[0])
-
 
     # create edges between disease if it has shared genes
     # get distribution of number of gene shared between mulitple disease nodes
@@ -201,6 +210,12 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
         print(f"plot_shared_nodes_distribution takes {run_time} ms to run ")
 
     def get_added_edges(nodes_with_shared_genes, used_nodes):
+        '''
+
+        :param nodes_with_shared_genes:
+        :param used_nodes:
+        :return:
+        '''
         # the function is created for readability
         tmp = []
         # selected = []
@@ -243,6 +258,7 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     before_added_edges_adj = np.vstack((before_added_edges_adj, np.zeros((max_node - before_added_edges_adj.shape[0], before_added_edges_adj.shape[1])))) # dim = num_nodes * num_nodes
     before_added_edges_adj = before_added_edges_adj + before_added_edges_adj.transpose() - before_added_edges_adj.diagonal() # symmetric_adj ; dim = num_nodes * num_nodes
 
+    original_edges = edges
     edges = edges + added_edges # (edges= 4715 + added_edges = 539) = 5254
     edges = np.array(edges).T
     #--------get weight edges (networkx function should preserve order)
@@ -250,13 +266,20 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     weighted_adj = None
     if edges_weight_option == 'jaccard':
         from edge_weight import jaccard_coeff
-        weighted_adj, edges_weight = jaccard_coeff(edges)
+        # weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, edges_percent=args.edges_percent)
+        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop)
+        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', weighted_adj)
+        np.save(f'{save_path}\edges_weight_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', edges_weight)
+        print(f'saveing weight_adj and edge_weight (option={edges_weight_option} weight_limit={args.edges_weight_limit}) at {save_path}')
 
     if edges_weight_option == 'no':
         G = nx.Graph()
         G.add_edges_from(zip(edges[0], edges[1]))  # 5254
         weighted_adj = nx.to_numpy_matrix(G) # all edges have equal weight of 1
         edges_weight = np.ones((weighted_adj.nonzero()[0].shape[0]))
+        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}.txt', weighted_adj)
+        np.save(f'{save_path}\edges_weight_option={edges_weight_option}.txt', edges_weight)
+        print(f'saveing weight_adj and edge_weight( option= {edges_weight_option}) at {save_path}')
 
     #TODO here>> trying out differnet weight for edges between diseases
     # > create gene to gene nodes and apply the same edge weight criteria
@@ -393,6 +416,9 @@ def add_features():
                 # emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
             else:
                 emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
+                # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=True.txt'
+                # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=F_no_selfloop.txt'
+                # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=True_selfloop.txt'
                 # emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
 
         elif args.emb_name == 'bine':

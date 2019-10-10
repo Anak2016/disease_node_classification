@@ -11,7 +11,7 @@ import performance_metrics
 # =====================
 
 # -- logistic regression with node embedding
-def logistic_regression(config, emb_name):
+def logistic_regression(config=None, emb_name=None):
     '''
     run logistic regression
 
@@ -54,21 +54,21 @@ def logistic_regression(config, emb_name):
         # =====================
         # ==report performance
         # =====================
-        if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
-            report_train = performance_metrics.report_performances(
-                y_true=np.concatenate((label_train, label_test), axis=0),
-                y_pred=pred,
-                y_score=proba,
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
-            print(report_train)
+        report_test = performance_metrics.report_performances(
+            y_true=np.concatenate((label_train, label_test), axis=0),
+            y_pred=pred,
+            y_score=proba,
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+        if args.report_performance:
+            print(report_test)
 
     else:
         model.fit(train_input, train_label)
@@ -83,30 +83,30 @@ def logistic_regression(config, emb_name):
         # =====================
         # ==performance report
         # =====================
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        report_train = performance_metrics.report_performances(
+            y_true=train_label,
+            y_pred=y_pred_train,
+            y_score=model.predict_proba(train_input),
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+        report_test = performance_metrics.report_performances(
+            y_true=test_label,
+            y_pred=y_pred_test,
+            y_score=model.predict_proba(test_input),
+            save_path=f'{save_path}test/',
+            file_name=file_name
+            )
         if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
-
-            report = performance_metrics.report_performances(
-                y_true=train_label,
-                y_pred=y_pred_train,
-                y_score=model.predict_proba(train_input),
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
-            print(report)
-            report = performance_metrics.report_performances(
-                y_true=test_label,
-                y_pred=y_pred_test,
-                y_score=model.predict_proba(test_input),
-                save_path=f'{save_path}test/',
-                file_name=file_name
-            )
-            print(report)
-
+            print(report_train)
+            print(report_test)
+    return report_test.iloc[-1]
     #=====================
     #==metrix results
     #=====================
@@ -206,21 +206,22 @@ def svm(data, config, decision_func='ovr', verbose=True):
         # =====================
         # ==report performance
         # =====================
-        if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+        # if args.report_performance:
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
-            report_train = performance_metrics.report_performances(
-                y_true=np.concatenate((label_train, label_test), axis=0),
-                y_pred=pred,
-                y_score=proba,
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
-            print(report_train)
+        report_test = performance_metrics.report_performances(
+            y_true=np.concatenate((label_train, label_test), axis=0),
+            y_pred=pred,
+            y_score=proba,
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+        if args.report_performance:
+            print(report_test)
 
     else:
         clf.fit(x_train, label_train)
@@ -245,30 +246,33 @@ def svm(data, config, decision_func='ovr', verbose=True):
         #=====================
         #==report performance
         #=====================
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        report_train = performance_metrics.report_performances(
+            y_true=label_train,
+            y_pred=pred_train,
+            y_score=proba_train,
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+
+        report_test = performance_metrics.report_performances(
+            y_true=label_test,
+            y_pred=pred_test,
+            y_score=proba_test,
+            save_path=f'{save_path}test/',
+            file_name=file_name
+        )
         if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
-
-            report_train = performance_metrics.report_performances(
-                y_true=label_train,
-                y_pred=pred_train,
-                y_score=proba_train,
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
             print(report_train)
-
-            report_test = performance_metrics.report_performances(
-                y_true=label_test,
-                y_pred=pred_test,
-                y_score=proba_test,
-                save_path=f'{save_path}test/',
-                file_name=file_name
-            )
             print(report_test)
+
+
+    return report_test.iloc[-1]
 
     # return pred_train, pred_test, accs
 
@@ -469,14 +473,11 @@ def mlp(data, config):
         file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
         import os
         os.makedirs(save_path, exist_ok=True)
-        # df = pd.DataFrame(avg_train_metrics)
-        # df.to_csv(save_path+ file_name, header=True, index=False, sep='\t', mode='w')
-        # os.makedirs(save_path + 'train/', exist_ok=True)
-        # os.makedirs(save_path + 'test/', exist_ok=True)
-        # df = pd.DataFrame(avg_train_metrics)
-        # df.to_csv(save_path + 'train/' + file_name, header=True, index=False, sep='\t', mode='w')
+
         df = pd.DataFrame(avg_test_metrics)
         df.to_csv(save_path + file_name, header=True, index=False, sep='\t', mode='w')
+
+        return avg_test_metrics.iloc[-1]
 
     else:
         # train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label = run_epochs(all_x[train_index], all_labels[train_index], all_x[test_index], all_labels[test_index])
@@ -485,24 +486,27 @@ def mlp(data, config):
         #=====================
         #==report performance
         #=====================
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        #--------train
+        report_train = performance_metrics.report_performances(all_train_label.numpy(),
+                                                        train_pred.numpy(),
+                                                        train_prob.detach().numpy(),
+                                                        get_avg_total=True)
+        #--------test
+        report_test = performance_metrics.report_performances(all_test_label.numpy(),
+                                                       test_pred.numpy(),
+                                                       test_prob.detach().numpy(),
+                                                       get_avg_total=True)
         if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
-            #--------train
-            report = performance_metrics.report_performances(all_train_label.numpy(),
-                                                            train_pred.numpy(),
-                                                            train_prob.detach().numpy(),
-                                                            get_avg_total=True)
-            print(report)
-            #--------test
-            report = performance_metrics.report_performances(all_test_label.numpy(),
-                                                           test_pred.numpy(),
-                                                           test_prob.detach().numpy(),
-                                                           get_avg_total=True)
-            print(report)
+            print(report_train)
+            print(report_test)
+
+        return report_test.iloc[-1]
+
             # report = performance_metrics.report_performances(
             #     y_true=train_label.numpy(),
             #     y_pred=model(train_input).max(1)[1].numpy(),
@@ -783,20 +787,20 @@ def random_forest(data, config, evaluate=False):
         # =====================
         # ==report performance
         # =====================
-        if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
-            report_train = performance_metrics.report_performances(
-                y_true=np.concatenate((label_train, label_test), axis=0),
-                y_pred=pred,
-                y_score=proba,
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
+        report_train = performance_metrics.report_performances(
+            y_true=np.concatenate((label_train, label_test), axis=0),
+            y_pred=pred,
+            y_score=proba,
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+        if args.report_performance:
             print(report_train)
 
     else:
@@ -830,30 +834,31 @@ def random_forest(data, config, evaluate=False):
         # =====================
         # ==performance report
         # =====================
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        import os
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        report_train = performance_metrics.report_performances(
+            y_true=label_train,
+            y_pred=train_rf_predictions,
+            y_score=train_rf_probs,
+            save_path=f'{save_path}train/',
+            file_name=file_name
+        )
+        report_test = performance_metrics.report_performances(
+            y_true=label_test,
+            y_pred=rf_predictions,
+            y_score=rf_probs,
+            save_path=f'{save_path}test/',
+            file_name=file_name
+        )
         if args.report_performance:
-            save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-            file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-            import os
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+            print(report_train)
+            print(report_test)
 
-            report = performance_metrics.report_performances(
-                y_true=label_train,
-                y_pred=train_rf_predictions,
-                y_score=train_rf_probs,
-                save_path=f'{save_path}train/',
-                file_name=file_name
-            )
-            print(report)
-            report = performance_metrics.report_performances(
-                y_true=label_test,
-                y_pred=rf_predictions,
-                y_score=rf_probs,
-                save_path=f'{save_path}test/',
-                file_name=file_name
-            )
-            print(report)
-
+    return report_train.iloc[-1]
 
     #=====================
     #==below code is old plotting and logging style
