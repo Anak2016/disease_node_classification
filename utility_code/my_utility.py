@@ -35,6 +35,29 @@ def setup_essential(ROOT_DIR =None, ignore_root=False):
 #=====================
 #==plotting
 #=====================
+def plot_histogram( data, bins,title, ylim, xlim, endpoint=False, density=False):
+    '''
+
+    :param data:
+    :param bins:
+    :param title:
+    :param ylim: (lower bound, upper bound)
+    :param xlim: (lower bound, upper bound)
+    :param endpoint:
+    :param density:
+    :return:
+    '''
+    freq = np.histogram(data, bins=bins)[0]  # get freq
+    print(f'freq = {freq}')
+    plt.bar(np.arange(len(freq)), freq, align='center', alpha=0.5)
+    np.set_printoptions(precision=3)
+    if ylim is not None:
+        plt.ylim(ylim)
+    if xlim is not None:
+        plt.xlim(xlim)
+    plt.title(title)
+    plt.show()
+
 def plot_figures(config, save_path=None, file_name=None):
     if file_name is not None:
         file_name = file_name.split('.')[:-1]

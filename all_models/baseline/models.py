@@ -159,7 +159,16 @@ def logistic_regression(config=None, emb_name=None):
 
 
 # def svm(x_train,label_train, x_test, label_test, decision_func='ovo'):
-def svm(data, config, decision_func='ovr', verbose=True):
+def svm(data, config=None, decision_func='ovr', verbose=True):
+    '''
+
+    :param data:
+    :param config:
+    :param decision_func:
+    :param verbose:
+    :return:
+        proba: confident over
+    '''
     from sklearn import svm
 
     x_train, label_train = config['train_input'], config['train_label']
@@ -197,7 +206,7 @@ def svm(data, config, decision_func='ovr', verbose=True):
         # pred_train = cross_val_predict(clf, x_train, label_train, cv=int(args.cv)) # cv deafault = 3
 
         proba = cross_val_predict(clf, np.concatenate((x_train, x_test), axis=0), np.concatenate((label_train, label_test), axis=0), cv=int(args.cv), method='predict_proba')
-        pred = proba.argmax(1)
+        pred = proba.argmax(1) # expecting to get the predected class of each instances
 
         f = time.time()
         total = f-s
@@ -214,7 +223,7 @@ def svm(data, config, decision_func='ovr', verbose=True):
             os.makedirs(save_path)
 
         report_test = performance_metrics.report_performances(
-            y_true=np.concatenate((label_train, label_test), axis=0),
+            y_true=np.concatenate((label_train, label_test), axis=0), # is this correct? why train+test?
             y_pred=pred,
             y_score=proba,
             save_path=f'{save_path}train/',
@@ -230,14 +239,22 @@ def svm(data, config, decision_func='ovr', verbose=True):
         print(f"running {svm.__name__} without cross validation ")
         accs = []
         # --------train
-        pred_train = clf.decision_function(x_train).argmax(1)
         proba_train = clf.predict_proba(x_train)
+        # proba_train = clf.decision_function(x_train)
+        pred_train = proba_train.argmax(1)
+        # print(f'predition signle = {pred_train}`')
         # accs.append(accuracy(pred_train, label_train))
 
         # --------test
-        pred_test = clf.decision_function(x_test).argmax(1) # todo Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
-        # accs.append(accuracy(pred_test, label_test))
+        # proba_test = clf.decision_function(x_test) # todo Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
         proba_test = clf.predict_proba(x_test)
+        pred_test = proba_test.argmax(1)
+
+        print(f'predition signle = {pred_test}`')
+        print(f'label_test = {label_test}')
+        # accs.append(accuracy(pred_test, label_test))
+        # proba_test = clf.predict_proba(x_test)
+
         if verbose:
             # print(f"test prediction: {result}")
             print("[train, test] accs")
@@ -272,7 +289,8 @@ def svm(data, config, decision_func='ovr', verbose=True):
             print(report_test)
 
 
-    return report_test.iloc[-1]
+    # return report_test.iloc[-1]
+    return report_test.iloc[-1], clf
 
     # return pred_train, pred_test, accs
 

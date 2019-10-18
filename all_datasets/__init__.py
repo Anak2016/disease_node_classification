@@ -32,6 +32,10 @@ class GeometricDataset(Data):
         self.subgraph = self.dataset.subgraph
         self.graph = self.dataset.graph
 
+        self.num_nodes = self.dataset.num_nodes
+        self.num_genes = self.dataset.num_genes
+        self.num_disease = self.dataset.num_diseases
+
         # -- intialization of variable from self.dataset
         self.labeled_nodes  = self.dataset.labelnodes2idx
 
@@ -172,8 +176,9 @@ class Copd():
         #--------add adj
         self.adj =  self.create_adj(edges, undirected=True) #normalized adj undirected
         self.num_diseases = len(self.genes2idx())
-        self.num_genes = len(self.disease2idx())
+        self.num_genes = len(self.genes2idx())
         self.num_nodes = len(self.nodes2idx())
+        self.num_diseases = len(self.disease2idx())
         # display2screen(len(self.disease2idx()),len(self.genes2idx().keys()), 'line 186')
 
     def get_graph(self, edges, undirected=True):

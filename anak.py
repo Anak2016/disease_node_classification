@@ -102,8 +102,7 @@ def run_node2vec(copd, copd_geometric, time_stamp=args.time_stamp):
         # adj = np.asmatrix(adj)
         # graph = nx.from_numpy_matrix(adj)
         # subgraph = my_utils.get_subgraph_disconnected(graph)[0]
-
-        weighted_adj, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric, edges_weight_option=args.edges_weight_option,plot_shared_gene_dist=False)
+        weighted_adj, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric, used_nodes='gene', edges_weight_option=args.edges_weight_option,plot_shared_gene_dist=False)
         graph = nx.from_numpy_matrix(weighted_adj)
         subgraph = my_utils.get_subgraph_disconnected(graph)[0]
 
@@ -135,7 +134,19 @@ def run_node2vec(copd, copd_geometric, time_stamp=args.time_stamp):
     # display2screen(len(G.nodes)) #2996
     # def save_node2vec_emb(G, save_path=f'data/gene_disease/{args.time_stamp}/processed/embedding/node2vec/',
     #                       EMBEDDING_FILENAME='node2vec_emb.txt', log=True):
-    save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_weight_limit={args.edges_weight_limit}_mask={args.mask_edges}_selfloop.txt" )
+    # if args.self_loop is True:
+
+    save_node2vec_emb(graph,
+                      EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stoch1.txt")
+    #     if args.stochastic_edges:
+    #         save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stoch_selfloop.txt" )
+    #     else:
+    #         save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_selfloop.txt")
+    # else:
+    #     if args.stochastic_edges:
+    #         save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stoch1.txt" )
+    #     else:
+    #         save_node2vec_emb(graph,EMBEDDING_FILENAME=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}.txt")
 
 def bine_copd_label(time_stamp=''):
     # load data in to dataframe

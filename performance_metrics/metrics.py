@@ -30,6 +30,14 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
                             y_pred=model.predict(X_test),
                             y_score=model.predict_proba(X_test))
 
+        report_test = performance_metrics.report_performances(
+            y_true=label_test,
+            y_pred=pred_test,
+            y_score=proba_test,
+            save_path=f'{save_path}test/',
+            file_name=file_name
+        )
+
     :param y_true:
     :param y_pred:
     :param y_score:
@@ -52,7 +60,13 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
         lb.fit(y_true)
 
     #Value counts of predictions
+    #TODO here>> this may be a problem
     labels, cnt = np.unique(y_pred,return_counts=True)
+    all_labels = np.unique(y_true)
+    for i in all_labels:
+        if i not in labels:
+            labels = np.hstack((labels,i))
+            cnt = np.hstack((cnt,0))
 
     # n_classes = len(labels)
     n_classes = len(np.unique(y_true))
@@ -62,7 +76,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
     metrics_summary = precision_recall_fscore_support(
             y_true=y_true,
             y_pred=y_pred,
-            labels=labels)
+            labels=labels) #
 
     '''
     >weight depends on number of positive true per binary confusion matrix. 
@@ -89,18 +103,21 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
     class_report_df['pred'] = pred_cnt # total number of pred of each class
     class_report_df['pred'].iloc[-1] = total
 
-    #--------accuracy
-    true_label_per_class_ind = [np.where(y_true == i)[0] for i in labels]
-    pred_score_per_class = np.array([y_score[i].argmax(1) for i in true_label_per_class_ind])
-    true_label_per_class = np.array([y_true[i] for i in true_label_per_class_ind])
 
-    # class_report_df['acc'] = pd.Series(
-    #     [np.sum(np.equal(i, j)) / j.shape[0] for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
-    class_report_df['acc'] = pd.Series(
-        [np.sum(np.equal(i, j)) for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
-    class_report_df.loc['avg / total']['acc'] =  class_report_df['acc'].sum() / (y_true.shape[0])
-    class_report_df['acc'][:-1] = class_report_df['acc'][:-1].divide(class_report_df['support'][:-1])
     config = {}
+    #--------accuracy
+    if y_score is not None:
+        true_label_per_class_ind = [np.where(y_true == i)[0] for i in labels] # labels of each predicted instances.
+        pred_score_per_class = np.array([y_score[i].argmax(1) for i in true_label_per_class_ind])
+        true_label_per_class = np.array([y_true[i] for i in true_label_per_class_ind])
+
+        # class_report_df['acc'] = pd.Series(
+        #     [np.sum(np.equal(i, j)) / j.shape[0] for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+        class_report_df['acc'] = pd.Series(
+            [np.sum(np.equal(i, j)) for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+        class_report_df.loc['avg / total']['acc'] =  class_report_df['acc'].sum() / (y_true.shape[0])
+        class_report_df['acc'][:-1] = class_report_df['acc'][:-1].divide(class_report_df['support'][:-1])
+
     if not (y_score is None):
         fpr = dict()
         tpr = dict()

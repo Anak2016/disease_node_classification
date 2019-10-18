@@ -267,7 +267,7 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     if edges_weight_option == 'jaccard':
         from edge_weight import jaccard_coeff
         # weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, edges_percent=args.edges_percent)
-        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop)
+        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, weight_limit_percent=args.edges_weight_percent, edges_percent=args.top_percent_edges)
         np.save(f'{save_path}\weighted_adj_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', weighted_adj)
         np.save(f'{save_path}\edges_weight_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', edges_weight)
         print(f'saveing weight_adj and edge_weight (option={edges_weight_option} weight_limit={args.edges_weight_limit}) at {save_path}')
@@ -296,7 +296,8 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     #     weighted_adj = weighted_adj[range(0,geometric_dataset.x.shape[0])]
 
     #--------update copd_geometric_dataset
-    geometric_dataset.edges_index = torch.from_numpy(edges)
+    edges = np.array(edges) # i am not sure why I nee dto convert to array then back to list to convert to tensor
+    geometric_dataset.edges_index = torch.tensor(edges.tolist()) # why can't i convert
     geometric_dataset.edges_weight = torch.from_numpy(edges_weight).type(torch.float64)
     geometric_dataset.x = torch.from_numpy(weighted_adj).type(torch.float64)
 
@@ -415,11 +416,18 @@ def add_features():
                 emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
                 # emb_file = f"{args.emb_name}/{args.emb_name}_emb_subgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
             else:
-                emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
+                # emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
                 # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=True.txt'
                 # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=F_no_selfloop.txt'
                 # emb_file = r'node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1_mask=True_selfloop.txt'
-                # emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph_common_nodes_feat=True{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
+                # emb_file = f"{args.emb_name}/{args.emb_name}_emb_fullgraph_common_nodes_feat=True{args.time_stamp}.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.1_mask=True.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.9_mask=True.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.5_mask=True.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1.0_mask=True.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=None_mask=True_stoch.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt"
+                emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt"
 
         elif args.emb_name == 'bine':
             emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb

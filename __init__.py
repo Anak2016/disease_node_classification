@@ -5,28 +5,234 @@ from my_utils import *
 from all_models import baseline, embedding
 import all_datasets
 
-def repeat_model_run(name=None, num_run=1, model=None, *arguments, **kwargs):
-    MODEL_PERFORMANCE[name] = {}
-    for i in range(num_run):
-        print('=================')
-        print(f'  repeat_num={i}')
-        print('=================')
-        args.seed = args.seed + i
+def get_config(model_name, copd, copd_geometric_dataset=None, emb_name =None, emb_path=None, *arguments, **kwargs):
+
+    if model_name == 'svm':
+        # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,
+        #                                                                                  *arguments, **kwargs)
+        # all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+        # # TODO here>>
+        # copd_geometric_dataset.x = all_x_input
+        if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
+            # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
+            # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
+            all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,*arguments, **kwargs)
+
+            all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+            #TODO here>>
+            copd_geometric_dataset.x = all_x_input
+            config = {
+                "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
+                'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
+                "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+                "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+            }
+        elif args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
+            # config = {
+            #     "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
+            #     'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
+            #     "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+            #     "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+            # }
+            # --------identity matrix or valid emb_name
+            config = {
+                "train_input": copd_geometric_dataset.x[copd_geometric_dataset.train_mask],
+                'test_input': copd_geometric_dataset.x[copd_geometric_dataset.test_mask],
+                "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+                "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+            }
+        else:
+            raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+
+
+
+    return config
+
+def run_ensemble(copd, copd_geometric, config=None):
+    # ensemble_config = {
+    #     'model_1': {
+    #         'name': 'svm',
+    #         'func': {
+    #             "model": baseline.svm,
+    #             "args": [copd_geometric_dataset],
+    #             "kwargs": {"config": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene",
+    #                                             edges_weight_option=args.edges_weight_option)}
+    #         },
+    #         'weight_option': 'jaccard',
+    #         'emb_name': 'node2vec',
+    #         'seed': None,
+    #         'edges_selection': (
+    #             'edges_weight_limit', False,
+    #             'edges_weight_percent', False,
+    #             'top_percent_edges', True, {'stochastic': True},
+    #         )
+    #     }
+    # }
+    assert config is not None , 'config must not be None'
+
+    model_predict = []
+    model_predict_prob = []
+    #=====================
+    #==prepare instances to be predicted
+    #=====================
+    # option1
+    # mask = torch.cat([copd_geometric_dataset.train_mask, copd_geometric_dataset.test_mask])
+    # all_input = copd_geometric_dataset.x[mask]
+
+    # option2
+    # all_input = copd_geometric_dataset.x[:101]
+
+    # TODO here>> change it so that ensemble run through each model
+    # > ensemble contains n number of train models
+    # > ensemble then feed data for model to be predicted
+    # > collect prediction from each data and selected each predicion that have the most vote.
+    for name,model  in config.items():
+
         random.seed(args.seed)
         np.random.seed(args.seed)
         torch.manual_seed(args.seed)
-        # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
-        performance = model(**kwargs)
-        for i in performance.index:
-            MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
-        # print(f'performance = {performance.to_frame}')
+        #=====================
+        #==code below is bad, I can fix it easily by create "preprocessing" class and group all preprocess method into it
+        #=====================
+        # # reassign args of jaccard_coeff function
+        if model.get('edges_selection',None):
+            if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
+                args.stochastic_edges     = model['edges_selection']['stochastic_edges']
+                args.mask_edges           = model['edges_selection']['mask_edges']
+                args.edges_weight_limit   = model['edges_selection']['edges_weight_limit']
+                args.self_loop            = model['edges_selection']['self_loop']
+                args.edges_weight_percent = model['edges_selection']['edges_weight_percent']
+                args.top_percent_edges    = model['edges_selection']['top_percent_edges']
+                func_kwargs = get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+            else:
+                func_kwargs = model['func']['kwargs']
+        else:
+            func_kwargs = model['func']['kwargs']
+
+        args.cv = None
+        #=====================
+        #==get trained model
+        #=====================
+        func = model['func']['model']
+        func_args= model['func']['args']
+        func_kwargs = model['func']['kwargs'] # todo to be deleted
+        performance, trained_model = func(func_args, func_kwargs) # pred must be real prediction
+
+        #TODO here>> why predict_proba does not give the same resutl as predict
+        test_input = copd_geometric_dataset.x[copd_geometric.test_mask]
+        test_labels = copd_geometric_dataset.y[copd_geometric.test_mask]
+
+        pred_proba = trained_model.predict_proba(test_input)
+        # pred_proba = trained_model.decision_function(test_input)
+        pred = pred_proba.argmax(1)
+        print(f'predddddd = {pred}')
+        print(f'labellll = {test_labels}')
+
+        # pred = pred_proba.argmax(1)
+        model_predict_prob.append(pred_proba)
+        model_predict.append(pred)
+
+
+
+    model_predict = np.array(model_predict)
+
+    #=====================
+    #==select most vote
+    #=====================
+    # collect voting output along axis 0 # figure out how??
+    if len(model_predict) > 1:
+        from scipy.stats import mode
+        ensemble_pred = np.apply_along_axis(mode, 0, model_predict)[0][0]
+    else:
+        ensemble_pred = model_predict[0]
+    # ensemble_pred_proba = np.apply_along_axis(mode, 0, model_predict)[0][0]
+
+    # ensemble_pred = ensemble_pred.reshape(2,-1)
+    # ensemble_pred = [i[0][0] for i in ensemble.tolist()]
+
+    #=====================
+    #==print models performance
+    #=====================
+    import performance_metrics
+    save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\ensemble/'
+    file_name = r'model_prediction.txt' # add model and its embedding in the name
+    print('-----ensemble report')
+    report = performance_metrics.report_performances(
+        y_true= test_labels,
+        y_pred=ensemble_pred,
+        y_score=None, # if this is None, Roc is not shown
+        save_path=f'{save_path}',
+        file_name=file_name
+    )
+    print(report)
+    #TODO here>>
+    # get performance of this look at
+
+
+def repeat_model_run(dataset, name=None, num_run=1, model=None, ensemble=None, *arguments, **kwargs):
+    MODEL_PERFORMANCE[name] = {}
+    if ensemble is not None:
+        assert isinstance(int, ensemble), "ensemble must be type in"
+        model_predict = []
+        for loop in ensemble:
+            # model_predict.setdefault(f'model_{loop}',[])
+            for i in range(num_run):
+                print('=================')
+                print(f'  repeat_num={i}')
+                print('=================')
+                args.seed = args.seed + i
+                random.seed(args.seed)
+                np.random.seed(args.seed)
+                torch.manual_seed(args.seed)
+                # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
+                performance, pred = model(**kwargs)
+                model_predict.append(pred)
+                for i in performance.index:
+                    MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
+                # print(f'performance = {performance.to_frame}')
+        model_predict = np.array(model_predict)
+        # collect voting output along axis 0 # figure out how??
+        from scipy.stats import mode
+        ensemble_pred = np.apply_along_axis(mode, 1, model_predict)
+        ensemble_pred = [i[0][0] for i in ensemble.tolist()]
+
+        # #=====================
+        # #==performance
+        # #=====================
+        # save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        # file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}_top_k={args.top_percent_edges}stoch.txt'
+        # import performance_metrics
+        # report_test = performance_metrics.report_performances(
+        #     y_true=dataset.labels,
+        #     y_pred=ensemble_pred,
+        #     # y_score=proba,
+        #     save_path=f'{save_path}train/',
+        #     file_name=file_name
+        # )
+        # # print preformance
+
+    else:
+        for i in range(num_run):
+            print('=================')
+            print(f'  repeat_num={i}')
+            print('=================')
+            args.seed = args.seed + i
+            random.seed(args.seed)
+            np.random.seed(args.seed)
+            torch.manual_seed(args.seed)
+            # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            performance, proba = model(**kwargs)
+            for i in performance.index:
+                MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
+            # print(f'performance = {performance.to_frame}')
 
     # TODO here>> how to change seed per run
     for i in MODEL_PERFORMANCE[name].keys():
-        MODEL_PERFORMANCE[name][i] = mean(MODEL_PERFORMANCE[name][i])
+        MODEL_PERFORMANCE[name][i] = round(mean(MODEL_PERFORMANCE[name][i]),3)
 
     print(f'model= {name}average of {num_run} runs are')
     print(MODEL_PERFORMANCE)
+
 
 if __name__ == "__main__":
 
@@ -36,6 +242,20 @@ if __name__ == "__main__":
     # create_copd_label_content(time_stamp=time_stamp, sep=',')
     # create_copd_label_edges(time_stamp=time_stamp, sep=',')
     # bine_copd_label(time_stamp=time_stamp)
+    #=====================
+    #==args setting
+    #=====================
+
+    if args.edges_weight_limit is not None and args.edges_weight_percent is not None and args.top_percent_edges is not None:
+        raise ValueError('only edges_weight_limit or edges_weight_percent or top_percent_edges can be used at a time')
+    if args.edges_weight_limit is not None and args.edges_weight_percent is not None :
+        raise ValueError('only edges_weight_limit or edges_weight_percent can be used at a time')
+    if args.edges_weight_limit is not None and args.top_percent_edges is not None :
+        raise ValueError('only edges_weight_limit or top_percent_edges can be used at a time')
+    if args.edges_weight_percent is not None and args.top_percent_edges is not None :
+        raise ValueError('only edges_weight_percent or top_percent_edges can be used at a time')
+    # if args.edges_weight_limit is  None and args.edges_weight_percent is None and args.top_percent_edges is None:
+    #     raise ValueError('you must set edges_weight_liit or edges_weight_percent or top_percent_edges ')
 
     #=====================
     #==datasets
@@ -90,10 +310,12 @@ if __name__ == "__main__":
         :param num_run: number of time that experiment will be repeat
         :return:
         '''
+
         if args.run_node2vec:
             run_node2vec(copd, copd_geometric_dataset, args.time_stamp)
 
         if args.run_svm:
+
             if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
                 # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
                 all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
@@ -116,8 +338,13 @@ if __name__ == "__main__":
                 }
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+            # config = get_config('svm',copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
-            repeat_model_run(name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            # repeat_model_run(copd_geometric_dataset, name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            # repeat_model_run(copd_geometric_dataset, name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+
+            svm_runtime = timer(baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            print(f'total running time of baseline.svm == {svm_runtime}')
 
         if args.run_rf:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
@@ -145,10 +372,10 @@ if __name__ == "__main__":
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
-            repeat_model_run(name=f'rf_{args.emb_name}', num_run=num_run, model=baseline.random_forest, data=copd_geometric_dataset,
-                             config=config, evaluate=True)
-            # rf_runtime = timer(baseline.random_forest, data=copd_geometric_dataset, config=config, evaluate=True)
-            # print(f'total running time of baseline.rf == {rf_runtime}')
+            # repeat_model_run(name=f'rf_{args.emb_name}', num_run=num_run, model=baseline.random_forest, data=copd_geometric_dataset,config=config, evaluate=True)
+
+            rf_runtime = timer(baseline.random_forest, data=copd_geometric_dataset, config=config, evaluate=True)
+            print(f'total running time of baseline.rf == {rf_runtime}')
 
 
         if args.run_gnn:
@@ -175,10 +402,10 @@ if __name__ == "__main__":
             #TODO here>> cross validation + common_nodes_feat
 
             # gcn_runtime = timer(embedding.run_GCN,data=copd_geometric_dataset, lr=args.lr,weight_decay=args.weight_decay )
-            repeat_model_run(name=f'gnn_{args.emb_name}', num_run=num_run, model=embedding.GNN(data=copd_geometric_dataset,config=config).run)
+            # repeat_model_run(name=f'gnn_{args.emb_name}', num_run=num_run, model=embedding.GNN(data=copd_geometric_dataset,config=config).run)
 
-            # gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset, config=config).run)
-            # print(f'total running time of baseline.gnn == {gcn_runtime}')
+            gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset, config=config).run)
+            print(f'total running time of baseline.gnn == {gcn_runtime}')
 
         if args.run_mlp:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
@@ -296,10 +523,10 @@ if __name__ == "__main__":
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
             # baseline.mlp(data=copd_geometric_dataset, config=config)
-            repeat_model_run(name=f'mlp_{args.emb_name}', num_run=num_run, model=baseline.mlp, data=copd_geometric_dataset,config=config)
+            # repeat_model_run(name=f'mlp_{args.emb_name}', num_run=num_run, model=baseline.mlp, data=copd_geometric_dataset,config=config)
 
-            # mlp_runtime = timer(baseline.mlp, data=copd_geometric_dataset, config=config)
-            # print(f'total running time of baseline.mlp == {mlp_runtime}')
+            mlp_runtime = timer(baseline.mlp, data=copd_geometric_dataset, config=config)
+            print(f'total running time of baseline.mlp == {mlp_runtime}')
 
         if args.run_lr:
             # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
@@ -326,12 +553,74 @@ if __name__ == "__main__":
                 }
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
-            repeat_model_run(name=f'lr_{args.emb_name}', num_run=num_run, model=baseline.logistic_regression, config=config, emb_name=args.emb_name)
+            # repeat_model_run(name=f'lr_{args.emb_name}', num_run=num_run, model=baseline.logistic_regression, config=config, emb_name=args.emb_name)
 
-            # lr_runtime = timer(baseline.logistic_regression,config, emb_name=args.emb_name)
-            # print(f'total running time of baseline.lr == {lr_runtime}')
-    # for i in range(args.num_run):
-    if args.check_condition is not None:
+            lr_runtime = timer(baseline.logistic_regression,config, emb_name=args.emb_name)
+            print(f'total running time of baseline.lr == {lr_runtime}')
+
+    if args.ensemble:
+
+        ensemble_config = {
+            'model_1':{
+                'name': 'svm',
+                'func':{
+                    "model": baseline.svm,
+                    "args":[copd_geometric_dataset],
+                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, emb_name='node2vec')
+                    # # #-- stoch 0.05
+                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
+                                         emb_name=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt')
+                },
+                'edges_selection':{
+                    'mask_edges': True,
+                    'self_loop': False,
+                    'edges_weight_limit': None,
+                    'edges_weight_percent': None,
+                    'top_percent_edges': 0.05,
+                    'stochastic_edges':True
+                    }
+            },
+            'model_2':{
+                'name': 'svm',
+                'func':{
+                    "model": baseline.svm,
+                    "args":[copd_geometric_dataset],
+                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
+                                         emb_path=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt')
+                },
+                'edges_selection':{
+                    'mask_edges': True,
+                    'self_loop': False,
+                    'edges_weight_limit': None,
+                    'edges_weight_percent': None,
+                    'top_percent_edges': 0.1,
+                    'stochastic_edges':True
+                    }
+            },
+            'model_3':{
+                'name': 'svm',
+                'func':{
+                    "model": baseline.svm,
+                    "args":[copd_geometric_dataset],
+                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
+                                         emb_path=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt')
+                },
+                'edges_selection':{
+                    'mask_edges': True,
+                    'self_loop': False,
+                    'edges_weight_limit': None,
+                    'edges_weight_percent': None,
+                    'top_percent_edges': 0.25,
+                    'stochastic_edges':True
+                    }
+            }
+        }
+        run_ensemble(copd,copd_geometric_dataset, config=ensemble_config)
+
+    elif args.check_condition is not None:
         #--------check same condision for all base model
         for model in args.check_condition:
             if model == "all":
@@ -351,6 +640,7 @@ if __name__ == "__main__":
             if model == 'mlp':
                 args.run_mlp = True
             assert model in ['all', 'svm','lr','rf', 'gnn','mlp'], "selected model to be check is not supported"
+
 
         run_model(args.num_run)
         # rt = timer(run_model)

@@ -65,9 +65,12 @@ parser.add_argument('--run_rf', action='store_true', help="run svm random forest
 
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
-parser.add_argument('--edges_weight_limit', type=float, default=1, help='lower bound of edges weight that will be added')
-parser.add_argument('--edges_percent', type=float, default=1, help='percentage of edges to be selected')
-
+parser.add_argument('--edges_weight_limit', type=float, default=None, help='accepted range from 0 to 1; lower bound of edges weight that will be added')
+parser.add_argument('--edges_weight_percent', type=float, default=None, help='selected edges by percentile. eg 20 percent => select all edges that are less than max value of top 20 percent of the lowest value')
+parser.add_argument('--top_percent_edges', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
+parser.add_argument('--stochastic_edges', action='store_true', help="add k percent edges stocastically")
+# parser.add_argument('--ensemble', type=int, default=None, help="apply ensemble to the chosen models n number of times")
+parser.add_argument('--ensemble', action='store_true', help="apply ensemble to n number of models with independent config")
 parser.add_argument('--mask_edges', action='store_true', help="mask adj matrix with original edges (before edges of the same types are introduced)")
 parser.add_argument('--self_loop', action='store_true', help="add self loop")
 parser.add_argument('--num_run', type=int, default=1, help='number of run to repeat the experiment')

@@ -2,20 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scatch_paper/load_disgenet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/all_datasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_datasets/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/all_models/baseline/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/baseline/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_models/embedding/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/embedding/gnn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/edge_weight/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/performance_metrics/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/performance_metrics/metrics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/todo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utility_code/my_utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/my_utility.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility_code/python_lib_essential.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_code/python_lib_essential.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,23 +43,23 @@
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Gene_Disease_Graph" />
-    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
     <property name="settings.editor.splitter.proportion" value="0.22960725" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn\emb" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
-      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\lr\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\bine" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\07_14_19_46\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\img" />
       <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn\emb" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\processed\embedding\gcn" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\mlp\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
+      <recent name="C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\lr\split=0.7\lr=0.09_d=0.5_wd=0.006\report_performance\test" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -121,7 +118,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main_init" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="main_init" type="PythonConfigurationType" factoryName="Python">
       <module name="disease_node_classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -134,7 +131,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/__init__.py" />
-      <option name="PARAMETERS" value="--check_condition svm --common_nodes_feat gene --edges_weight_option jaccard --cv 3 --num_run 3" />
+      <option name="PARAMETERS" value="--check_condition svm  --report_performance --ensemble" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -164,14 +161,13 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.main_init" />
       <item itemvalue="Python.anak" />
       <item itemvalue="Python.tmp" />
       <item itemvalue="Python.load_disgenet" />
-      <item itemvalue="Python.main_init" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main_init" />
         <item itemvalue="Python.load_disgenet" />
         <item itemvalue="Python.anak" />
         <item itemvalue="Python.tmp" />
@@ -235,7 +231,7 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>336</line>
+          <line>347</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -280,7 +276,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>401</line>
+          <line>412</line>
           <option name="timeStamp" value="280" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -320,27 +316,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>321</line>
+          <line>548</line>
           <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>190</line>
+          <line>417</line>
           <option name="timeStamp" value="452" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>212</line>
+          <line>439</line>
           <option name="timeStamp" value="453" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>233</line>
+          <line>460</line>
           <option name="timeStamp" value="454" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>255</line>
+          <line>482</line>
           <option name="timeStamp" value="455" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -350,12 +346,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>325</line>
+          <line>326</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>237</line>
+          <line>242</line>
           <option name="timeStamp" value="479" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -380,18 +376,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_datasets/__init__.py</url>
-          <line>124</line>
+          <line>128</line>
           <option name="timeStamp" value="595" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/networkx/algorithms/link_prediction.py</url>
           <line>142</line>
           <option name="timeStamp" value="597" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>280</line>
-          <option name="timeStamp" value="635" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/networkx/classes/coreviews.py</url>
@@ -405,44 +396,178 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>106</line>
-          <option name="timeStamp" value="662" />
+          <line>242</line>
+          <option name="timeStamp" value="691" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>236</line>
+          <option name="timeStamp" value="699" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>225</line>
+          <option name="timeStamp" value="702" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>205</line>
+          <option name="timeStamp" value="704" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>345</line>
+          <option name="timeStamp" value="713" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>174</line>
+          <option name="timeStamp" value="727" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>181</line>
+          <option name="timeStamp" value="728" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>269</line>
+          <option name="timeStamp" value="729" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>280</line>
+          <option name="timeStamp" value="730" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>108</line>
+          <option name="timeStamp" value="732" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>63</line>
+          <option name="timeStamp" value="733" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>210</line>
+          <option name="timeStamp" value="736" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>224</line>
+          <option name="timeStamp" value="738" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>271</line>
+          <option name="timeStamp" value="739" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>243</line>
+          <option name="timeStamp" value="740" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
+          <line>292</line>
+          <option name="timeStamp" value="742" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>125</line>
+          <option name="timeStamp" value="744" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="745" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>37</line>
+          <option name="timeStamp" value="746" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/__init__.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="747" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="748" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>147</line>
+          <option name="timeStamp" value="749" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>150</line>
+          <option name="timeStamp" value="750" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/performance_metrics/metrics.py</url>
+          <line>160</line>
+          <option name="timeStamp" value="751" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="added_edges" language="Python" />
-        <watch expression="count_original" language="Python" />
-        <watch expression="count_added_edges" language="Python" />
-        <watch expression="count_all_new_edges" language="Python" />
-        <watch expression="weight" language="Python" />
-        <watch expression="p" language="Python" />
-        <watch expression="u" language="Python" />
-        <watch expression="v" language="Python" />
-        <watch expression="len(x)" language="Python" />
-        <watch expression="G.edges" language="Python" />
-        <watch expression="G.edges(data='jaccard_coeff')" language="Python" />
-        <watch expression="len(added_edges)" language="Python" />
-        <watch expression="weighted_adj_matrix" language="Python" />
-        <watch expression="edges" language="Python" />
-        <watch expression="list(preds)" language="Python" />
-        <watch expression="len(edges_weight)" language="Python" />
-        <watch expression="weighted_adj_matrix.flatten()[weighted_adj_matrix.flatten() !=0 ]" language="Python" />
-        <watch expression="max_weight" language="Python" />
-        <watch expression="weighted_adj" language="Python" />
-        <watch expression="nx.to_numpy_matrix(G).nonzero()[0].shape" language="Python" />
-        <watch expression="weighted_adj_matrix.nonzero()[0].shape" language="Python" />
-        <watch expression="edges.shape" language="Python" />
-        <watch expression="count" language="Python" />
-        <watch expression="dataset.edges" language="Python" />
-        <watch expression="weighted_adj_matrix[(weighted_adj_matrix&lt;1)]" language="Python" />
-        <watch expression="weighted_adj_matrix[(weighted_adj_matrix&lt;1) &amp; (weighted_adj_matrix&gt;= 1e-100)]" language="Python" />
-        <watch expression="edges_weight" language="Python" />
-        <watch expression="__py_debug_temp_var_418936582" />
-        <watch expression="dataset.num_diseases" language="Python" />
-        <watch expression="geometric_dataset.num_diseases" language="Python" />
-        <watch expression="geometric_dataset.edges_index" language="Python" />
+        <watch expression="proba.argmax(1)" language="Python" />
+        <watch expression="args.top_percent_edges" language="Python" />
+        <watch expression="edges_percent" language="Python" />
+        <watch expression="n_classes" language="Python" />
+        <watch expression="roc_auc[&quot;avg / total&quot;]" language="Python" />
+        <watch expression="config" language="Python" />
+        <watch expression="ensemble_pred" language="Python" />
+        <watch expression="all_labels" language="Python" />
+        <watch expression="model.get('edges_selection',None)" language="Python" />
+        <watch expression="all_labels" language="Python" />
+        <watch expression="config" language="Python" />
+        <watch expression="all_x_input.shape" language="Python" />
+        <watch expression="copd_geometric_dataset.train_mask.shape" language="Python" />
+        <watch expression="copd_geometric_dataset.x" language="Python" />
+        <watch expression="all_x_input" language="Python" />
+        <watch expression="tmp.size" language="Python" />
+        <watch expression="[np.where(y_true == i)[0] for i in labels]" language="Python" />
+        <watch expression="np.unique(y_true,return_counts=True)" language="Python" />
+        <watch expression="np.unique(y_pred,return_counts=True)" language="Python" />
+        <watch expression="y_score" language="Python" />
+        <watch expression="y_true" language="Python" />
+        <watch expression="y_score" language="Python" />
+        <watch expression="y_pred" language="Python" />
+        <watch expression="y_score.argmax(1)" language="Python" />
+        <watch expression="[np.where(y_true == i)[0] for i in labels]" language="Python" />
+        <watch expression="trained_model.predict_proba(all_input)" language="Python" />
+        <watch expression="red_proba.argmax(1)" language="Python" />
+        <watch expression="red_proba.argmax(1).argmax(1)" language="Python" />
+        <watch expression="trained_model.predict_proba(all_input).argmax(1)" language="Python" />
+        <watch expression="trained_model.predict(all_input)" language="Python" />
+        <watch expression="trained_model.predict_proba(all_input).argmax(0)" language="Python" />
+        <watch expression="copd_geometric_dataset.x[copd_geometric_dataset.train_mask]" language="Python" />
+        <watch expression="label_train" language="Python" />
+        <watch expression="y_true" language="Python" />
+        <watch expression="test_input" language="Python" />
+        <watch expression="np.unique(y_true)" language="Python" />
+        <watch expression="np.unique(y_true, return_counts=True)" language="Python" />
+        <watch expression="config" language="Python" />
+        <watch expression="np.unique(y_pred,return_counts=True)" language="Python" />
+        <watch expression="y_pred" language="Python" />
+        <watch expression="y_score" language="Python" />
+        <watch expression="labels" language="Python" />
+        <watch expression="model.get(['edges_selectionnn',None])" language="Python" />
+        <watch expression="model.get(['edges_selection',None])" language="Python" />
+        <watch expression="model.get('edges_selection',None)" language="Python" />
+        <watch expression="model.get('edges_selectionnnn',None)" language="Python" />
+        <watch expression="x_test" language="Python" />
+        <watch expression="x_test" />
+        <watch expression="labels" language="Python" />
+        <watch expression="test_input" language="Python" />
       </configuration>
     </watches-manager>
   </component>

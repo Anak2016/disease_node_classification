@@ -1,11 +1,24 @@
 
 conda activate pytorch_python3.7
-
+--check_condition svm  --report_performance --common_nodes_feat gene --edges_weight_option jaccard --cv 3 --num_run 3 --mask_edges --top_percent_edges 0 --stochastic_edges --ensemble
 #todo (final decision, in order )
+# > write ensemble
+#   :
+# > 2 things
+#   : check old result whether edges are added correctly
+#       >> check "number of added edges {var}" # what is expected output??
+#   : use esemble on 3 models with edges added stocastically and compare tis result with the above 2 approach
+#       >> consider using built in scikit learn ensemble
+#   : writing introduction to the research paper using overleaf
+# > speed up the loading process
+#   :check what part can be improve
+# > for edges_percent, add n percent of edges with highest score
+#   : should I use sparse?
+#   : how to do this? sorted by value but get index. use index of the first n percent to create a graph
 # > once finish with todoo inside of jaccard coeff rerun no_emb, gene, and get performance
 # > check if node2vec use edges weight to calculate embedding
 # > equalize distrition to be more throughtly distributed from 0-1
-# > try stocastically added edges depends on its weight.
+# > try stocastically added edges depends on its weighEt.
 # > run top 5, 25, 50, 100 percent of added edges.
 #   : run it for all models
 # > add weight edges
