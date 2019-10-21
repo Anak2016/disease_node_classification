@@ -205,7 +205,8 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
         s = time.time()
         # pred_train = cross_val_predict(clf, x_train, label_train, cv=int(args.cv)) # cv deafault = 3
 
-        proba = cross_val_predict(clf, np.concatenate((x_train, x_test), axis=0), np.concatenate((label_train, label_test), axis=0), cv=int(args.cv), method='predict_proba')
+        # proba = cross_val_predict(clf, np.concatenate((x_train, x_test), axis=0), np.concatenate((label_train, label_test), axis=0), cv=int(args.cv), method='predict_proba')
+        proba = cross_val_predict(clf, np.concatenate((x_train, x_test), axis=0), np.concatenate((label_train, label_test), axis=0), cv=int(args.cv), method='decision_function')
         pred = proba.argmax(1) # expecting to get the predected class of each instances
 
         f = time.time()
@@ -239,15 +240,15 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
         print(f"running {svm.__name__} without cross validation ")
         accs = []
         # --------train
-        proba_train = clf.predict_proba(x_train)
-        # proba_train = clf.decision_function(x_train)
+        # proba_train = clf.predict_proba(x_train)
+        proba_train = clf.decision_function(x_train)
         pred_train = proba_train.argmax(1)
         # print(f'predition signle = {pred_train}`')
         # accs.append(accuracy(pred_train, label_train))
 
         # --------test
-        # proba_test = clf.decision_function(x_test) # todo Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
-        proba_test = clf.predict_proba(x_test)
+        # proba_test = clf.predict_proba(x_test)
+        proba_test = clf.decision_function(x_test) # todo Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
         pred_test = proba_test.argmax(1)
 
         print(f'predition signle = {pred_test}`')

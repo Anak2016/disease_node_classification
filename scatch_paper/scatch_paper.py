@@ -1,83 +1,73 @@
-import os.path as osp
+print(__doc__)
 
-import torch
-import torch.nn.functional as F
-from torch_geometric.datasets import Planetoid
-import torch_geometric.transforms as T
-from torch_geometric.nn import GCNConv, ChebConv  # noqa
+import numpy as np
+from scipy import interp
+import matplotlib.pyplot as plt
 
-dataset = 'Cora'
-path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', dataset)
-dataset = Planetoid(path, dataset, T.NormalizeFeatures())
-data = dataset[0]
+from sklearn import svm, datasets
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import StratifiedKFold
 
-# create Data(edge_index, test_mask, train_mask, val_maask, x, y)
-# edge_index = [2, num_egdes]
-# test_mask = [number of nodes] # number of non zero is == num_test.
-# x = [number of nodes,
-class Net(torch.nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = GCNConv(dataset.num_features, 16, cached=True) #specify input dim and output dim
-        self.conv2 = GCNConv(16, dataset.num_classes, cached=True)
-        # self.conv1 = ChebConv(data.num_features, 16, K=2)
-        # self.conv2 = ChebConv(16, data.num_features, K=2)
+# #############################################################################
+# Data IO and generation
 
-    def forward(self):
-        x, edge_index = data.x, data.edge_index # this is the input of the Net
-        # x = data.x; dim = 2708, 16
-        # edge_index = data.edge_index; dim = [2,10556]
-        # y = label ; dim = 2708
+# Import some data to play with
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+X, y = X[y != 2], y[y != 2]
+n_samples, n_features = X.shape
 
-        # print(x.shape)
-        # print(edge_index.shape)
-        # exit()
-        x = F.relu(self.conv1(x, edge_index)) # conv1(x, edge_index, edge_weight)
-        x = F.dropout(x, training=self.training)
-        x = self.conv2(x, edge_index)
+# Add noisy features
+random_state = np.random.RandomState(0)
+X = np.c_[X, random_state.randn(n_samples, 200 * n_features)]
 
-        return F.log_softmax(x, dim=1)
+# #############################################################################
+# Classification and ROC analysis
 
+# Run classifier with cross-validation and plot ROC curves
+cv = StratifiedKFold(n_splits=6)
+classifier = svm.SVC(kernel='linear', probability=True,
+                     random_state=random_state)
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model, data = Net().to(device), data.to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
+tprs = []
+aucs = []
+mean_fpr = np.linspace(0, 1, 100)
 
+i = 0
+for train, test in cv.split(X, y):
+    probas_ = classifier.fit(X[train], y[train]).predict_proba(X[test])
+    # Compute ROC curve and area the curve
+    fpr, tpr, thresholds = roc_curve(y[test], probas_[:, 1])
+    tprs.append(interp(mean_fpr, fpr, tpr))
+    tprs[-1][0] = 0.0
+    roc_auc = auc(fpr, tpr)
+    aucs.append(roc_auc)
+    plt.plot(fpr, tpr, lw=1, alpha=0.3,
+             label='ROC fold %d (AUC = %0.2f)' % (i, roc_auc))
 
-def train():
-    model.train()
-    optimizer.zero_grad()
+    i += 1
+plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r',
+         label='Chance', alpha=.8)
 
-    # reg_lambda = 1.0
-    # l2_reg = 0
-    # for W in mdl.parameters():
-    #     l2_reg += *W.norm(2)
-    # batch_loss = (1 / N_train) * (y_pred - batch_ys).pow(2).sum() + reg_lambda * l2_reg
-    # ## BACKARD PASS
-    # batch_loss.backward()  # Use autograd to compute the backward pass. Now w will have gradients
+mean_tpr = np.mean(tprs, axis=0)
+mean_tpr[-1] = 1.0
+mean_auc = auc(mean_fpr, mean_tpr)
+std_auc = np.std(aucs)
+plt.plot(mean_fpr, mean_tpr, color='b',
+         label=r'Mean ROC (AUC = %0.2f $\pm$ %0.2f)' % (mean_auc, std_auc),
+         lw=2, alpha=.8)
 
-    # print([w for w in model.parameters()]) # weight and bias of each layer
+std_tpr = np.std(tprs, axis=0)
+tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
+tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
+plt.fill_between(mean_fpr, tprs_lower, tprs_upper, color='grey', alpha=.2,
+                 label=r'$\pm$ 1 std. dev.')
 
-    F.nll_loss(model()[data.train_mask], data.y[data.train_mask]).backward()
-    optimizer.step()
-
-
-def test():
-    model.eval()
-    logits, accs = model(), []
-    for _, mask in data('train_mask', 'val_mask', 'test_mask'):
-        pred = logits[mask].max(1)[1]
-        acc = pred.eq(data.y[mask]).sum().item() / mask.sum().item()
-        accs.append(acc)
-    return accs
-
-if __name__ == "__main__":
-    best_val_acc = test_acc = 0
-    for epoch in range(1, 201):
-        train()
-        train_acc, val_acc, tmp_test_acc = test()
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            test_acc = tmp_test_acc
-        log = 'Epoch: {:03d}, Train: {:.4f}, Val: {:.4f}, Test: {:.4f}'
-        print(log.format(epoch, train_acc, best_val_acc, test_acc))
+plt.xlim([-0.05, 1.05])
+plt.ylim([-0.05, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic example')
+plt.legend(loc="lower right")
+plt.show()

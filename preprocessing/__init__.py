@@ -427,7 +427,9 @@ def add_features():
                 # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1.0_mask=True.txt"
                 # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=None_mask=True_stoch.txt"
                 # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt"
-                emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt"
+                emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt"
+                # emb_file = r"node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt"
 
         elif args.emb_name == 'bine':
             emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
@@ -473,9 +475,17 @@ def add_features():
         # df.to_csv(save_path + 'emb/' + file_gcn_emb, header=True, index=False, sep='\t', mode='w')
         #TODO here>> Is index of emb_path (save by the code) above aranged in order? (0-->2996)
         # > make sure that it is in order.
-        emb_np = pd.read_csv(args.emb_path, sep='\t', header=None).to_numpy()
-        node_idx_col = np.arange(emb_np.shape[0])
-        emb_dict = dict(zip(node_idx_col, emb_np))
+        emb_name = args.emb_path.split('\\')[-1]
+        emb_name = emb_name.split('_')[0]
+        if emb_name == 'node2vec':
+            emb_np = pd.read_csv(args.emb_path, sep=' ', skiprows=1, header=None).to_numpy()
+            df = pd.DataFrame(emb_np[:, 1:], index=emb_np[:, 0])
+            emb_dict = df.to_dict('index')
+            for k, v in emb_dict.items():
+                x = []
+                for k1, v1 in v.items():
+                    x.append(v1)
+                emb_dict[k] = x
 
         # order of node in emb_path preserved. (check gene2idx() for confirmation)
 
@@ -483,5 +493,6 @@ def add_features():
     emb = sorted(emb_dict.items(), key=lambda t: t[0])
     x = np.array([[j for j in i[1]] for i in emb], dtype=np.float)
     x = torch.tensor(x, dtype=torch.float)  # torch.Size([2996, 64])
-
+    # print(x)
+    # exit()
     return x

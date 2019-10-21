@@ -106,17 +106,30 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
 
     config = {}
     #--------accuracy
-    if y_score is not None:
-        true_label_per_class_ind = [np.where(y_true == i)[0] for i in labels] # labels of each predicted instances.
-        pred_score_per_class = np.array([y_score[i].argmax(1) for i in true_label_per_class_ind])
-        true_label_per_class = np.array([y_true[i] for i in true_label_per_class_ind])
 
-        # class_report_df['acc'] = pd.Series(
-        #     [np.sum(np.equal(i, j)) / j.shape[0] for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
-        class_report_df['acc'] = pd.Series(
-            [np.sum(np.equal(i, j)) for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+    true_label_per_class_ind = [np.where(y_true == i)[0] for i in labels] # labels of each predicted instances.
+    if y_score is not None:
+        pred_score_per_class = np.array([y_score[i].argmax(1) for i in true_label_per_class_ind])
+    else:
+        pred_score_per_class = np.array([y_pred[i] for i in true_label_per_class_ind])
+    true_label_per_class = np.array([y_true[i] for i in true_label_per_class_ind])
+
+    # class_report_df['acc'] = pd.Series(
+    #     [np.sum(np.equal(i, j)) / j.shape[0] for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+    class_report_df['acc'] = pd.Series(
+        [np.sum(np.equal(i, j)) for i, j in zip(pred_score_per_class, true_label_per_class)], index=labels)
+
+    if average == 'micro':
+        #TODO here>> do i need to have both line of code below. i feel like i only need one
         class_report_df.loc['avg / total']['acc'] =  class_report_df['acc'].sum() / (y_true.shape[0])
         class_report_df['acc'][:-1] = class_report_df['acc'][:-1].divide(class_report_df['support'][:-1])
+
+    if average == 'macro':
+        #TODO here>> add this
+        class_report_df['acc'][:-1] = class_report_df['acc'][:-1].divide(class_report_df['support'][:-1])
+        class_report_df['avg / total']['acc'] = class_report_df['acc'][:-1].sum() / (y_true.shape[0])
+            # class_report_df.loc['avg / total']['acc'] =
+
 
     if not (y_score is None):
         fpr = dict()
@@ -137,7 +150,6 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
                     'legend': [{"kwargs": {"loc": "lower right"}}],
                     'plot': [{"args": [fpr[label], tpr[label]],
                             "kwargs": {"label": 'ROC curve (area = %0.2f)' % roc_auc[label]}}]
-
                 }
             }
             config.update(fig)
@@ -163,6 +175,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
                     lb.transform(y_true).ravel(),
                     y_score[:, 1].ravel())
             else:
+                #TODO here>> why do I need to convert it to two classes and feed it to roc_curve
                 fpr["avg / total"], tpr["avg / total"], _ = roc_curve(
                         lb.transform(y_true).ravel(),
                         y_score.ravel())

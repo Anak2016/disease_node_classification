@@ -5,21 +5,24 @@ from my_utils import *
 from all_models import baseline, embedding
 import all_datasets
 
-def get_config(model_name, copd, copd_geometric_dataset=None, emb_name =None, emb_path=None, *arguments, **kwargs):
+
+def get_config(model_name, copd, emb_name =None, emb_path=None, *arguments, **kwargs):
 
     if model_name == 'svm':
-        # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,
-        #                                                                                  *arguments, **kwargs)
-        # all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-        # # TODO here>>
-        # copd_geometric_dataset.x = all_x_input
-        if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
+
+        if args.common_nodes_feat != "no":
             # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
             # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
+            #TODO here>>
+            x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+            copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
+                                                                   split=args.split, undirected=not args.directed)
+
+            #TODO here>> create_common_nodes_as_features and normalized_features should be before copd_geometric_dataset because it preprocess data
             all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,*arguments, **kwargs)
 
             all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-            #TODO here>>
+
             copd_geometric_dataset.x = all_x_input
             config = {
                 "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
@@ -27,13 +30,14 @@ def get_config(model_name, copd, copd_geometric_dataset=None, emb_name =None, em
                 "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
                 "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
             }
-        elif args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
-            # config = {
-            #     "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
-            #     'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
-            #     "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
-            #     "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
-            # }
+            return config, copd_geometric_dataset
+
+        if args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
+            # --------create data to be used as args to create Dataset object
+            x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+
+            copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
+                                                                   split=args.split, undirected=not args.directed)
             # --------identity matrix or valid emb_name
             config = {
                 "train_input": copd_geometric_dataset.x[copd_geometric_dataset.train_mask],
@@ -41,46 +45,19 @@ def get_config(model_name, copd, copd_geometric_dataset=None, emb_name =None, em
                 "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
                 "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
             }
-        else:
-            raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+            # print(copd_geometric_dataset.x)
+            print(copd_geometric_dataset.x)
+            return config, copd_geometric_dataset
+
+        raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
 
 
-    return config
-
-def run_ensemble(copd, copd_geometric, config=None):
-    # ensemble_config = {
-    #     'model_1': {
-    #         'name': 'svm',
-    #         'func': {
-    #             "model": baseline.svm,
-    #             "args": [copd_geometric_dataset],
-    #             "kwargs": {"config": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene",
-    #                                             edges_weight_option=args.edges_weight_option)}
-    #         },
-    #         'weight_option': 'jaccard',
-    #         'emb_name': 'node2vec',
-    #         'seed': None,
-    #         'edges_selection': (
-    #             'edges_weight_limit', False,
-    #             'edges_weight_percent', False,
-    #             'top_percent_edges', True, {'stochastic': True},
-    #         )
-    #     }
-    # }
+def run_ensemble(copd,  config=None):
     assert config is not None , 'config must not be None'
 
     model_predict = []
     model_predict_prob = []
-    #=====================
-    #==prepare instances to be predicted
-    #=====================
-    # option1
-    # mask = torch.cat([copd_geometric_dataset.train_mask, copd_geometric_dataset.test_mask])
-    # all_input = copd_geometric_dataset.x[mask]
-
-    # option2
-    # all_input = copd_geometric_dataset.x[:101]
 
     # TODO here>> change it so that ensemble run through each model
     # > ensemble contains n number of train models
@@ -95,35 +72,48 @@ def run_ensemble(copd, copd_geometric, config=None):
         #==code below is bad, I can fix it easily by create "preprocessing" class and group all preprocess method into it
         #=====================
         # # reassign args of jaccard_coeff function
+        if model.get('edges_selection',None) is not None and model.get('emb_path', None) is not None:
+            raise ValueError('only edges_selection or emb_path should be selected')
+        copd_geometric_dataset = None
         if model.get('edges_selection',None):
-            if args.emb_name == "no_feat" and args.common_nodes_feat != "no":
+            args.common_nodes_feat = model['edges_selection']['common_nodes_feat']
+
+            if args.common_nodes_feat != "no":
+
                 args.stochastic_edges     = model['edges_selection']['stochastic_edges']
                 args.mask_edges           = model['edges_selection']['mask_edges']
                 args.edges_weight_limit   = model['edges_selection']['edges_weight_limit']
                 args.self_loop            = model['edges_selection']['self_loop']
                 args.edges_weight_percent = model['edges_selection']['edges_weight_percent']
                 args.top_percent_edges    = model['edges_selection']['top_percent_edges']
-                func_kwargs = get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+
+                func_kwargs, copd_geometric_dataset = get_config(model['name'], copd, used_nodes=args.common_nodes_feat, edges_weight_option=model['edges_selection']['edges_weight_option'])
             else:
-                func_kwargs = model['func']['kwargs']
+                raise ValueError("error in run_ensemble: common_nodes_feat is None")
+        elif model.get('emb_path', None):
+            args.emb_path = model.get('emb_path', None)
+            func_kwargs, copd_geometric_dataset = get_config(model['name'], copd,  emb_path=model['emb_path'])
+        elif model.get('emb_name', None):
+            args.emb_name = model.get('emb_name', 'no_feat')
+            func_kwargs, copd_geometric_dataset = get_config(model['name'], copd, emb_name=model['emb_name'])
         else:
-            func_kwargs = model['func']['kwargs']
+            raise ValueError('func_kwargs is None')
 
         args.cv = None
         #=====================
         #==get trained model
         #=====================
         func = model['func']['model']
-        func_args= model['func']['args']
-        func_kwargs = model['func']['kwargs'] # todo to be deleted
-        performance, trained_model = func(func_args, func_kwargs) # pred must be real prediction
+        # func_args= model['func']['args']
 
+        performance, trained_model = func(copd_geometric_dataset, func_kwargs) # pred must be real prediction
+        print(performance.to_dict())
         #TODO here>> why predict_proba does not give the same resutl as predict
-        test_input = copd_geometric_dataset.x[copd_geometric.test_mask]
-        test_labels = copd_geometric_dataset.y[copd_geometric.test_mask]
+        test_input = copd_geometric_dataset.x[copd_geometric_dataset.test_mask]
+        test_labels = copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
 
-        pred_proba = trained_model.predict_proba(test_input)
-        # pred_proba = trained_model.decision_function(test_input)
+        # pred_proba = trained_model.predict_proba(test_input)
+        pred_proba = trained_model.decision_function(test_input)
         pred = pred_proba.argmax(1)
         print(f'predddddd = {pred}')
         print(f'labellll = {test_labels}')
@@ -158,15 +148,13 @@ def run_ensemble(copd, copd_geometric, config=None):
     file_name = r'model_prediction.txt' # add model and its embedding in the name
     print('-----ensemble report')
     report = performance_metrics.report_performances(
-        y_true= test_labels,
+        y_true= test_labels.numpy(),
         y_pred=ensemble_pred,
         y_score=None, # if this is None, Roc is not shown
         save_path=f'{save_path}',
         file_name=file_name
     )
     print(report)
-    #TODO here>>
-    # get performance of this look at
 
 
 def repeat_model_run(dataset, name=None, num_run=1, model=None, ensemble=None, *arguments, **kwargs):
@@ -245,17 +233,18 @@ if __name__ == "__main__":
     #=====================
     #==args setting
     #=====================
+    if (not args.ensemble) and args.emb_name == 'no_feat' and args.emb_path is None:
+        if args.edges_weight_limit is not None and args.edges_weight_percent is not None and args.top_percent_edges is not None:
+            raise ValueError('only edges_weight_limit or edges_weight_percent or top_percent_edges can be used at a time')
+        if args.edges_weight_limit is not None and args.edges_weight_percent is not None :
+            raise ValueError('only edges_weight_limit or edges_weight_percent can be used at a time')
+        if args.edges_weight_limit is not None and args.top_percent_edges is not None :
+            raise ValueError('only edges_weight_limit or top_percent_edges can be used at a time')
+        if args.edges_weight_percent is not None and args.top_percent_edges is not None :
+            raise ValueError('only edges_weight_percent or top_percent_edges can be used at a time')
+        if args.edges_weight_limit is  None and args.edges_weight_percent is None and args.top_percent_edges is None:
+            raise ValueError('you must set edges_weight_liit or edges_weight_percent or top_percent_edges ')
 
-    if args.edges_weight_limit is not None and args.edges_weight_percent is not None and args.top_percent_edges is not None:
-        raise ValueError('only edges_weight_limit or edges_weight_percent or top_percent_edges can be used at a time')
-    if args.edges_weight_limit is not None and args.edges_weight_percent is not None :
-        raise ValueError('only edges_weight_limit or edges_weight_percent can be used at a time')
-    if args.edges_weight_limit is not None and args.top_percent_edges is not None :
-        raise ValueError('only edges_weight_limit or top_percent_edges can be used at a time')
-    if args.edges_weight_percent is not None and args.top_percent_edges is not None :
-        raise ValueError('only edges_weight_percent or top_percent_edges can be used at a time')
-    # if args.edges_weight_limit is  None and args.edges_weight_percent is None and args.top_percent_edges is None:
-    #     raise ValueError('you must set edges_weight_liit or edges_weight_percent or top_percent_edges ')
 
     #=====================
     #==datasets
@@ -280,17 +269,18 @@ if __name__ == "__main__":
     #=====================
     #==run all data preprocessing
     #=====================
-    #--------create data to be used as args to create Dataset object
-    x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd) # type of embedding and type of datasets is chosen here
+    if not args.ensemble:
+        #--------create data to be used as args to create Dataset object
+        x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd) # type of embedding and type of datasets is chosen here
 
-    #--------add_edges_weight
+        #--------add_edges_weight
 
 
-    #=====================
-    #==Copd_geometric_dataset
-    #=====================
-    #--------create Dataset object to be used with torch model
-    copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x,edges_index=edge_index,y=y, split=args.split, undirected=not args.directed )
+        #=====================
+        #==Copd_geometric_dataset
+        #=====================
+        #--------create Dataset object to be used with torch model
+        copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x,edges_index=edge_index,y=y, split=args.split, undirected=not args.directed )
     # display2screen(copd_geometric_dataset.is_undirected())
     param = {
             #Pseudo-Label
@@ -321,7 +311,7 @@ if __name__ == "__main__":
                 all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
                 all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-
+                copd_geometric_dataset.x = all_x_input
                 config = {
                     "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
                     'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
@@ -338,13 +328,16 @@ if __name__ == "__main__":
                 }
             else:
                 raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+
             # config = get_config('svm',copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
 
             # repeat_model_run(copd_geometric_dataset, name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
             # repeat_model_run(copd_geometric_dataset, name=f'svm_{args.emb_name}', num_run=num_run, model=baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            report_avg, _ = baseline.svm(data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            print(report_avg.to_dict())
 
-            svm_runtime = timer(baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
-            print(f'total running time of baseline.svm == {svm_runtime}')
+            # svm_runtime = timer(baseline.svm, data=copd_geometric_dataset, config=config, verbose=args.verbose)
+            # print(f'total running time of baseline.svm == {svm_runtime}')
 
         if args.run_rf:
             if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
@@ -561,64 +554,99 @@ if __name__ == "__main__":
     if args.ensemble:
 
         ensemble_config = {
-            'model_1':{
-                'name': 'svm',
-                'func':{
-                    "model": baseline.svm,
-                    "args":[copd_geometric_dataset],
-                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
-                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, emb_name='node2vec')
-                    # # #-- stoch 0.05
-                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
-                                         emb_name=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt')
-                },
-                'edges_selection':{
-                    'mask_edges': True,
-                    'self_loop': False,
-                    'edges_weight_limit': None,
-                    'edges_weight_percent': None,
-                    'top_percent_edges': 0.05,
-                    'stochastic_edges':True
-                    }
-            },
+            # 'model_1':{
+            #     'name': 'svm',
+            #     'func':{
+            #         "model": baseline.svm,
+            #         # "args":[copd_geometric_dataset],
+            #         # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
+            #         # "kwargs": get_config("svm", copd, copd_geometric_dataset, emb_name='node2vec')
+            #         # # #-- stoch 0.05
+            #         # "kwargs": get_config("svm", copd, copd_geometric_dataset,
+            #         #                      emb_name=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt')
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.0_mask=True_stoch.txt',
+            #     # "emb_name": r'node2vec',
+            #     # 'edges_selection':{
+            #     #     'common_nodes_feat': 'gene',
+            #     #     'edges_weight_option': 'jaccard',
+            #     #     'mask_edges': True,
+            #     #     'self_loop': False,
+            #     #     'edges_weight_limit': None,
+            #     #     'edges_weight_percent': None,
+            #     #     'top_percent_edges': 0.05,
+            #     #     'stochastic_edges':True
+            #     #     }
+            # },
             'model_2':{
                 'name': 'svm',
                 'func':{
                     "model": baseline.svm,
-                    "args":[copd_geometric_dataset],
-                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
-                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
-                                         emb_path=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt')
                 },
-                'edges_selection':{
-                    'mask_edges': True,
-                    'self_loop': False,
-                    'edges_weight_limit': None,
-                    'edges_weight_percent': None,
-                    'top_percent_edges': 0.1,
-                    'stochastic_edges':True
-                    }
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt',
             },
             'model_3':{
                 'name': 'svm',
                 'func':{
                     "model": baseline.svm,
-                    "args":[copd_geometric_dataset],
-                    # "kwargs": get_config("svm", copd, copd_geometric_dataset, used_nodes="gene", edges_weight_option='jaccard')
-                    "kwargs": get_config("svm", copd, copd_geometric_dataset,
-                                         emb_path=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt')
                 },
-                'edges_selection':{
-                    'mask_edges': True,
-                    'self_loop': False,
-                    'edges_weight_limit': None,
-                    'edges_weight_percent': None,
-                    'top_percent_edges': 0.25,
-                    'stochastic_edges':True
-                    }
-            }
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt',
+            },
+            # 'model_4': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt',
+            # },
+            # 'model_5': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1.0_mask=True.txt',
+            # },
+            'model_6': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.9_mask=True.txt',
+            },
+            # 'model_7': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.6_mask=True.txt',
+            # },
+            # 'model_8': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.5_mask=True.txt',
+            #
+            # },
+            # 'model_9': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.25_mask=True.txt',
+            #
+            # },
+            # 'model_10': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.1_mask=True.txt',
+            #
+            # },
+
         }
-        run_ensemble(copd,copd_geometric_dataset, config=ensemble_config)
+        run_ensemble(copd, config=ensemble_config)
 
     elif args.check_condition is not None:
         #--------check same condision for all base model

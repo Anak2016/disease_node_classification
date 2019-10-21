@@ -118,6 +118,8 @@ def create_edges_dict(edges=None, use_nodes=None):
         for disease, gene in edges:
             adj_list[gene].append({disease:'1'})
             nodes_with_shared_genes[gene].append(disease)
+    else:
+        raise ValueError('use_nodes must be all, gene or disease')
 
     return adj_list, nodes_with_shared_genes
 
