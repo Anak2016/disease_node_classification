@@ -267,7 +267,10 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     if edges_weight_option == 'jaccard':
         from edge_weight import jaccard_coeff
         # weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, edges_percent=args.edges_percent)
-        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, weight_limit_percent=args.edges_weight_percent, edges_percent=args.top_percent_edges)
+        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop,
+                                                          weight_limit_percent=args.edges_weight_percent, top_edges_percent=args.top_percent_edges, bottom_edges_percent=args.bottom_percent_edges,
+                                                          shared_nodes_random_edges_percent=args.shared_nodes_random_edges_percent,all_nodes_random_edges_percent=args.all_nodes_random_edges_percent,
+                                                          top_bottom_percent=args.top_bottom_percent_edges)
         np.save(f'{save_path}\weighted_adj_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', weighted_adj)
         np.save(f'{save_path}\edges_weight_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', edges_weight)
         print(f'saveing weight_adj and edge_weight (option={edges_weight_option} weight_limit={args.edges_weight_limit}) at {save_path}')
@@ -345,12 +348,14 @@ def merge_onehot(onehot_matrix, geometric_dataset):
 
 def normalize_features(mx):
     """
-        Row-normalize sparse matrix
+        # Row-normalize sparse matrix
+        col-normalize sparse matrix
     :param: mx: csr_matrix
     :return mx: numpy array
     """
 
-    rowsum = np.array(mx.sum(1))
+    # rowsum = np.array(mx.sum(1))
+    rowsum = np.array(mx.sum(0))
     r_inv = np.power(rowsum, -1).flatten()
     r_inv[np.isinf(r_inv)] = 0.
     r_mat_inv = sp.diags(r_inv)
@@ -477,15 +482,15 @@ def add_features():
         # > make sure that it is in order.
         emb_name = args.emb_path.split('\\')[-1]
         emb_name = emb_name.split('_')[0]
-        if emb_name == 'node2vec':
-            emb_np = pd.read_csv(args.emb_path, sep=' ', skiprows=1, header=None).to_numpy()
-            df = pd.DataFrame(emb_np[:, 1:], index=emb_np[:, 0])
-            emb_dict = df.to_dict('index')
-            for k, v in emb_dict.items():
-                x = []
-                for k1, v1 in v.items():
-                    x.append(v1)
-                emb_dict[k] = x
+        # if emb_name == 'node2vec':
+        emb_np = pd.read_csv(args.emb_path, sep=' ', skiprows=1, header=None).to_numpy()
+        df = pd.DataFrame(emb_np[:, 1:], index=emb_np[:, 0])
+        emb_dict = df.to_dict('index')
+        for k, v in emb_dict.items():
+            x = []
+            for k1, v1 in v.items():
+                x.append(v1)
+            emb_dict[k] = x
 
         # order of node in emb_path preserved. (check gene2idx() for confirmation)
 

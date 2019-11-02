@@ -78,6 +78,31 @@
             </PaintGroupHighlightMap>
           </value>
         </entry>
+        <entry key="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/sklearn/metrics/classification.py">
+          <value>
+            <PaintGroupHighlightMap>
+              <option name="paintGroups">
+                <map>
+                  <entry key="0">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                  <entry key="1">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                  <entry key="2">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PaintGroupHighlightMap>
+          </value>
+        </entry>
         <entry key="$USER_HOME$/AppData/Local/Continuum/anaconda3/envs/pytorch_python3.7/Lib/site-packages/torch_geometric/nn/conv/gcn_conv.py">
           <value>
             <PaintGroupHighlightMap>
@@ -829,6 +854,31 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/preprocessing/node similarity.py">
+          <value>
+            <PaintGroupHighlightMap>
+              <option name="paintGroups">
+                <map>
+                  <entry key="0">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                  <entry key="1">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                  <entry key="2">
+                    <value>
+                      <EditorHighlightsForPaintGroup />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PaintGroupHighlightMap>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/run_embedding.py">
           <value>
             <PaintGroupHighlightMap>
               <option name="paintGroups">

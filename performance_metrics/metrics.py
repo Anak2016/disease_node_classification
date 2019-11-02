@@ -79,7 +79,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
             labels=labels) #
 
     '''
-    >weight depends on number of positive true per binary confusion matrix. 
+    >weight depends on number of positive true per binary confusion matrix. (one vs all) 
     >(there are (n choose 2) number of confusion matrix where n is number of classes in multiple class problems)
     >formular of average='weighted' is shown below.
          (value of measurment_metric of class i) * (number of positive true label.) / (number of all classes) 
@@ -135,6 +135,7 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
         fpr = dict()
         tpr = dict()
         roc_auc = dict()
+        labels = sorted(labels)
         for label_it, label in enumerate(labels):
             fpr[label], tpr[label], _ = roc_curve(
                 (y_true == label).astype(int),

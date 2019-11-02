@@ -1,6 +1,8 @@
 
 conda activate pytorch_python3.7
 --check_condition svm  --report_performance --common_nodes_feat gene --edges_weight_option jaccard --cv 3 --num_run 3 --mask_edges --top_percent_edges 0 --stochastic_edges --ensemble
+--run_node2vec  --report_performance --common_nodes_feat gene --edges_weight_option jaccard --cv 3 --num_run 3 --mask_edges --top_percent_edges 0.05 --stochastic_edges
+Computing transition probabilities:   0%|          | 0/2996 [00:00<?, ?it/s]save node2vec emb to data/gene_disease/07_14_19_46/processed/embedding/node2vec/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.4_mask=True_stoch2.txt
 #todo (final decision, in order )
 # > write ensemble
 #   :

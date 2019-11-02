@@ -31,6 +31,7 @@ parser.add_argument('--run_lr', action='store_true', help='run logistic regressi
 parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
 parser.add_argument('--run_gnn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
 parser.add_argument('--run_node2vec', action='store_true', help='run node2vec on raw copd data.')
+parser.add_argument('--run_embedding', action='store_true', help="run embedding with differnt config at one time.")
 parser.add_argument('--run_gcn_on_disease_graph', action='store_true', help='run gcn on disease only graph where edges between diseases are form iff they share at least 1 gene')
 parser.add_argument('--th', default=200, help='amount of shared gene requires to form an edge in disease graph')
 
@@ -65,9 +66,14 @@ parser.add_argument('--run_rf', action='store_true', help="run svm random forest
 
 #-- utilities
 parser.add_argument('--seed', type=int, default=72, help='Random seed.')
+parser.add_argument('--index', type=int, default=None, help='index to anything eg. index for naming files')
 parser.add_argument('--edges_weight_limit', type=float, default=None, help='accepted range from 0 to 1; lower bound of edges weight that will be added')
 parser.add_argument('--edges_weight_percent', type=float, default=None, help='selected edges by percentile. eg 20 percent => select all edges that are less than max value of top 20 percent of the lowest value')
 parser.add_argument('--top_percent_edges', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
+parser.add_argument('--bottom_percent_edges', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
+parser.add_argument('--top_bottom_percent_edges', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
+parser.add_argument('--shared_nodes_random_edges_percent', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
+parser.add_argument('--all_nodes_random_edges_percent', type=float, default=None, help='accepted range from 0 to 1; percentage of edges to be selected')
 parser.add_argument('--stochastic_edges', action='store_true', help="add k percent edges stocastically")
 # parser.add_argument('--ensemble', type=int, default=None, help="apply ensemble to the chosen models n number of times")
 parser.add_argument('--ensemble', action='store_true', help="apply ensemble to n number of models with independent config")

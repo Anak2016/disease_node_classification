@@ -30,7 +30,7 @@ def get_config(model_name, copd, emb_name =None, emb_path=None, *arguments, **kw
                 "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
                 "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
             }
-            return config, copd_geometric_dataset
+            return config, copd_geometric_dataset, all_x_input
 
         if args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
             # --------create data to be used as args to create Dataset object
@@ -47,7 +47,7 @@ def get_config(model_name, copd, emb_name =None, emb_path=None, *arguments, **kw
             }
             # print(copd_geometric_dataset.x)
             print(copd_geometric_dataset.x)
-            return config, copd_geometric_dataset
+            return config, copd_geometric_dataset, None
 
         raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
@@ -86,16 +86,19 @@ def run_ensemble(copd,  config=None):
                 args.self_loop            = model['edges_selection']['self_loop']
                 args.edges_weight_percent = model['edges_selection']['edges_weight_percent']
                 args.top_percent_edges    = model['edges_selection']['top_percent_edges']
+                args.bottom_percent_edges    = model['edges_selection']['bottom_percent_edges']
+                args.shared_nodes_random_edges_percent    = model['edges_selection']['shared_nodes_random_edges_percent']
+                args.all_nodes_random_edges_percent    = model['edges_selection']['all_nodes_random_edges_percent']
 
-                func_kwargs, copd_geometric_dataset = get_config(model['name'], copd, used_nodes=args.common_nodes_feat, edges_weight_option=model['edges_selection']['edges_weight_option'])
+                func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, used_nodes=args.common_nodes_feat, edges_weight_option=model['edges_selection']['edges_weight_option'])
             else:
                 raise ValueError("error in run_ensemble: common_nodes_feat is None")
         elif model.get('emb_path', None):
             args.emb_path = model.get('emb_path', None)
-            func_kwargs, copd_geometric_dataset = get_config(model['name'], copd,  emb_path=model['emb_path'])
+            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,  emb_path=model['emb_path'])
         elif model.get('emb_name', None):
             args.emb_name = model.get('emb_name', 'no_feat')
-            func_kwargs, copd_geometric_dataset = get_config(model['name'], copd, emb_name=model['emb_name'])
+            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, emb_name=model['emb_name'])
         else:
             raise ValueError('func_kwargs is None')
 
@@ -115,8 +118,6 @@ def run_ensemble(copd,  config=None):
         # pred_proba = trained_model.predict_proba(test_input)
         pred_proba = trained_model.decision_function(test_input)
         pred = pred_proba.argmax(1)
-        print(f'predddddd = {pred}')
-        print(f'labellll = {test_labels}')
 
         # pred = pred_proba.argmax(1)
         model_predict_prob.append(pred_proba)
@@ -125,20 +126,31 @@ def run_ensemble(copd,  config=None):
 
 
     model_predict = np.array(model_predict)
+    model_predict_prob = np.array(model_predict_prob)
 
     #=====================
     #==select most vote
     #=====================
     # collect voting output along axis 0 # figure out how??
-    if len(model_predict) > 1:
-        from scipy.stats import mode
+    from scipy.stats import mode
+    if model_predict.shape[0] > 1:
+        ensemble_pred_prob = model_predict_prob.mean(axis = 0) # check dimension
+    else:
+        ensemble_pred_prob = model_predict_prob[0]
+
+    if model_predict.shape[0] > 1:
         ensemble_pred = np.apply_along_axis(mode, 0, model_predict)[0][0]
     else:
         ensemble_pred = model_predict[0]
     # ensemble_pred_proba = np.apply_along_axis(mode, 0, model_predict)[0][0]
-
     # ensemble_pred = ensemble_pred.reshape(2,-1)
     # ensemble_pred = [i[0][0] for i in ensemble.tolist()]
+
+    #TODO here>> check test label = 0, no prediction => AUC should be zero ( Do i understnad it correct or value of AUC where there is no pred could be more than 0 )
+    #=====================
+    #==create y_score for
+    #=====================
+    # emsemble_pred
 
     #=====================
     #==print models performance
@@ -150,7 +162,7 @@ def run_ensemble(copd,  config=None):
     report = performance_metrics.report_performances(
         y_true= test_labels.numpy(),
         y_pred=ensemble_pred,
-        y_score=None, # if this is None, Roc is not shown
+        y_score=ensemble_pred_prob, # if this is None, Roc is not shown
         save_path=f'{save_path}',
         file_name=file_name
     )
@@ -233,17 +245,17 @@ if __name__ == "__main__":
     #=====================
     #==args setting
     #=====================
-    if (not args.ensemble) and args.emb_name == 'no_feat' and args.emb_path is None:
-        if args.edges_weight_limit is not None and args.edges_weight_percent is not None and args.top_percent_edges is not None:
-            raise ValueError('only edges_weight_limit or edges_weight_percent or top_percent_edges can be used at a time')
-        if args.edges_weight_limit is not None and args.edges_weight_percent is not None :
-            raise ValueError('only edges_weight_limit or edges_weight_percent can be used at a time')
-        if args.edges_weight_limit is not None and args.top_percent_edges is not None :
-            raise ValueError('only edges_weight_limit or top_percent_edges can be used at a time')
-        if args.edges_weight_percent is not None and args.top_percent_edges is not None :
-            raise ValueError('only edges_weight_percent or top_percent_edges can be used at a time')
-        if args.edges_weight_limit is  None and args.edges_weight_percent is None and args.top_percent_edges is None:
-            raise ValueError('you must set edges_weight_liit or edges_weight_percent or top_percent_edges ')
+    # if (not args.ensemble) and args.emb_name == 'no_feat' and args.emb_path is None:
+    #     if args.edges_weight_limit is not None and args.edges_weight_percent is not None and args.top_percent_edges is not None:
+    #         raise ValueError('only edges_weight_limit or edges_weight_percent or top_percent_edges can be used at a time')
+    #     if args.edges_weight_limit is not None and args.edges_weight_percent is not None :
+    #         raise ValueError('only edges_weight_limit or edges_weight_percent can be used at a time')
+    #     if args.edges_weight_limit is not None and args.top_percent_edges is not None :
+    #         raise ValueError('only edges_weight_limit or top_percent_edges can be used at a time')
+    #     if args.edges_weight_percent is not None and args.top_percent_edges is not None :
+    #         raise ValueError('only edges_weight_percent or top_percent_edges can be used at a time')
+    #     if args.edges_weight_limit is  None and args.edges_weight_percent is None and args.top_percent_edges is None:
+    #         raise ValueError('you must set edges_weight_liit or edges_weight_percent or top_percent_edges ')
 
 
     #=====================
@@ -554,7 +566,7 @@ if __name__ == "__main__":
     if args.ensemble:
 
         ensemble_config = {
-            # 'model_1':{
+            # 'model_0':{
             #     'name': 'svm',
             #     'func':{
             #         "model": baseline.svm,
@@ -565,83 +577,158 @@ if __name__ == "__main__":
             #         # "kwargs": get_config("svm", copd, copd_geometric_dataset,
             #         #                      emb_name=r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt')
             #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.0_mask=True_stoch.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochhhhhhhhhhh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stoch0.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_new\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\unnormalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\unnormalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stochh1.txt',
+            #     # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True_stochh1.txt',
             #     # "emb_name": r'node2vec',
-            #     # 'edges_selection':{
-            #     #     'common_nodes_feat': 'gene',
-            #     #     'edges_weight_option': 'jaccard',
-            #     #     'mask_edges': True,
-            #     #     'self_loop': False,
-            #     #     'edges_weight_limit': None,
-            #     #     'edges_weight_percent': None,
-            #     #     'top_percent_edges': 0.05,
-            #     #     'stochastic_edges':True
-            #     #     }
+            #     'edges_selection':{
+            #                         'common_nodes_feat': 'gene',
+            #                         'edges_weight_option': 'jaccard',
+            #                         'mask_edges': True,
+            #                         'self_loop': False,
+            #                         'edges_weight_limit': None,
+            #                         'edges_weight_percent': None,
+            #                         'top_percent_edges': None,
+            #                         'bottom_percent_edges': 0.05,
+            #                         'stochastic_edges':True,
+            #                         'shared_nodes_random_edges_percent': None,
+            #                         'all_nodes_random_edges_percent': None,
+            #                         }
+            # },
+            # 'model_1':{
+            #     'name': 'svm',
+            #     'func':{
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_bottom_k=0.05_mask=True_stochh0.txt',
             # },
             'model_2':{
                 'name': 'svm',
                 'func':{
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.05_mask=True_stoch.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True0.txt',
             },
             'model_3':{
                 'name': 'svm',
                 'func':{
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.1_mask=True_stoch.txt',
+                # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stoch4.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True1.txt',
             },
-            # 'model_4': {
-            #     'name': 'svm',
-            #     'func': {
-            #         "model": baseline.svm,
-            #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_top_k=0.25_mask=True_stoch.txt',
-            # },
-            # 'model_5': {
-            #     'name': 'svm',
-            #     'func': {
-            #         "model": baseline.svm,
-            #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=1.0_mask=True.txt',
-            # },
+            'model_4': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True2.txt',
+
+            },
+            'model_5': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True3.txt',
+            },
             'model_6': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.9_mask=True.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True4.txt',
             },
-            # 'model_7': {
+            'model_7': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True5.txt',
+            },
+            'model_8': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True6.txt',
+
+            },
+            'model_9': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True7.txt',
+
+            },
+            'model_10': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True8.txt',
+
+            },
+            'model_11': {
+                'name': 'svm',
+                'func': {
+                    "model": baseline.svm,
+                },
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True9.txt',
+            },
+            # 'model_12': {
             #     'name': 'svm',
             #     'func': {
             #         "model": baseline.svm,
             #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.6_mask=True.txt',
-            # },
-            # 'model_8': {
-            #     'name': 'svm',
-            #     'func': {
-            #         "model": baseline.svm,
-            #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.5_mask=True.txt',
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh5.txt',
             #
             # },
-            # 'model_9': {
+            # 'model_13': {
             #     'name': 'svm',
             #     'func': {
             #         "model": baseline.svm,
             #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.25_mask=True.txt',
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh6.txt',
             #
             # },
-            # 'model_10': {
+            # 'model_14': {
             #     'name': 'svm',
             #     'func': {
             #         "model": baseline.svm,
             #     },
-            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_jaccard_weight_limit=0.1_mask=True.txt',
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh7.txt',
+            #
+            # },
+            # 'model_15': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh8.txt',
+            #
+            # },
+            # 'model_16': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh9.txt',
+            #
+            # },
+            # 'model_17': {
+            #     'name': 'svm',
+            #     'func': {
+            #         "model": baseline.svm,
+            #     },
+            #     "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\normalized_node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.25_mask=True_stochh3.txt',
             #
             # },
 
@@ -652,6 +739,7 @@ if __name__ == "__main__":
         #--------check same condision for all base model
         for model in args.check_condition:
             if model == "all":
+                args.run_svm = True
                 args.run_svm = True
                 args.run_lr = True
                 args.run_rf = True

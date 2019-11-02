@@ -1,6 +1,6 @@
 
-Mpython:S1481é"/Remove the unused local variable "json_object".(¨ŞÖÂıÿÿÿÿ
-Hpython:S1481ë"/Remove the unused local variable "json_object".(ƒË¿“
 ppython:S117"TRename this parameter "ROOT_DIR" to match the regular expression ^[_a-z][a-z0-9_]*$.(ø¤êşÿÿÿÿ
-ypython:S3776Š"TRefactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.(Î°°şÿÿÿÿ8¸œÓù×-
-spython:S3776&"TRefactor this function to reduce its Cognitive Complexity from 39 to the 15 allowed.(—´ş8ôÌüºÓ-
+Mpython:S1481Š"/Remove the unused local variable "json_object".(¨ŞÖÂıÿÿÿÿ
+Hpython:S1481Œ"/Remove the unused local variable "json_object".(ƒË¿“
+spython:S3776="TRefactor this function to reduce its Cognitive Complexity from 39 to the 15 allowed.(—´ş8ôÌüºÓ-
+ypython:S3776¡"TRefactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.(Î°°şÿÿÿÿ8¸œÓù×-

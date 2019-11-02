@@ -1,0 +1,11 @@
+
+Mpython:S1481N")Remove the unused local variable "count".(óÿÑ—øÿÿÿÿ8ëƒåÛ-
+Tpython:S1066œ"/Merge this if statement with the enclosing one.(¬Ùÿÿÿÿÿ8—¹¹ÑÜ-
+Lpython:S1481¶",Remove the unused local variable "max_freq".(Óıİı8ßåÌÜ-
+Tpython:S1481L"5Remove the unused local variable "count_added_edges".(¤î°8ëƒåÛ-
+xpython:S3776"TRefactor this function to reduce its Cognitive Complexity from 56 to the 15 allowed.(ŒïÂëøÿÿÿÿ8š•«¢Û-
+Qpython:S1481J"2Remove the unused local variable "count_original".(€â««8ëƒåÛ-
+vpython:S107"SFunction "jaccard_coeff" has 10 parameters, which is greater than the 7 authorized.(ŒïÂëøÿÿÿÿ8×”‡©Û-
+Npython:S1481I"/Remove the unused local variable "num_disease".(ÂÅ†è8ëƒåÛ-
+Mpython:S1481~")Remove the unused local variable "count".(’»õìüÿÿÿÿ8ùë×éß-
+[python:S1481K"7Remove the unused local variable "count_all_new_edges".(¯öæşÿÿÿÿ8ëƒåÛ-

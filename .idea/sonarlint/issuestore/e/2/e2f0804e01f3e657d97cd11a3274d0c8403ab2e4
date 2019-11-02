@@ -1,14 +1,14 @@
 
-Lpython:S1481í",Remove the unused local variable "SAGEConv".(ó•¶8ß·âù×-
-Ppython:S1481‘"0Remove the unused local variable "hidden_sizes".(óÊ¾«8ß·âù×-
-Tpython:S1656ß"/Remove or correct this useless self-assignment.(µÌœÖüÿÿÿÿ8ß·âù×-
-ipython:S117@"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÉÂïøÿÿÿÿ
-|python:S117ï"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ8ß·âù×-
-Lpython:S1481í",Remove the unused local variable "ChebConv".(ó•¶8ß·âù×-
 Jpython:S1481;"-Remove the unused local variable "save_file".(ŞÁÆ­úÿÿÿÿ
-tpython:S3776ƒ"TRefactor this function to reduce its Cognitive Complexity from 72 to the 15 allowed.(ºÁß‹8ß·âù×-
+ipython:S117@"MRename this parameter "G" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÉÂïøÿÿÿÿ
+Tpython:S1656á"/Remove or correct this useless self-assignment.(µÌœÖüÿÿÿÿ8ß·âù×-
+Tpython:S1066Î"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ8ß·âù×-
+Kpython:S1481ï"+Remove the unused local variable "GATConv".(ó•¶8ß·âù×-
+|python:S117ñ"XRename this local variable "T_param" to match the regular expression ^[_a-z][a-z0-9_]*$.(°ÄÖÙøÿÿÿÿ8ß·âù×-
+Ppython:S1481“"0Remove the unused local variable "hidden_sizes".(óÊ¾«8ß·âù×-
+Tpython:S1066Å"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ8ß·âù×-
+tpython:S3776…"TRefactor this function to reduce its Cognitive Complexity from 72 to the 15 allowed.(ºÁß‹8ß·âù×-
+Mpython:S1656à"/Remove or correct this useless self-assignment.(½ÜˆÊûÿÿÿÿ
 Jpython:S1481""-Remove the unused local variable "save_file".(ğØè°ûÿÿÿÿ
-Mpython:S1656Ş"/Remove or correct this useless self-assignment.(½ÜˆÊûÿÿÿÿ
-Tpython:S1066Ã"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ8ß·âù×-
-Kpython:S1481í"+Remove the unused local variable "GATConv".(ó•¶8ß·âù×-
-Tpython:S1066Ì"/Merge this if statement with the enclosing one.(û¢Ëøÿÿÿÿ8ß·âù×-
+Lpython:S1481ï",Remove the unused local variable "SAGEConv".(ó•¶8ß·âù×-
+Lpython:S1481ï",Remove the unused local variable "ChebConv".(ó•¶8ß·âù×-
