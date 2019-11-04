@@ -312,8 +312,92 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     weighted_adj_matrix[j, i] = w  # todo
             print(' ')
         else:
-            # stochastic is not applied
-            pass
+            ind = added_edges
+
+            low_to_high = tmp
+            high_to_low = tmp[::-1]
+
+            #=====================
+            #==picked bottom_k
+            #=====================
+            # tmp = np.array([i for i in tmp.tolist()[0]][::-1])[:num_selected]  # 5254;
+
+            # if tmp is not None:
+            if len(tmp):
+                max_val = np.amax(low_to_high[:bottom_num_selected])
+                min_val = np.amin(high_to_low[:top_num_selected])
+
+                # --------select all edges that have value more than threshold
+                # bottom_num_left = bottom_num_selected - tmp[tmp < max_val].shape[0]  # num of edges  to be added.
+                # top_num_left = top_num_selected - tmp[tmp > min_val].shape[0]  # num of edges  to be added.
+                bottom_num_left = bottom_num_selected - tmp[tmp < max_val].shape[0]  # num of edges  to be added.
+                max_val_left = tmp[tmp == max_val].shape[0]
+                top_num_left = top_num_selected - tmp[tmp > min_val].shape[0]  # num of edges  to be added.
+                min_val_left = tmp[tmp == min_val].shape[0]
+
+                # if bottom_num_left > 1 or top_num_left > 1 :
+                if max_val_left > 1 or min_val_left > 1 :
+                    max_th_edges = [] # edges with value == thresh hold
+                    max_th_edges_weight = []
+                    min_th_edges = [] # edges with value == thresh hold
+                    min_th_edges_weight = []
+
+                    csr = csr_matrix(weighted_adj_matrix)
+                    coo = csr.tocoo() # too lazy to import
+                    for i,j,data in zip(coo.row, coo.col,coo.data):
+                        # if data == min_val:
+                        if data == max_val:
+                            if j >= i: # garantee to have unique edges (independent of direction; i->j and j<-i is the same edges)
+                                max_th_edges.append([i,j])
+                                max_th_edges_weight.append(data)
+                        if data == min_val:
+                            if j >= i: # garantee to have unique edges (independent of direction; i->j and j<-i is the same edges)
+                                min_th_edges.append([i,j])
+                                min_th_edges_weight.append(data)
+
+                    weighted_adj_matrix = np.where((weighted_adj_matrix < max_val) | (weighted_adj_matrix > min_val), weighted_adj_matrix, 0) # add edges with value > threshold
+
+                    #--------picked value == threshold randomly
+                    # if bottom_num_left > 1:
+                    if min_val_left > 1:
+                        max_picked_edges = np.random.choice(np.arange(len(max_th_edges)), bottom_num_left, p=np.ones(len(max_th_edges))/len(max_th_edges), replace=False)
+                        # max_picked_edges = np.random.choice(np.arange(len(max_th_edges)), max_val_left, p=np.ones(len(max_th_edges))/len(max_th_edges), replace=False)
+                        max_th_edges = np.array(max_th_edges)
+                        max_th_edges_weight = np.array(max_th_edges_weight)
+                        # picked_edges = np.random.choice(np.arange(num_left), num_left, p=np.ones(num_left)/num_left)
+                        max_th_edges_weight = max_th_edges_weight[max_picked_edges]
+                        max_picked_edges = max_th_edges[max_picked_edges, : ] # dim = (number of edges,2)
+
+                        weighted_adj_matrix[max_picked_edges.T[0], max_picked_edges.T[1]] = max_th_edges_weight
+                        weighted_adj_matrix[max_picked_edges.T[1], max_picked_edges.T[0]] = max_th_edges_weight
+
+                    # if top_num_left > 1:
+                    if min_val_left > 1:
+                        min_picked_edges = np.random.choice(np.arange(len(min_th_edges)), top_num_left, p=np.ones(len(min_th_edges))/len(min_th_edges), replace=False)
+                        # min_picked_edges = np.random.choice(np.arange(len(min_th_edges)), min_val_left, p=np.ones(len(min_th_edges))/len(min_th_edges), replace=False)
+                        min_th_edges = np.array(min_th_edges)
+                        min_th_edges_weight = np.array(min_th_edges_weight)
+                        # picked_edges = np.random.choice(np.arange(num_left), num_left, p=np.ones(num_left)/num_left)
+                        min_th_edges_weight = min_th_edges_weight[min_picked_edges]
+                        min_picked_edges = min_th_edges[min_picked_edges, : ] # dim = (number of edges,2)
+
+                        weighted_adj_matrix[min_picked_edges.T[0], min_picked_edges.T[1]] = min_th_edges_weight
+                        weighted_adj_matrix[min_picked_edges.T[1], min_picked_edges.T[0]] = min_th_edges_weight
+
+
+
+                    # raise ValueError("don't let code pass this point. i haven't check the correctness of this yet")
+
+                # elif bottom_num_left == 1 and top_num_left == 1:
+                elif min_val_left == 1 and min_val_left == 1:
+                    # some of the original edges is not selected
+                    weighted_adj_matrix = np.where((weighted_adj_matrix >= min_val) | (weighted_adj_matrix <= max_val),weighted_adj_matrix, 0)  # add edges with value > threshold
+                    weighted_adj_matrix[original_edges[1], original_edges[0]] = 1
+                    weighted_adj_matrix[original_edges[0], original_edges[1]] = 1
+
+                else:
+                    raise ValueError("edges are not added correctly in jaccard coefficent => top_bottom_percent")
+
 
     if shared_nodes_random_edges_percent is not None:
         tmp = weighted_adj_matrix[added_edges[0], added_edges[1]]  # check if both direction have the same value
@@ -389,6 +473,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
 
     if top_edges_percent is not None and bottom_edges_percent is not None:
         raise ValueError('either top_egdes_percent or bottom_edges_percent can be specified at a time')
+
     #--------select top n percent of the highest value
     if top_edges_percent is not None or bottom_edges_percent is not None:
         print(f"select top {top_edges_percent} percent  highest val")
@@ -487,19 +572,24 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
 
             # tmp = np.array([i for i in tmp.tolist()[0]][::-1])[:num_selected]  # 5254;
             tmp = tmp[:num_selected]
+            min_val = None
+            max_val = None
             # if tmp is not None:
             if len(tmp):
                 if bottom_edges_percent is not None:
                     max_val = np.amax(tmp)
                     # --------select all edges that have value more than threshold
                     num_left = num_selected - tmp[tmp < max_val].shape[0]  # num of edges  to be added.
+                    # top_num_left = top_num_selected - tmp[tmp > min_val].shape[0]  # num of edges  to be added.
+                    val_left = tmp[tmp == max_val].shape[0]
 
                 if top_edges_percent is not None:
                     min_val = np.amin(tmp)
                     #--------select all edges that have value more than threshold
                     num_left = num_selected - tmp[tmp > min_val].shape[0] # num of edges  to be added.
+                    val_left = tmp[tmp == min_val].shape[0]
 
-                if num_left > 1:
+                if val_left > 1:
                     val = max_val if bottom_edges_percent is not None else min_val
                     th_edges = [] # edges with value == thresh hold
                     th_edges_weight = []
@@ -523,6 +613,8 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                         weighted_adj_matrix = np.where(weighted_adj_matrix > min_val, weighted_adj_matrix, 0) # add edges with value > threshold
                     if max_val is not None:
                         weighted_adj_matrix = np.where(weighted_adj_matrix < max_val, weighted_adj_matrix, 0) # add edges with value > threshold
+                        weighted_adj_matrix[original_edges[1], original_edges[0]] = 1
+                        weighted_adj_matrix[original_edges[0], original_edges[1]] = 1
 
                     weighted_adj_matrix[picked_edges.T[0], picked_edges.T[1]] = th_edges_weight
                     weighted_adj_matrix[picked_edges.T[1], picked_edges.T[0]] = th_edges_weight
@@ -533,7 +625,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     # weighted_adj_matrix = np.where(weighted_adj_matrix > min_val, weighted_adj_matrix, 0) # add edges with value > threshold
                     # weighted_adj_matrix[ind[0][picked_ind], ind[1][picked_ind]] = min_val # add edges with value == threshold
 
-                elif num_left == 1:
+                elif val_left == 1:
                     # some of the original edges is not selected
                     if top_edges_percent is not None:
                         weighted_adj_matrix = np.where(weighted_adj_matrix >= min_val, weighted_adj_matrix, 0)

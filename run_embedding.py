@@ -15,226 +15,8 @@ from anak import run_node2vec
 #TODO here>> run all of embbedding with different configuration and save reuslt to data
 embedding_config = {
 
-    'top_percent_0.5_0': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_1': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_2': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_3': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_4': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_5': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_6': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_7': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_8': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-
-    'top_percent_0.5_9': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'bottom_percent_edges': None,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent_stoch0.5_0': {
+    #TODO here>>
+    'bottom_percent_0.4_7': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -248,14 +30,245 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'stochastic_edges': False,
+            'bottom_percent_edges': 0.4,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'bottom_percent_0.4_8': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': 0.4,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'bottom_percent_0.4_9': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': 0.4,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_2': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_3': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_4': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_5': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_6': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_7': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_8': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'top_percent_0.3_9': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': 0.3,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': None,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'bottom_percent_stoch0.3_0': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_1': {
+    'bottom_percent_stoch0.3_1': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -269,14 +282,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_2': {
+    'bottom_percent_stoch0.3_2': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -290,14 +303,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_3': {
+    'bottom_percent_stoch0.3_3': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -311,14 +324,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_4': {
+    'bottom_percent_stoch0.3_4': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -332,14 +345,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_5': {
+    'bottom_percent_stoch0.3_5': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -353,14 +366,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_6': {
+    'bottom_percent_stoch0.3_6': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -374,14 +387,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_7': {
+    'bottom_percent_stoch0.3_7': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -395,14 +408,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent_stoch0.5_8': {
+    'bottom_percent_stoch0.3_8': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -416,14 +429,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
+            'bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent0.5_0': {
+    'bottom_percent_stoch0.3_9': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -437,203 +450,14 @@ embedding_config = {
             'edges_weight_limit': None,
             'edges_weight_percent': None,
             'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
+            'bottom_percent_edges': 0.3,
+            'stochastic_edges': True,
             'top_bottom_percent_edges': None,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'bottom_percent0.5_1': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_2': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_3': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_4': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_5': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_6': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_7': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_8': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'bottom_percent0.5_9': {
-        'name': 'svm',
-        'func': {
-            "model": run_node2vec,
-        },
-
-        'edges_selection': {
-            'common_nodes_feat': 'gene',
-            'edges_weight_option': 'jaccard',
-            'mask_edges': True,
-            'self_loop': False,
-            'edges_weight_limit': None,
-            'edges_weight_percent': None,
-            'top_percent_edges': None,
-            'bottom_percent_edges': 0.5,
-            'stochastic_edges': False,
-            'top_bottom_percent_edges': None,
-            'shared_nodes_random_edges_percent': None,
-            'all_nodes_random_edges_percent': None,
-        }
-    },
-    'top_bottom_stoch0.5_0': {
+    'top_bottom_stoch0.3_0': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -648,13 +472,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_1': {
+    'top_bottom_stoch0.3_1': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -669,13 +493,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_2': {
+    'top_bottom_stoch0.3_2': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -690,13 +514,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_3': {
+    'top_bottom_stoch0.3_3': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -711,13 +535,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_4': {
+    'top_bottom_stoch0.3_4': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -732,13 +556,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_5': {
+    'top_bottom_stoch0.3_5': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -753,13 +577,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_6': {
+    'top_bottom_stoch0.3_6': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -774,13 +598,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_7': {
+    'top_bottom_stoch0.3_7': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -795,13 +619,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_8': {
+    'top_bottom_stoch0.3_8': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -816,13 +640,13 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
     },
-    'top_bottom_stoch0.5_9': {
+    'top_bottom_stoch0.3_9': {
         'name': 'svm',
         'func': {
             "model": run_node2vec,
@@ -837,13 +661,331 @@ embedding_config = {
             'edges_weight_percent': None,
             'top_percent_edges': None,
             'bottom_percent_edges': None,
-            'top_bottom_percent_edges': 0.5,
+            'top_bottom_percent_edges': 0.3,
             'stochastic_edges': True,
             'shared_nodes_random_edges_percent': None,
             'all_nodes_random_edges_percent': None,
         }
-    }
+    },
+    'shared_nodes_random_edges0.4_5': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.4,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.4_6': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.4,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.4_7': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.4,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.4_8': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.4,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.4_9': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.4,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_0': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_1': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_2': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_3': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_4': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_5': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_6': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_7': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_8': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+    'shared_nodes_random_edges0.5_9': {
+        'name': 'svm',
+        'func': {
+            "model": run_node2vec,
+        },
+
+        'edges_selection': {
+            'common_nodes_feat': 'gene',
+            'edges_weight_option': 'jaccard',
+            'mask_edges': True,
+            'self_loop': False,
+            'edges_weight_limit': None,
+            'edges_weight_percent': None,
+            'top_percent_edges': None,
+            'stochastic_edges': False,
+            'bottom_percent_edges': None,
+            'top_bottom_percent_edges': None,
+            'shared_nodes_random_edges_percent': 0.5,
+            'all_nodes_random_edges_percent': None,
+        }
+    },
+
+    # },
 }
+
 def run_embedding(copd):
 
     run_and_save_embedding(copd, emb_type='node2vec', config =embedding_config)
@@ -865,7 +1007,6 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
             # args.stochastic_edges = model['edges_selection']['stochastic_edges']
             args.index = int(name.split('_')[-1]) if re.findall("^[0-9]$",name.split('_')[-1]) else 0
             if args.common_nodes_feat != "no":
-
                 args.stochastic_edges     = model['edges_selection']['stochastic_edges']
                 args.mask_edges           = model['edges_selection']['mask_edges']
                 args.edges_weight_limit   = model['edges_selection']['edges_weight_limit']

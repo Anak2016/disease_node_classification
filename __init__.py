@@ -613,7 +613,7 @@ if __name__ == "__main__":
                 'func':{
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True0.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True0.txt',
             },
             'model_3':{
                 'name': 'svm',
@@ -621,14 +621,14 @@ if __name__ == "__main__":
                     "model": baseline.svm,
                 },
                 # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stoch4.txt',
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True1.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True1.txt',
             },
             'model_4': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True2.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True2.txt',
 
             },
             'model_5': {
@@ -636,28 +636,28 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True3.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True3.txt',
             },
             'model_6': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True4.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True4.txt',
             },
             'model_7': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True5.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True5.txt',
             },
             'model_8': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True6.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True6.txt',
 
             },
             'model_9': {
@@ -665,7 +665,7 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True7.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True7.txt',
 
             },
             'model_10': {
@@ -673,7 +673,7 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True8.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True8.txt',
 
             },
             'model_11': {
@@ -681,7 +681,7 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.1_mask=True9.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True9.txt',
             },
             # 'model_12': {
             #     'name': 'svm',
