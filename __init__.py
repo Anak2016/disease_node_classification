@@ -884,13 +884,13 @@ def run_main():
         #          'mlp' :baseline.mlp}
         #
         model = {
-            # "svm": baseline.svm,
-            # 'lr'  :baseline.logistic_regression ,
+            "svm": baseline.svm,
+            'lr'  :baseline.logistic_regression ,
             'mlp': baseline.mlp,
-            # 'rf'  : baseline.random_forest,
+            'rf'  : baseline.random_forest,
         }
-        # tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec'
-        tmp = f'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease\\07_14_19_46\\processed\\embedding\\gcn\\split=0.8\\lr=0.09_d=0.5_wd=0.006_wc=[1 1 1 1 1 0]'
+        tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec'
+        # tmp = f'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease\\07_14_19_46\\processed\\embedding\\gcn\\split=0.8\\lr=0.09_d=0.5_wd=0.006_wc=[1 1 1 1 1 0]'
         if tmp.split('\\')[-1] == 'node2vec':
             args.embedding_name = 'node2vec' # please use embedding_name not emb_name; they have different purpose
         elif tmp.split('\\')[-3] == 'gcn':

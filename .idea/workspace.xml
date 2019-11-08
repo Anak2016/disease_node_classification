@@ -2,69 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/run_emb_clr_11_7_2019.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh0.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh4.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh5.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh6.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh7.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh8.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.1/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.1_mask=True_stochh9.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh0.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh1.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh3.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh4.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh5.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh6.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tmp/top_bottom_k_stoch/0.2/node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.2_mask=True_stochh7.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/disease_node_classification.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/disease_node_classification.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/0/a/0a2a117bd1e2f42d012a4b431c0cdb254d1be344" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/2/12986c44621d21735052f9e3f41340ea09fe9039" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/2/22f50509b7452792c1c6a476ab4a88cb7916e7fc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/3/2313587dfc88b610d654bdf36e312aa3afbd8a76" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/2/325a5d274acd99f8efe3031130f36f5789688ecc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/9/395b2c80c7e7e79b16bbd0ee6be6cbb2299d1dda" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c7a91523606f36212dd30d9934b5f8e9604186d" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/583687a2a98157bfa3705e072cd8b9d12f8d4b41" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/8/58724c1018e991049663416d0132ad68a81497a2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6040e7cf4f3539cb2bd33322e498a7227b8c76de" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/6048127e87fa4399830210c840026d6311cca719" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/6/0/60ad4f3d2e9b04a9b0a0bb97ab6a8a4c018b785e" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/4/745b1e927cdd170b5d9da35555e77acf25841bac" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/4/745b1e927cdd170b5d9da35555e77acf25841bac" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/8/7851b906a8d3deb59defff8d9487097f211e4652" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/8/78d2136bc6044d55beeb4d78d02ddc0d27ec8f3a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/b/7b97ea08067b507315288a00fa66ddae8860953d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/7/c/7c58a1a1536b5eb001259e76dc49b6c4632d2a94" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/9/5/95560c4da9313de8ebd855a203c9958bcf2488e1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/9/5/95ad9010e928a59efd4baab3173446394b070121" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/a/6/a6cf0cc55c050d4262fd12d8f4b108b04b598d4a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/a/8/a8474406247afd7e60f67e6857adc93ca3a9270a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/1/c1944c332d07c9a92d09c2ca3ddc068813947da9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/5/c582b9f4abc5909dad19902b6f4d8e92f70f6651" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d37820fe4bcbb48c98656bfa9cf06bb24ace7cd1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/3/d3de02749a0c12aa45735cf8808c3d3a228f52bf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/5/d5a105778cd160fad75616a0cf85e589ed055f6e" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/5/d5a105778cd160fad75616a0cf85e589ed055f6e" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/5/d5e55fe3974d7c234ed22ef6b477d08c3b40cace" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/c/dc212fdabf480027b2ad30cbf9dd52c2ccb5e573" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/4/e462b3f7837524040b5c4cc0bcb20efdfba4f229" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/d/fd480c41df6e7d1b5543e9834bd2fe8ff61f561e" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_models/baseline/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/baseline/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/all_models/embedding/gnn.py" beforeDir="false" afterPath="$PROJECT_DIR$/all_models/embedding/gnn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arg_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/arg_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/edge_weight/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/gene_disease/ensemble/model_prediction.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output/gene_disease/ensemble/model_prediction.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/performance_metrics/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/performance_metrics/metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_embedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_embedding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scatch_paper/scatch_paper.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/scatch_paper.ipynb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -224,7 +166,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_embedding.py" />
-      <option name="PARAMETERS" value="--run_embedding --split 0.6 --verbose" />
+      <option name="PARAMETERS" value="--run_embedding --split 0.6" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -328,7 +270,7 @@
       <breakpoints>
         <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>370</line>
+          <line>402</line>
           <option name="timeStamp" value="37" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -368,7 +310,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>435</line>
+          <line>467</line>
           <option name="timeStamp" value="280" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -463,7 +405,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>53</line>
+          <line>55</line>
           <option name="timeStamp" value="659" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -498,17 +440,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>96</line>
+          <line>99</line>
           <option name="timeStamp" value="825" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>153</line>
+          <line>196</line>
           <option name="timeStamp" value="828" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>135</line>
+          <line>178</line>
           <option name="timeStamp" value="829" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -518,7 +460,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>102</line>
+          <line>105</line>
           <option name="timeStamp" value="836" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -530,31 +472,6 @@
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
           <line>365</line>
           <option name="timeStamp" value="843" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>52</line>
-          <option name="timeStamp" value="860" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>257</line>
-          <option name="timeStamp" value="874" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>272</line>
-          <option name="timeStamp" value="875" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>289</line>
-          <option name="timeStamp" value="876" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>303</line>
-          <option name="timeStamp" value="881" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
@@ -598,7 +515,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_embedding.py</url>
-          <line>1434</line>
+          <line>1437</line>
           <option name="timeStamp" value="964" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -620,11 +537,6 @@
           <url>file://$PROJECT_DIR$/__init__.py</url>
           <line>61</line>
           <option name="timeStamp" value="970" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="971" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
@@ -680,6 +592,11 @@
           <url>file://$PROJECT_DIR$/__init__.py</url>
           <line>255</line>
           <option name="timeStamp" value="998" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/anak.py</url>
+          <line>59</line>
+          <option name="timeStamp" value="999" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -777,6 +694,7 @@
         <watch expression="17976/2996 " language="Python" />
         <watch expression="data.num_classes" language="Python" />
         <watch expression="x[0]" language="Python" />
+        <watch expression="save_path + EMBEDDING_FILENAME" language="Python" />
       </configuration>
     </watches-manager>
   </component>

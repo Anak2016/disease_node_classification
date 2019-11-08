@@ -1368,9 +1368,12 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
 def run_main():
     percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
     stoch = [True, False]
-    conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
-                  'shared_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
-    embedding = 'gnn'
+    # conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
+    #               'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+    conditions = ['top_bottom_percent_edges', 'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+    # embedding = 'gnn'
+    embedding = 'node2vec'
+
     # percent = [0.1]
     # stoch = [True, False]
     # stoch = [False]
@@ -1386,7 +1389,7 @@ def run_main():
                             embedding_config[f'{i}{j}_stoch={k}_{index}'] = {}
                             embedding_config[f'{i}{j}_stoch={k}_{index}']['name'] = embedding
                             embedding_config[f'{i}{j}_stoch={k}_{index}']['func'] = {}
-                            embedding_config[f'{i}{j}_stoch={k}_{index}']['func']['model'] = None
+                            embedding_config[f'{i}{j}_stoch={k}_{index}']['func']['model'] = run_node2vec
                             embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection'] = {}
                             embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection']['common_nodes_feat'] = 'gene'
                             embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection']['edges_weight_option'] = 'jaccard'
@@ -1411,7 +1414,7 @@ def run_main():
                         embedding_config[f'{i}{j}_stoch={k}_{index}'] = {}
                         embedding_config[f'{i}{j}_stoch={k}_{index}']['name'] = embedding
                         embedding_config[f'{i}{j}_stoch={k}_{index}']['func'] = {}
-                        embedding_config[f'{i}{j}_stoch={k}_{index}']['func']['model'] = None
+                        embedding_config[f'{i}{j}_stoch={k}_{index}']['func']['model'] = run_node2vec
                         embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection'] = {}
                         embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection']['common_nodes_feat'] = 'gene'
                         embedding_config[f'{i}{j}_stoch={k}_{index}']['edges_selection']['edges_weight_option'] = 'jaccard'

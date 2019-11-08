@@ -270,7 +270,6 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     all_indices = np.delete(all_indices, np.where(all_indices == index)[0][0])
                     # print(len(picked_edges_ind))
                 # index += 1
-            print()
             for i, j in zip(ind[0][picked_edges_ind], ind[1][picked_edges_ind]):
                 # w = list(G.get_edge_data(i, j).values())
                 w = tmp[i, j]
@@ -279,7 +278,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     # add bidirectional edges
                     weighted_adj_matrix[i, j] = w
                     weighted_adj_matrix[j, i] = w  # todo
-
+            print(f'picked top edges = {picked_edges_ind}')
             #=====================
             #==select bottom edges
             #=====================
@@ -301,7 +300,6 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     all_indices = np.delete(all_indices, np.where(all_indices == index)[0][0]) # all_indived after the top percent is selected
                     # print(len(picked_edges_ind))
                 # index += 1
-            print()
             for i, j in zip(ind[0][picked_edges_ind], ind[1][picked_edges_ind]):
                 # w = list(G.get_edge_data(i, j).values())
                 w = tmp[i, j]
@@ -310,7 +308,8 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     # add bidirectional edges
                     weighted_adj_matrix[i, j] = w
                     weighted_adj_matrix[j, i] = w  # todo
-            print(' ')
+
+            print(f'picked bottom edges = {picked_edges_ind}')
         else:
             ind = added_edges
 
@@ -421,7 +420,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
 
         picked_edges_ind = np.random.choice(np.arange(ind.shape[1]), num_selected, p=prob,
                                             replace=False)  # does not work with bottom_edges_percent
-
+        print(f'picked edges = {picked_edges_ind}')
         for i, j in zip(ind[0][picked_edges_ind], ind[1][picked_edges_ind]):
             # w = list(G.get_edge_data(i, j).values())
             w = tmp[i, j]
@@ -461,6 +460,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
 
         picked_edges_ind = np.random.choice(np.arange(ind.shape[1]), num_selected, p=prob,
                                             replace=False)  # does not work with bottom_edges_percent
+        print(f'picked_edges = {picked_edges_ind}')
 
         for i, j in zip(ind[0][picked_edges_ind], ind[1][picked_edges_ind]):
             # w = list(G.get_edge_data(i, j).values())
