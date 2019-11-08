@@ -32,11 +32,12 @@ parser.add_argument('--run_mlp', action='store_true', help='run multi-layer perc
 parser.add_argument('--run_gnn', action='store_true', help='run multi-layer perceptron. Input is disease whose features are genes.')
 parser.add_argument('--run_node2vec', action='store_true', help='run node2vec on raw copd data.')
 parser.add_argument('--run_embedding', action='store_true', help="run embedding with differnt config at one time.")
+# parser.add_argument('--run_embedding', type=str, default=None, help='choose embedding to be run including gnc, and node2vec')
 parser.add_argument('--run_gcn_on_disease_graph', action='store_true', help='run gcn on disease only graph where edges between diseases are form iff they share at least 1 gene')
 parser.add_argument('--th', default=200, help='amount of shared gene requires to form an edge in disease graph')
 
 # -- hyper paramters
-parser.add_argument('--epochs', type=int, default=200, help='Number of epochs to train.')
+parser.add_argument('--epochs', type=int, default=50, help='Number of epochs to train.')
 parser.add_argument('--lr', type=float, default=0.09, help='Initial learning rate.')
 parser.add_argument('--weight_decay', type=float, default=0.006, help='Weight decay (L2 loss on parameters).')
 parser.add_argument('--hidden', type=int, default=16, help='Number of hidden units.')

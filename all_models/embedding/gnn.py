@@ -45,6 +45,8 @@ class Net(torch.nn.Module):
         data = self.data
         x, edge_index = data.x, data.edge_index
 
+        #TODO here>> check edge_index here whether they are the same or not.
+
         # display2screen(x[1,:])
         # display2screen(x.shape, edge_index.shape, np.amax(edge_index.numpy()))
 
@@ -53,11 +55,23 @@ class Net(torch.nn.Module):
 
         if args.arch == 'gcn':
             # todo check loss fucntion for gcn
-            x = F.relu(self.conv1(x, edge_index))
+            x  = self.conv1(x, edge_index)
             self._emb_output = x
+
+            x = F.relu(x)
+            # self._emb_output = x
 
             x = F.dropout(x, p=args.dropout, training=self.training)
             x = self.conv2(x, edge_index)
+            # self._emb_output = x
+
+            x = F.relu(x) # chosen
+            x = F.relu(self.Linear16_out(x)) # chosen
+
+            # x = F.relu(self.Linearin_32(x))
+            # x = F.relu(self.Linear32_16(x))
+            # x = F.relu(self.Linear32_out(x))
+
             # x = F.dropout(x, p=dropout, training=self.training)
             # x = self.conv3(x, edge_index)
             return F.log_softmax(x, dim=1)
@@ -88,7 +102,14 @@ class PseudoLabel:
 
 # def run_GNN(data):
 class GNN:
-    def __init__(self, data, config):
+    def __init__(self, data):
+        config = {
+            "param": {  # Pseudo-Label
+                'T1': int(args.t1_t2_alpha[0]),
+                'T2': int(args.t1_t2_alpha[1]),
+                'af': float(args.t1_t2_alpha[2])
+            }
+        }
         self.curr_time = datetime.now().strftime('%Y_%m_%d_%H_%M')
         self.data = data
         self.config = config
@@ -102,8 +123,10 @@ class GNN:
         #=====================
         #==naming convension
         #=====================
-        self.HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}'
-        self.folder = f"log/gene_disease/{args.time_stamp}/{args.arch}/{args.emb_name}/split={data.split}/{self.HP}/"
+        print(self.weighted_class.numpy().astype(int))
+        self.HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}_wc={self.weighted_class.numpy().astype(int)}'
+
+        self.folder = f"log/gene_disease/{args.time_stamp}/classifier/gcn/split={data.split}/{self.HP}/"
 
         if not os.path.exists(self.folder):
             os.makedirs(self.folder)
@@ -130,16 +153,19 @@ class GNN:
     #=====================
     #==embedding models
     #=====================
-    def run_model(self):
+
+    def run_model(self, modules):
         '''model() -> optimizer -> loss -> model.train()-> optimizer.zero_grad() -> loss.backward() -> optimizer.step() -> next epoch'''
         data = self.data
-
+        #TODO here>> these modules needs to be fed in as an argument to __init__
         if args.arch == 'gcn':
-            modules = {
-                # "conv1": GCNConv(64, args.hidden, cached=True),
-                "conv1": GCNConv(data.num_features, args.hidden, cached=True),
-                "conv2": GCNConv(args.hidden, data.num_classes, cached=True)
-            }
+            # modules = {
+            #     # "conv1": GCNConv(64, args.hidden, cached=True),
+            #     "conv1": GCNConv(data.num_features, args.hidden, cached=True),
+            #     "conv2": GCNConv(args.hidden, data.num_classes, cached=True),
+            #
+            # }
+            pass
         elif args.arch == 'gat':
             modules = {
                 "conv1": GATConv(data.num_features, args.hidden, heads=args.heads, dropout=0.6),
@@ -692,9 +718,10 @@ class GNN:
         self.train_acc_hist = train_acc_hist
         self.test_acc_hist = test_acc_hist
 
-    def run(self):
+    def run(self, modules):
         '''classify eithre train or test data'''
         data = self.data
+
         # model = self.model
 
         if args.tuning:
@@ -703,7 +730,7 @@ class GNN:
             #==========================
             #==== NOT TUNING HYPER-PARAMETERS
             #==========================
-            self.run_model()
+            self.run_model(modules)
             # model = Net(args.dropout).to(self.device) # old style
 
             # original before modify
@@ -798,61 +825,40 @@ class GNN:
                 # =====================
                 # ==performance report
                 # =====================
-                # TODO here>> make report_performance compatible with mlp
-                save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.arch}/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-                file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
-                import os
-                if not os.path.exists(save_path):
-                    os.makedirs(save_path)
-
-                report_train = performance_metrics.report_performances(
-                    y_true=data.y[data.train_mask].numpy(),
-                    y_pred=self.model()[data.train_mask].max(1)[1].numpy(),
-                    y_score=self.model()[data.train_mask].detach().numpy(),
-                    save_path=f'{save_path}train/',
-                    file_name=file_name
-                )
-                report_test = performance_metrics.report_performances(
-                    y_true=data.y[data.test_mask].numpy(),
-                    y_pred=self.model()[data.test_mask].max(1)[1].numpy(),
-                    y_score=self.model()[data.test_mask].detach().numpy(),
-                    save_path=f'{save_path}test/',
-                    file_name=file_name
-                )
-                if args.report_performance:
-                    print(report_train)
-                    print(report_test)
-                return report_test.iloc[-1]
+                # # TODO here>> make report_performance compatible with mlp
+                # save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.arch}/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+                # file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+                # import os
+                # if not os.path.exists(save_path):
+                #     os.makedirs(save_path)
+                #
+                # report_train = performance_metrics.report_performances(
+                #     y_true=data.y[data.train_mask].numpy(),
+                #     y_pred=self.model()[data.train_mask].max(1)[1].numpy(),
+                #     y_score=self.model()[data.train_mask].detach().numpy(),
+                #     save_path=f'{save_path}train/',
+                #     file_name=file_name
+                # )
+                # report_test = performance_metrics.report_performances(
+                #     y_true=data.y[data.test_mask].numpy(),
+                #     y_pred=self.model()[data.test_mask].max(1)[1].numpy(),
+                #     y_score=self.model()[data.test_mask].detach().numpy(),
+                #     save_path=f'{save_path}test/',
+                #     file_name=file_name
+                # )
+                # if args.report_performance:
+                #     print(report_train)
+                #     print(report_test)
+                # return report_test.iloc[-1]
 
             # display2screen(gcn_emb_output)
             # -- print set of best accuracy and its epoch.
-            if args.verbose:
-                print(f"!!!!! {list(self.best_epoch.keys())[0]} = {self.best_epoch[list(self.best_epoch.keys())[0]]} !!!!!!! ")
+            # if args.verbose:
+            #     print(f"!!!!! {list(self.best_epoch.keys())[0]} = {self.best_epoch[list(self.best_epoch.keys())[0]]} !!!!!!! ")
 
-            # =====================
-            # ==save emb_output
-            # =====================
-            save_path = f'data/gene_disease/{args.time_stamp}/processed/embedding/{args.arch}/'
 
-            #TODO here>> make sure that this is the right way to extract gcn_emb (get output of the middle layer)
-            self.weighted_class = self.weighted_class.type(torch.int).tolist()  # convert from torch to list to  be used as part of file name
-            file_gcn_emb = f"epoch={args.epochs}_emb={args.emb_name}_TRAIN=YES_ACC_feat={self.feat_stat}_pseudo_label={self.pseudo_label_stat}_wc={self.weighted_class}_T=[{self.T_param}]_topk={args.topk}.txt"
 
-            #--------otuput of gcn layer1 of last epoch (hence, name 'TRAIN=YES')
-            gcn_emb_output = self.model.get_emb_output().detach().numpy()
-            df = pd.DataFrame(gcn_emb_output)
-
-            import os
-            if not os.path.exists(save_path + 'emb'):
-                os.mkdir(save_path + 'emb')
-            print(f'save gcn_emb_output to {save_path + "emb/" + file_gcn_emb}')
-            df.to_csv(save_path + 'emb/' + file_gcn_emb, header=True, index=False, sep='\t', mode='w')
             # display2screen('here')
-
-            #=====================
-            #==classifier
-            #=====================
-            #TODO here>> put all classifier here.
 
             # =====================
             # ==plotting
@@ -887,31 +893,170 @@ class GNN:
                 file_gcn_emb = f"epoch={args.epochs}_emb={args.emb_name}_TRAIN=YES_ACC_feat={self.feat_stat}_pseudo_label={self.pseudo_label_stat}_wc={self.weighted_class}_T=[{self.T_param}]_topk={args.topk}.txt"
                 img_gcn_emb = f"img/{file_gcn_emb}.png"
 
-                # --------train report
-                report_train = performance_metrics.report_performances(data.y[data.train_mask].numpy(),
-                                                        self.model()[data.train_mask].max(1)[1].numpy(),
-                                                        self.model()[data.train_mask].detach().numpy(),
-                                                        save_path=save_path + f'report_performance/train/',
-                                                        file_name=f'{file_gcn_emb}')
-                # --------test_report
-                report_test = performance_metrics.report_performances(data.y[data.test_mask].numpy(),
-                                                        self.model()[data.test_mask].max(1)[1].numpy(),
-                                                        self.model()[data.test_mask].detach().numpy(),
-                                                        save_path=save_path + f'report_performance/test/',
-                                                        file_name=f'{file_gcn_emb}')
-                if args.report_performance:
-                    print(report_train)
-                    print(report_test)
+                # # --------train report
+                # report_train = performance_metrics.report_performances(data.y[data.train_mask].numpy(),
+                #                                         self.model()[data.train_mask].max(1)[1].numpy(),
+                #                                         self.model()[data.train_mask].detach().numpy(),
+                #                                         save_path=save_path + f'report_performance/train/',
+                #                                         file_name=f'{file_gcn_emb}')
+                # # --------test_report
+                # report_test = performance_metrics.report_performances(data.y[data.test_mask].numpy(),
+                #                                         self.model()[data.test_mask].max(1)[1].numpy(),
+                #                                         self.model()[data.test_mask].detach().numpy(),
+                #                                         save_path=save_path + f'report_performance/test/',
+                #                                         file_name=f'{file_gcn_emb}')
+                # if args.report_performance:
+                #     print(report_train)
+                #     print(report_test)
 
                 self.plot(self.gcn_emb_after_classifier, self.gcn_emb_no_train, self.loss_hist, self.train_acc_hist, self.test_acc_hist, file_gcn_emb, img_gcn_emb)
 
             #==========================
             #== logging
             #==========================
-            if args.log:
-                self.logging(self.log_list)
 
-        # return
+            self.save_model_emb()
+            # if args.log:
+            #     self.logging(self.log_list)
+            # --------train report
+            # file_name = f"epoch={args.epochs}_wc={self.weighted_class}_}.txt"
+            self.save_model_performance()
+            print('=================')
+            print('=================')
 
 
+        # return gcn_emb_output
 
+    def save_model_emb(self):
+        time_stamp = args.time_stamp
+        save_path = None
+
+        save_path = r'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease'
+        save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\gcn\\split={args.split}\\mlp16_out\\{self.HP}\\'
+        tmp = save_path
+        assert args.index is not None, "please specified index of embedding file"
+        if args.top_bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_bottom_k_stoch\\{args.top_bottom_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_bottom_k\\{args.top_bottom_percent_edges}\\'
+        if args.all_nodes_random_edges_percent is not None and args.shared_nodes_random_edges_percent is not None:
+            raise ValueError(
+                " Either args.all_nodes_random_edges_percent or args.shared_nodes_random_edges_percent MUST NOT be None")
+        if args.all_nodes_random_edges_percent is not None:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_all_nodes_random={args.all_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'all_nodes_random\\{args.all_nodes_random_edges_percent}\\'
+        if args.shared_nodes_random_edges_percent is not None:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_shared_nodes_random={args.shared_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'shared_nodes_random\\{args.shared_nodes_random_edges_percent}\\'
+        if args.bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'bottom_k_stoch\\{args.bottom_percent_edges}\\'
+
+            else:
+                save_path = save_path + f'bottom_k\\{args.bottom_percent_edges}\\'
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+        if args.top_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_k_stoch\\{args.top_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_k\\{args.top_percent_edges}\\'
+
+        # save_path = f'data/gene_disease/{args.time_stamp}/processed/embedding/node2vec/'
+
+        assert tmp != save_path , 'please check argument in GNN.save_model_emb()'
+        # =====================
+        # ==save gcn embedding
+        # =====================
+        # TODO here>> save emb train/test
+        self.weighted_class = self.weighted_class.type(torch.int).tolist()  # convert from torch to list to  be used as part of file name
+
+        # file_gcn_emb = f"epoch={args.epochs}_emb={args.emb_name}_TRAIN=YES_ACC_feat={self.feat_stat}_pseudo_label={self.pseudo_label_stat}_wc={self.weighted_class}_T=[{self.T_param}]_topk={args.topk}.txt"
+        file_gcn_emb = f'{args.index}.txt'
+
+        # --------otuput of gcn layer1 of last epoch (hence, name 'TRAIN=YES')
+        gcn_emb_output = self.model.get_emb_output().detach().numpy()
+        df = pd.DataFrame(gcn_emb_output)
+
+        import os
+        # if not os.path.exists(save_path):
+        #     os.mkdir(save_path)
+        os.makedirs(save_path, exist_ok=True)
+
+        print(f'save gcn_emb_output to {save_path + file_gcn_emb}')
+        df.to_csv(save_path + file_gcn_emb, header=True, index=True, sep=' ', mode='w')
+        print('')
+
+    def save_model_performance(self):
+        data = self.data
+        # save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease\07_14_19_46\classifier\gcn'
+
+        time_stamp = args.time_stamp
+        save_path = None
+        save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease'
+        save_path = save_path + f'\\{args.time_stamp}\\classifier\\gcn\\split={args.split}\\mlp16_out\\{self.HP}\\'
+        tmp = save_path
+
+        assert args.index is not None, "please specified index of embedding file"
+        if args.top_bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_bottom_k_stoch\\{args.top_bottom_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_bottom_k\\{args.top_bottom_percent_edges}\\'
+        if args.all_nodes_random_edges_percent is not None and args.shared_nodes_random_edges_percent is not None:
+            raise ValueError(
+                " Either args.all_nodes_random_edges_percent or args.shared_nodes_random_edges_percent MUST NOT be None")
+        if args.all_nodes_random_edges_percent is not None:
+            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_all_nodes_random={args.all_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+            save_path = save_path + f'all_nodes_random\\{args.all_nodes_random_edges_percent}\\'
+        if args.shared_nodes_random_edges_percent is not None:
+            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_shared_nodes_random={args.shared_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+            save_path = save_path + f'shared_nodes_random\\{args.shared_nodes_random_edges_percent}\\'
+        if args.bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'bottom_k_stoch\\{args.bottom_percent_edges}\\'
+
+            else:
+                save_path = save_path + f'bottom_k\\{args.bottom_percent_edges}\\'
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+        if args.top_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_k_stoch\\{args.top_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_k\\{args.top_percent_edges}\\'
+
+        assert tmp != save_path, 'please check argument in GNN.save_model_emb()'
+
+        file_name = f"{args.index}.txt"
+        #TODO here>>  add name of parameter to save_path
+        # > where do i get parameter name from?
+        # eg. save_path + f"all_nodes_random/{args.index}.txt"
+        print(f"save train to {save_path+ 'train/' + file_name}")
+        print(f"save test to {save_path+ 'test/' + file_name}")
+        report_train = performance_metrics.report_performances(y_true=data.y[data.train_mask].numpy(),
+                                                               y_pred=self.model()[data.train_mask].max(1)[1].numpy(),
+                                                               y_score=self.model()[data.train_mask].detach().numpy(),
+                                                               save_path=save_path + f'train/',
+                                                               file_name=f'{file_name}')
+        # --------test_report
+        report_test = performance_metrics.report_performances(y_true=data.y[data.test_mask].numpy(),
+                                                              y_pred=self.model()[data.test_mask].max(1)[1].numpy(),
+                                                              y_score=self.model()[data.test_mask].detach().numpy(),
+                                                              save_path=save_path + f'test/',
+                                                              file_name=f'{file_name}')
+        # report_performances(y_true, y_pred, y_score=None, average='micro', save_path=None, file_name=None,
+        #                     get_avg_total=False):
+        if args.report_performance:
+            print(report_train)
+            print(report_test)
+        print()

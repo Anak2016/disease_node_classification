@@ -11,7 +11,8 @@ import performance_metrics
 # =====================
 
 # -- logistic regression with node embedding
-def logistic_regression(config=None, emb_name=None):
+# def logistic_regression(config=None, emb_name=None):
+def logistic_regression(data, config=None, decision_func='ovr', verbose=True):
     '''
     run logistic regression
 
@@ -23,15 +24,26 @@ def logistic_regression(config=None, emb_name=None):
     x_train, label_train = config['train_input'], config['train_label']
     x_test, label_test = config['test_input'], config['test_label']
 
-    train_input = x_train.type(torch.float).numpy()
-    test_input = x_test.type(torch.float).numpy()
-    train_label = label_train.type(torch.long).numpy()
-    test_label = label_test.type(torch.long).numpy()
+    assert isinstance(x_train, type(torch.rand(1))), "x_train must have tensor type "
+    assert isinstance(label_train, type(torch.rand(1))), "label_train must have tensor type "
+    assert isinstance(x_test, type(torch.rand(1))), "x_test must have tensor type "
+    assert isinstance(label_test, type(torch.rand(1))), "label_test must have tensor type "
+
+    # train_input = x_train.type(torch.float).numpy()
+    # test_input = x_test.type(torch.float).numpy()
+    # train_label = label_train.type(torch.long).numpy()
+    # test_label = label_test.type(torch.long).numpy()
+
+    train_input = x_train.type(torch.double).numpy()
+    test_input = x_test.type(torch.double).numpy()
+    train_label = label_train.type(torch.double).numpy()
+    test_label = label_test.type(torch.double).numpy()
 
     from sklearn import metrics
     from sklearn.linear_model import LogisticRegression
 
-    model = LogisticRegression(solver='lbfgs', multi_class='ovr')
+    # model = LogisticRegression(solver='lbfgs', multi_class='ovr')
+    model = LogisticRegression(solver='lbfgs', multi_class='multinomial')
 
 
     # --------prediction with cross validation
@@ -78,84 +90,62 @@ def logistic_regression(config=None, emb_name=None):
         # args.cv = "NO"
         print(f"running {logistic_regression.__name__} without cross validation ")
         y_pred_train = model.predict(train_input)
-        y_pred_test = model.predict(test_input)
+        y_pred_train_proba = model.predict_proba(train_input)
+        # y_pred_train_proba = model.decision_function(x_train)
+        # y_pred_train = y_pred_train_proba.argmax(1)
 
+
+        y_pred_test = model.predict(test_input)
+        y_pred_test_proba = model.predict_proba(test_input)
+        # y_pred_test_proba = model.decision_function(x_test)
+        # y_pred_test = y_pred_test_proba.argmax(1)
         # =====================
         # ==performance report
         # =====================
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        # save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        # file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        if args.embedding_name == 'node2vec':
+            tmp = args.emb_path.split("\\")[10:]
+            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            folder = args.emb_path.split('\\')[10]
+            folder = folder + '\\' + args.emb_path.split('\\')[11]
+            folder = folder + '\\' + args.emb_path.split('\\')[12]
+        elif args.embedding_name == 'gcn':
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            file_name = args.emb_path.split("\\")[-1]
+        else:
+            raise ValueError('in all_models > baseline > models > logistic_regression() > else > else ')
+
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/report_performance/{folder}/"
+
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
+        print(f'save to {save_path+"train/"+file_name}')
+        print(f'save to {save_path + "test/" + file_name}')
+        report_test = None
+        report_train = None
         report_train = performance_metrics.report_performances(
             y_true=train_label,
             y_pred=y_pred_train,
-            y_score=model.predict_proba(train_input),
-            save_path=f'{save_path}train/',
-            file_name=file_name
+            y_score=y_pred_train_proba,
+            # save_path=f'{save_path}train/',
+            # file_name=file_name
         )
         report_test = performance_metrics.report_performances(
             y_true=test_label,
             y_pred=y_pred_test,
-            y_score=model.predict_proba(test_input),
-            save_path=f'{save_path}test/',
-            file_name=file_name
+            y_score=y_pred_test_proba,
+            # save_path=f'{save_path}test/',
+            # file_name=file_name
             )
         if args.report_performance:
             print(report_train)
             print(report_test)
-    return report_test.iloc[-1]
-    #=====================
-    #==metrix results
-    #=====================
-    # # -- training datset
-    # cm_train = confusion_matrix(y_pred_train, train_label)
-    # cm_train = np.array2string(cm_train)
-    # count_misclassified = (train_label != y_pred_train).sum()
-    # accuracy = metrics.accuracy_score(train_label, y_pred_train)
-    #
-    # txt = ["For training data", 'Misclassified samples: {}'.format(count_misclassified),
-    #        'Accuracy: {:.2f}'.format(accuracy)]
-    # log_list.append('\n'.join(txt))
-    # print(log_list[-1])
 
-    # #-- test dataset
-    # cm_test = confusion_matrix(y_pred_test, test_label)
-    # cm_test = np.array2string(cm_test)
-    # count_misclassified = (test_label != y_pred_test).sum()
-    # accuracy = metrics.accuracy_score(test_label, y_pred_test)
-    #
-    # txt = ["For test data ", 'Misclassified samples: {}'.format(count_misclassified),
-    #        'Accuracy: {:.2f}'.format(accuracy)]
-    # log_list.append('\n'.join(txt))
-    # print(log_list[-1])
-
-    # ===================================
-    # == logging signature initialization
-    # ===================================
-    # split = args.split
-    # # -- create dir for hyperparameter config if not already exists
-    # weighted_class = ''.join(list(map(str, args.weighted_class)))
-    #
-    # folder = f"log/gene_disease/{args.time_stamp}/LogistircRegression/split={split}/"
-    #
-    # import os
-    # if not os.path.exists(folder):
-    #     os.makedirs(folder)
-    #
-    # # -- creat directory if not yet created
-    # save_path = f'{folder}img/'
-    # if not os.path.exists(save_path):
-    #     os.makedirs(save_path)
-    #
-    # if args.log:
-    #     save_path = f'emb_name={emb_name}_LogisticRegression_results.txt'
-    #     print(f"writing to {save_path}...")
-    #     with open(save_path, 'w') as f:
-    #         txt = '\n\n'.join(log_list)
-    #         f.write(txt)
+    return report_test, model
+    # return report_test.iloc[-1], model
 
 
 # def svm(x_train,label_train, x_test, label_test, decision_func='ovo'):
@@ -233,6 +223,7 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
         if args.report_performance:
             print(report_test)
 
+        raise ValueError('please check svm=> if args.cv before moving on')
     else:
         clf.fit(x_train, label_train)
 
@@ -264,12 +255,28 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
         #=====================
         #==report performance
         #=====================
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-        file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        #TODO here>> split cases for emb_path and emb_name
+        if args.embedding_name == 'node2vec':
+            tmp = args.emb_path.split("\\")[10:]
+            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            folder = args.emb_path.split('\\')[10]
+            folder = folder + '\\' + args.emb_path.split('\\')[11]
+            folder = folder + '\\' + args.emb_path.split('\\')[12]
+        elif args.embedding_name == 'gcn':
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            file_name = args.emb_path.split("\\")[-1]
+        else:
+            raise ValueError('in all_models > baseline > models > svm() > else > else ')
+
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/split={args.split}/report_performance/{folder}/"
+        # file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+
+
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-
+        print(f'save to {save_path+"train/"+file_name}')
+        print(f'save to {save_path + "test/" + file_name}')
         report_train = performance_metrics.report_performances(
             y_true=label_train,
             y_pred=pred_train,
@@ -277,7 +284,6 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
             save_path=f'{save_path}train/',
             file_name=file_name
         )
-
         report_test = performance_metrics.report_performances(
             y_true=label_test,
             y_pred=pred_test,
@@ -290,39 +296,69 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
             print(report_test)
 
 
-    # return report_test.iloc[-1]
+
+        # return report_test.iloc[-1]
     return report_test.iloc[-1], clf
 
     # return pred_train, pred_test, accs
 
 
 def mlp(data, config):
+# def mlp(data, config=None):
     '''
     run multi-layer perceptron
     input data is node with gene as its features.
     :return:
     '''
-    # -- input arguments
-    copd = config["data"]
-    # input = config["input"]  # {disease_idx1: [[0,0,0,1,0,0],[0,1,0,0,0,0] ....], disease_idx2: [...],... }
-    # y = config['label']
-    # train_mask = config['train_mask']
-    # test_mask = config['test_mask']
-    train_input = config['train_input']
-    test_input = config['test_input']
-    train_label = config['train_label']
-    test_label = config['test_label']
+    # # -- input arguments
+    # copd = config["data"]
+    # # input = config["input"]  # {disease_idx1: [[0,0,0,1,0,0],[0,1,0,0,0,0] ....], disease_idx2: [...],... }
+    # # y = config['label']
+    # # train_mask = config['train_mask']
+    # # test_mask = config['test_mask']
+    # train_input = config['train_input']
+    # test_input = config['test_input']
+    # train_label = config['train_label']
+    # test_label = config['test_label']
+    # seqential_layers = config['sequential_layers']
+    # # hidden_sizes = config['hidden_layers']
+    # epochs = config['epochs']
+    # args = config['args']
+    # param = config['param']
+    #
+    # # -- convert to tensor
+    # train_input = torch.tensor(train_input, dtype=torch.float)
+    # test_input = torch.tensor(test_input, dtype=torch.float)
+    # train_label = torch.tensor(train_label, dtype=torch.long)
+    # test_label = torch.tensor(test_label, dtype=torch.long)
+
+    #=====================
+    #==newly adding part
+    #=====================
+
+    x_train, label_train = config['train_input'], config['train_label']
+    x_test, label_test = config['test_input'], config['test_label']
+
+    assert isinstance(x_train, type(torch.rand(1))), "x_train must have tensor type "
+    assert isinstance(label_train, type(torch.rand(1))), "label_train must have tensor type "
+    assert isinstance(x_test, type(torch.rand(1))), "x_test must have tensor type "
+    assert isinstance(label_test, type(torch.rand(1))), "label_test must have tensor type "
+
     seqential_layers = config['sequential_layers']
-    # hidden_sizes = config['hidden_layers']
     epochs = config['epochs']
-    args = config['args']
     param = config['param']
 
+    # =====================
+    # ==cast train and test data to the correct type
+    # =====================
+
     # -- convert to tensor
-    train_input = torch.tensor(train_input, dtype=torch.float)
-    test_input = torch.tensor(test_input, dtype=torch.float)
-    train_label = torch.tensor(train_label, dtype=torch.long)
-    test_label = torch.tensor(test_label, dtype=torch.long)
+    train_input = torch.tensor(x_train, dtype=torch.float)
+    test_input = torch.tensor(x_test, dtype=torch.float)
+    train_label = torch.tensor(label_train, dtype=torch.long)
+    test_label = torch.tensor(label_test, dtype=torch.long)
+
+
     weighted_class = torch.tensor(list(map(int, args.weighted_class)), dtype=torch.float)
 
     #=====================
@@ -405,7 +441,7 @@ def mlp(data, config):
         test_pred = test_prob.max(1)[1]
         test_acc = test_pred.eq(test_label).sum().item() / test_label.shape[0]
 
-        return [train_acc, test_acc, train_pred, test_pred, train_prob, test_prob]
+        return [train_acc, test_acc, train_pred, test_pred, train_prob, test_prob, model]
 
     train_acc_hist = []
     test_acc_hist = []
@@ -416,7 +452,7 @@ def mlp(data, config):
     def run_epochs(train_data=None, all_train_label=None, test_data=None, all_test_label=None):
         for epoch in range(epochs):
             loss_epoch = train(train_data,all_train_label)
-            train_acc, test_acc, train_pred, test_pred, train_prob, test_prob  = test(train_data,all_train_label, test_data, all_test_label)
+            train_acc, test_acc, train_pred, test_pred, train_prob, test_prob, trained_model  = test(train_data,all_train_label, test_data, all_test_label)
             logging = 'Epoch: {:03d}, Train: {:.4f}, Test: {:.4f}'.format(epoch, train_acc, test_acc)
             if args.verbose:
                 print(logging)
@@ -425,7 +461,7 @@ def mlp(data, config):
             train_acc_hist.append(train_acc)
             test_acc_hist.append(test_acc)
 
-        return [train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label]
+        return [train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label, trained_model]
 
 
     #=====================
@@ -496,270 +532,78 @@ def mlp(data, config):
         df = pd.DataFrame(avg_test_metrics)
         df.to_csv(save_path + file_name, header=True, index=False, sep='\t', mode='w')
 
+        raise ValueError('please check mlp=> if args.cv before moving on')
+
         return avg_test_metrics.iloc[-1]
 
     else:
         # train_pred, test_pred, train_prob, test_prob, all_train_label, all_test_label = run_epochs(all_x[train_index], all_labels[train_index], all_x[test_index], all_labels[test_index])
         # def run_epochs(train_data=None, all_train_label=None, test_data=None, all_test_label=None):
-        train_pred, test_pred, train_prob , test_prob, all_train_label, all_test_label = run_epochs(train_input, train_label, test_input, test_label)
+        train_pred, test_pred, train_prob , test_prob, all_train_label, all_test_label, trained_model = run_epochs(train_input, train_label, test_input, test_label)
         #=====================
         #==report performance
         #=====================
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        # save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        # file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        # import os
+        # if not os.path.exists(save_path):
+        #     os.makedirs(save_path)
+        # #--------train
+        # report_train = performance_metrics.report_performances(all_train_label.numpy(),
+        #                                                 train_pred.numpy(),
+        #                                                 train_prob.detach().numpy(),
+        #                                                 get_avg_total=True)
+        # #--------test
+        # report_test = performance_metrics.report_performances(all_test_label.numpy(),
+        #                                                test_pred.numpy(),
+        #                                                test_prob.detach().numpy(),
+        #                                                get_avg_total=True)
+        # if args.report_performance:
+        #     print(report_train)
+        #     print(report_test)
+        if args.embedding_name == 'node2vec':
+            tmp = args.emb_path.split("\\")[10:]
+            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            folder = args.emb_path.split('\\')[10]
+            folder = folder + '\\' + args.emb_path.split('\\')[11]
+            folder = folder + '\\' + args.emb_path.split('\\')[12]
+        elif args.embedding_name == 'gcn':
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            file_name = args.emb_path.split("\\")[-1]
+        else:
+            raise ValueError('in all_models > baseline > models > mlp() > else > else ')
+
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/report_performance/{folder}/"
+
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)
-        #--------train
-        report_train = performance_metrics.report_performances(all_train_label.numpy(),
-                                                        train_pred.numpy(),
-                                                        train_prob.detach().numpy(),
-                                                        get_avg_total=True)
-        #--------test
-        report_test = performance_metrics.report_performances(all_test_label.numpy(),
-                                                       test_pred.numpy(),
-                                                       test_prob.detach().numpy(),
-                                                       get_avg_total=True)
+
+        print(f'save to {save_path + "train/" + file_name}')
+        print(f'save to {save_path + "test/" + file_name}')
+        # --------train
+        report_train = performance_metrics.report_performances(y_true=all_train_label.numpy(),
+                                                               y_pred=train_pred.numpy(),
+                                                               y_score=train_prob.detach().numpy(),
+                                                               save_path=f'{save_path}train/',
+                                                               file_name=file_name)
+        # --------test
+        report_test = performance_metrics.report_performances(y_true=all_test_label.numpy(),
+                                                              y_pred=test_pred.numpy(),
+                                                              y_score=test_prob.detach().numpy(),
+                                                              save_path=f'{save_path}test/',
+                                                              file_name=file_name)
         if args.report_performance:
             print(report_train)
             print(report_test)
 
-        return report_test.iloc[-1]
+    return report_test.iloc[-1], trained_model
 
-            # report = performance_metrics.report_performances(
-            #     y_true=train_label.numpy(),
-            #     y_pred=model(train_input).max(1)[1].numpy(),
-            #     y_score=model(train_input).detach().numpy(),
-            #     save_path=f'{save_path}train/',
-            #     file_name=file_name
-            # )
-            # print(report)
-            # report = performance_metrics.report_performances(
-            #     y_true=test_label.numpy(),
-            #     y_pred=model(test_input).max(1)[1].numpy(),
-            #     y_score=model(test_input).detach().numpy(),
-            #     save_path=f'{save_path}test/',
-            #     file_name=file_name
-            # )
-            # print(report)
-
-
-    # # =====================
-    # # ==logging and write2files
-    # # =====================
-    # split = args.split
-    #
-    # # -- create dir for hyperparameter config if not already exists
-    # weighted_class = ''.join(list(map(str, args.weighted_class)))
-    #
-    # HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}'
-    # folder = f"log/gene_disease/{args.time_stamp}/mlp/split={split}/{HP}/"
-    #
-    # import os
-    # if not os.path.exists(folder):
-    #     os.makedirs(folder)
-    #
-    # # if args.add_features:
-    # if args.emb_name != "no_feat":
-    #     feat_stat = "YES"
-    # else:
-    #     feat_stat = "NO"
-    #
-    # if args.pseudo_label_all:
-    #     pseudo_label_stat = "ALL"
-    # elif args.pseudo_label_topk:
-    #     pseudo_label_stat = "TOP_K"
-    # elif args.pseudo_label_topk_with_replacement:
-    #     pseudo_label_stat = "TOP_K_WITH_REPLACEMENT"
-    # else:
-    #     pseudo_label_stat = "NONE"
-    #
-    # T_param = ','.join([str(param['T1']), str(param['T2'])])
-    # # -- creat directory if not yet created
-    # save_path = f'{folder}img/'
-    # if not os.path.exists(save_path):
-    #     os.makedirs(save_path)
-    # if args.plot_all is True:
-    #     args.plot_loss = True
-    #     args.plot_no_train = True
-    #     args.plot_train = True
-    #
-    # if args.plot_loss:
-    #     # ======================
-    #     # == plot loss and acc vlaue
-    #     # ======================
-    #     plt.figure(1)
-    #     # -- plot loss hist
-    #     plt.subplot(211)
-    #     plt.plot(range(len(loss_hist)), loss_hist)
-    #     plt.ylabel("loss values")
-    #     plt.title("loss history")
-    #
-    #     # -- plot acc hist
-    #     plt.subplot(212)
-    #     plt.plot(range(len(train_acc_hist)), train_acc_hist)
-    #     plt.plot(range(len(test_acc_hist)), test_acc_hist)
-    #     plt.ylabel("accuracy values")
-    #     plt.title("accuracy history")
-    #     print(
-    #         "writing to  " + save_path + f"LOSS_ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc=[{weighted_class}]_T=[{T_param}]_topk={args.topk}.png")
-    #     plt.savefig(
-    #         save_path + f'ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc=[{weighted_class}]_T=[{T_param}]_topk={args.topk}.png')
-    #     plt.show()
-    #
-    #
-    # if args.log:
-    #     # --train_mask f1,precision,recall
-    #     train_pred = mlp(train_input).max(1)[1]
-    #     train_f1 = f1_score(train_label, train_pred, average='micro')
-    #     train_precision = precision_score(train_label, train_pred, average='micro')
-    #     train_recall = recall_score(train_label, train_pred, average='micro')
-    #
-    #     # -- test_mask f1,precision,recall
-    #     test_pred = mlp(test_input).max(1)[1]
-    #     test_f1 = f1_score(test_label, test_pred, average='micro')
-    #     test_precision = precision_score(test_label, test_pred, average='micro')
-    #     test_recall = recall_score(test_label, test_pred, average='micro')
-    #
-    #     save_path = f'{folder}ACC_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc={weighted_class}_topk={args.topk}.txt'
-    #     print(f"writing to {save_path}...")
-    #     with open(save_path, 'w') as f:
-    #         txt = '\n'.join(log_list)
-    #         f.write(txt)
-    #
-    #     cm_train = confusion_matrix(mlp(train_input).max(1)[1], train_label)
-    #     cm_test = confusion_matrix(mlp(test_input).max(1)[1], test_label)
-    #
-    #     # formatter = {'float_kind': lambda x: "%.2f" % x})
-    #     cm_train = np.array2string(cm_train)
-    #     cm_test = np.array2string(cm_test)
-    #
-    #     save_path = f'{folder}CM_feat={feat_stat}_pseudo_label={pseudo_label_stat}_wc={weighted_class}_topk={args.topk}.txt'
-    #     print(f"writing to {save_path}...")
-    #
-    #     # txt = 'class int_rep is [' + ','.join(list(map(str, np.unique(data.y.numpy()).tolist()))) + ']'
-    #     txt = 'class int_rep is [' + ','.join([str(i) for i in range(len(copd.labels2idx().values()))]) + ']'
-    #     txt = txt + '\n\n' + "training cm" + '\n' + cm_train + '\n' \
-    #           + f"training_accuracy ={log_list[-1].split(',')[1]}" + '\n' \
-    #           + f"training_f1       ={train_f1}" + '\n' \
-    #           + f"training_precision={train_precision}" + '\n' \
-    #           + f"training_recall   ={train_recall}" + '\n'
-    #
-    #     txt = txt + '\n\n' + "test cm" + '\n' + cm_test + '\n' \
-    #           + f"test_accuracy ={log_list[-1].split(',')[2]}" + '\n' \
-    #           + f"test_f1       ={test_f1}" + '\n' \
-    #           + f"test_precision={test_precision}" + '\n' \
-    #           + f"test_recall   ={test_recall}" + '\n'
-    #
-    #     with open(save_path, 'w') as f:
-    #         f.write(txt)
-
-
-# def mlp( data, config, **kwargs):
-#     '''
-#
-#     :param x: type torch
-#     :param label:
-#     :param num_feat:
-#     :param test_data:
-#     :param layers:
-#     :return:
-#     '''
-#     # x_train, label_train, x_test, label_test
-#     x_train, label_train = data.x[data.train_mask], data.y[data.train_mask]  # return tensor
-#     x_test, label_test = data.x[data.test_mask], data.y[data.test_mask]  # return tensor
-#     bs = config['bs']
-#     start_i = 0
-#     end_i = bs
-#     epoch = config['epoch']
-#     lr = config['lr']
-#     n = epoch
-#
-#     num_instance = x_train.shape[0]
-#     num_feat = x_train.shape[1]
-#     num_class = np.unique(x_train.numpy())
-#
-#     if kwargs['layers'] is None:
-#         # randomly choose sequential layer
-#         kwargs["layers"] = [  # i am not sure if my sequential is correct
-#             nn.Linear(num_instance, num_feat),
-#             nn.ReLU(),
-#             nn.Linear(64, 32),
-#             nn.ReLU(),
-#             nn.Linear(32, num_class),
-#             nn.LogSoftmax(dim=1)
-#         ]
-#
-#     model = nn.Sequential(*kwargs) # this may cause error
-#     # loss_fn = nn.LogSoftmax(dim=1)
-#
-#     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-#
-#     if kwargs.get('weightclass', None) is None:
-#         weightclass = [1 for i in num_class]
-#
-#     def train(xb_train, yb_train):
-#
-#         model.train()
-#         # loss_output = F.nll_loss(xb_train, yb_train, weight=weightclass,
-#         #                          reduction="mean")
-#
-#         optimizer.zero_grad()
-#         loss_output.backward()
-#         optimizer.step()
-#         return loss_output
-#
-#     def test(data):
-#         '''
-#
-#         :param data: has the following structure
-#             [[xb_train,yb_train],[[xb_test,yb_test]]]
-#         :return: measurement matric
-#             accs
-#         '''
-#         #TODO here>> lets check how to do test in mlp
-#         # >I may have to used trian loader here too
-#         # >use trainLoader
-#         model.eval()
-#         accs = []
-#         preds = []
-#
-#         for d in data:
-#             x, y = d[0], d[1]
-#             pred = model(x).max(1)[1]
-#             # acc = pred.eq(y).sum().item() / x.shape[0]
-#             acc = accuracy(pred, y)
-#             accs.append(acc) # contain [train_acc_list, test_acc_list]
-#             preds.append(pred)  # contain [train_acc_list, test_acc_list]
-#         return accs, preds
-#
-#     #=====================
-#     #== training model
-#     #=====================
-#
-#     # train_dataset = Dataset(x_train, label_train) # todo gene_disease dataset have to be of type Dataset
-#     # train_dataset = zip(x_train,label_train ) # todo this is most likely wrong but I will fix it when i finally run the function
-#     # test_dataset = zip(x_test,label_test )
-#
-#     # train_loader = DataLoader(dataset=train_dataset, batch_size=bs, shuffle=False)
-#     # test_loader = DataLoader(dataset=test_dataset, batch_size=bs, shuffle=False)
-#     accs = None
-#     preds = None
-#     for i in range((n-1)//bs+1):
-#         xb_train = x_train[i * bs: i * bs + bs]
-#         yb_train = label_train[i * bs: i * bs + bs]
-#
-#         xb_test = x_train[i * bs: i * bs + bs]
-#         yb_test = label_train[i * bs: i * bs + bs]
-#
-#         loss_output = train(xb_train, yb_train)
-#         accs, preds = test([[xb_train,yb_train],[xb_test,yb_test]])
-#
-#     return accs, preds # return prediction and accuaracy of train and test of the last epoc.
 
 
 # def random_forest(x_train,label_train,x_test,label_test, bs,epoch, lr):
 def random_forest(data, config, evaluate=False):
+# def random_forest(data, config=None, decision_func='ovr', verbose=True):
     '''
     url: https://towardsdatascience.com/an-implementation-and-explanation-of-the-random-forest-in-python-77bf308a9b76
     :param x_train:
@@ -768,26 +612,54 @@ def random_forest(data, config, evaluate=False):
     :param label_test:
     :return:
     '''
-    # x_train, label_train = data.x[data.train_mask], data.y[data.train_mask]
-    # x_test, label_test = data.x[data.test_mask], data.y[data.test_mask]
+    # # x_train, label_train = data.x[data.train_mask], data.y[data.train_mask]
+    # # x_test, label_test = data.x[data.test_mask], data.y[data.test_mask]
+    #
+    # x_train, label_train = config['train_input'], config['train_label']
+    # x_test, label_test = config['test_input'], config['test_label']
+    #
+    # x_train = x_train.type(torch.float).numpy()
+    # x_test = x_test.type(torch.float).numpy()
+    # label_train = label_train.type(torch.long).numpy()
+    # label_test = label_test.type(torch.long).numpy()
+    #
+    # from sklearn.ensemble import RandomForestClassifier
+    # RSEED = 50
+    #
+    # # Create the model with 100 trees
+    # model = RandomForestClassifier(n_estimators=100,
+    #                                random_state=RSEED,
+    #                                max_features='sqrt',
+    #                                n_jobs=-1, verbose=1)
+    #
+    #
+    #=====================
+    #==newly added
+    #=====================
+    from sklearn.ensemble import RandomForestClassifier
 
+    RSEED = 50
     x_train, label_train = config['train_input'], config['train_label']
     x_test, label_test = config['test_input'], config['test_label']
 
-    x_train = x_train.type(torch.float).numpy()
-    x_test = x_test.type(torch.float).numpy()
-    label_train = label_train.type(torch.long).numpy()
-    label_test = label_test.type(torch.long).numpy()
+    assert isinstance(x_train, type(torch.rand(1))), "x_train must have tensor type "
+    assert isinstance(label_train, type(torch.rand(1))), "label_train must have tensor type "
+    assert isinstance(x_test, type(torch.rand(1))), "x_test must have tensor type "
+    assert isinstance(label_test, type(torch.rand(1))), "label_test must have tensor type "
 
-    from sklearn.ensemble import RandomForestClassifier
-    RSEED = 50
+    # =====================
+    # ==cast train and test data to the correct type
+    # =====================
 
-    # Create the model with 100 trees
+    x_train = x_train.type(torch.double).numpy()
+    x_test = x_test.type(torch.double).numpy()
+    label_train = label_train.type(torch.double).numpy()
+    label_test = label_test.type(torch.double).numpy()
+
     model = RandomForestClassifier(n_estimators=100,
                                    random_state=RSEED,
                                    max_features='sqrt',
                                    n_jobs=-1, verbose=1)
-
 
     #--------prediction with cross validation
     if args.cv is not None:
@@ -853,11 +725,28 @@ def random_forest(data, config, evaluate=False):
         # =====================
         # ==performance report
         # =====================
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-        file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+        # save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
+        # file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
+
+        if args.embedding_name == 'node2vec':
+            tmp = args.emb_path.split("\\")[10:]
+            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            folder = args.emb_path.split('\\')[10]
+            folder = folder + '\\' + args.emb_path.split('\\')[11]
+            folder = folder + '\\' + args.emb_path.split('\\')[12]
+        elif args.embedding_name == 'gcn':
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            file_name = args.emb_path.split("\\")[-1]
+        else:
+            raise ValueError('in all_models > baseline > models > random_forest() > else > else ')
+
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/report_performance/{folder}/"
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)
+
+        print(f'save to {save_path+"train/"+file_name}')
+        print(f'save to {save_path + "test/" + file_name}')
 
         report_train = performance_metrics.report_performances(
             y_true=label_train,
@@ -877,123 +766,8 @@ def random_forest(data, config, evaluate=False):
             print(report_train)
             print(report_test)
 
-    return report_train.iloc[-1]
+    return report_train.iloc[-1], model
 
-    #=====================
-    #==below code is old plotting and logging style
-    #=====================
-
-    # from sklearn.metrics import precision_score, recall_score
-    # import matplotlib.pyplot as plt
-
-
-    # # Plot formatting
-    # plt.style.use('fivethirtyeight')
-    # plt.rcParams['font.size'] = 18
-    # if evaluate == True:
-    #     def evaluate_model(predictions, probs, train_predictions, train_probs):
-    #         """Compare machine learning model to baseline performance.
-    #         Computes statistics and shows ROC curve."""
-    #         baseline = {}
-    #
-    #         baseline['recall'] = recall_score(label_test,
-    #                                           [1 for _ in range(len(label_test))], average='micro')
-    #
-    #         baseline['precision'] = precision_score(label_test,
-    #                                                 [1 for _ in range(len(label_test))], average='micro')
-    #         baseline['roc'] = 0.5
-    #
-    #         results = {}
-    #
-    #         results['recall'] = recall_score(label_test, predictions, average='micro')
-    #         results['precision'] = precision_score(label_test, predictions, average='micro')
-    #         # results['roc'] = roc_auc_score(label_test, probs)
-    #
-    #         train_results = {}
-    #         train_results['recall'] = recall_score(label_train, train_predictions, average='micro')
-    #         train_results['precision'] = precision_score(label_train, train_predictions, average='micro')
-    #         # train_results['roc'] = roc_auc_score(label_train, train_probs)
-    #
-    #         for metric in ['recall', 'precision']:
-    #             print(
-    #                 f'{metric.capitalize()} Baseline: {round(baseline[metric], 2)} Test: {round(results[metric], 2)} Train: {round(train_results[metric], 2)}')
-    #
-    #         # Calculate false positive rates and true positive rates
-    #         # base_fpr, base_tpr, _ = roc_curve(label_test, [1 for _ in range(len(label_test))])
-    #         # model_fpr, model_tpr, _ = roc_curve(label_test, probs)
-    #
-    #         plt.figure(figsize=(8, 6))
-    #         plt.rcParams['font.size'] = 16
-    #
-    #         #------Plot both curves
-    #         # plt.plot(base_fpr, base_tpr, 'b', label='baseline')
-    #         # plt.plot(model_fpr, model_tpr, 'r', label='model')
-    #         # plt.legend()
-    #         # plt.xlabel('False Positive Rate')
-    #         # plt.ylabel('True Positive Rate')
-    #         # plt.title('ROC Curves')
-    #         # plt.show()
-    #
-    #     def plot_confusion_matrix(cm, classes,
-    #                               normalize=False,
-    #                               title='Confusion matrix',
-    #                               cmap=plt.cm.Oranges):
-    #         """
-    #         This function prints and plots the confusion matrix.
-    #         Normalization can be applied by setting `normalize=True`.
-    #         Source: http://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
-    #         """
-    #         if normalize:
-    #             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    #             print("Normalized confusion matrix")
-    #         else:
-    #             print('Confusion matrix, without normalization')
-    #
-    #         print(cm)
-    #
-    #         # Plot the confusion matrix
-    #         plt.figure(figsize=(10, 10))
-    #         plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    #         plt.title(title, size=24)
-    #         plt.colorbar(aspect=4)
-    #         tick_marks = np.arange(len(classes))
-    #         plt.xticks(tick_marks, classes, rotation=45, size=14)
-    #         plt.yticks(tick_marks, classes, size=14)
-    #
-    #         fmt = '.2f' if normalize else 'd'
-    #         thresh = cm.max() / 2.
-    #
-    #         # Labeling the plot
-    #         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-    #             plt.text(j, i, format(cm[i, j], fmt), fontsize=20,
-    #                      horizontalalignment="center",
-    #                      color="white" if cm[i, j] > thresh else "black")
-    #
-    #         plt.grid(None)
-    #         plt.tight_layout()
-    #         plt.ylabel('True label', size=18)
-    #         plt.xlabel('Predicted label', size=18)
-    #
-    #     evaluate_model(rf_predictions, rf_probs, train_rf_predictions, train_rf_probs)
-    #     plt.savefig('roc_auc_curve.png')
-    #
-    #     from sklearn.metrics import confusion_matrix
-    #     import itertools
-    #
-    #     # =====================
-    #     # ==measurement matric
-    #     # =====================
-    #
-    #     # --------Confusion matrix
-    #     cm = confusion_matrix(label_test, rf_predictions)
-    #
-    #     # =====================
-    #     # ==plotting
-    #     # =====================
-    #     plot_confusion_matrix(cm, classes=['Poor Health', 'Good Health'],
-    #                           title='Health Confusion Matrix')
-    #
-    #     plt.savefig('output/gene_disease/baseline/cm.png')
 
 
 

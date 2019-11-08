@@ -502,6 +502,7 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                 prob = weighted_adj_matrix[ind[0],ind[1]]/weighted_adj_matrix[ind[0],ind[1]].sum()
                 prob = np.array([i for i in prob.tolist()[0]])
 
+
             if bottom_edges_percent is not None:
                 prob = weighted_adj_matrix[ind[0], ind[1]]
                 prob = 1 / (prob * 20000)
@@ -537,6 +538,8 @@ def jaccard_coeff(dataset,geometric_dataset, original_edges, added_edges, edges,
                     all_indices = np.delete(all_indices, np.where(all_indices == index)[0][0])
                     # print(len(picked_edges_ind))
                 # index += 1
+
+            print(f'picked edges = {picked_edges_ind}')
 
             for i,j in zip(ind[0][picked_edges_ind], ind[1][picked_edges_ind]):
                 # w = list(G.get_edge_data(i, j).values())

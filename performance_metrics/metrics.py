@@ -212,16 +212,21 @@ def report_performances(y_true, y_pred, y_score=None, average='micro', save_path
         return class_report_df
 
     if save_path is not None:
-        if not os.path.exists(save_path):
-            os.mkdir(save_path)
+        # if not os.path.exists(save_path):
+        #     os.mkdir(save_path)
+        os.makedirs(save_path, exist_ok=True)
 
         df = pd.DataFrame(class_report_df)  # output before first epoch
-        # tmp = save_path+file_name
-        # with open(tmp,'w') as f:
-        #     print(f"writing to {tmp}...")
-        #     f.write(df.__repr__())
-        df.to_csv(save_path+file_name, header=True, index=False,  sep='\t', mode='w')
+        df = df.round(6)
 
+
+        with open(save_path+file_name, 'w') as f:
+            f.write(df.__repr__())
+
+        # df.to_csv(save_path+file_name, header=True, index=True,  sep='\t', mode='w')
+        # print(df)
+        # print(save_path+file_name)
+        # exit()
     return class_report_df
 
 

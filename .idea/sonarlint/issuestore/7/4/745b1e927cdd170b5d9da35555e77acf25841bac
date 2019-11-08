@@ -1,11 +1,17 @@
 
-Mpython:S1481N")Remove the unused local variable "count".(óÿÑ—øÿÿÿÿ8ëƒåÛ-
-Tpython:S1066œ"/Merge this if statement with the enclosing one.(¬Ùÿÿÿÿÿ8—¹¹ÑÜ-
-Lpython:S1481¶",Remove the unused local variable "max_freq".(Óıİı8ßåÌÜ-
-Tpython:S1481L"5Remove the unused local variable "count_added_edges".(¤î°8ëƒåÛ-
-xpython:S3776"TRefactor this function to reduce its Cognitive Complexity from 56 to the 15 allowed.(ŒïÂëøÿÿÿÿ8š•«¢Û-
-Qpython:S1481J"2Remove the unused local variable "count_original".(€â««8ëƒåÛ-
-vpython:S107"SFunction "jaccard_coeff" has 10 parameters, which is greater than the 7 authorized.(ŒïÂëøÿÿÿÿ8×”‡©Û-
-Npython:S1481I"/Remove the unused local variable "num_disease".(ÂÅ†è8ëƒåÛ-
-Mpython:S1481~")Remove the unused local variable "count".(’»õìüÿÿÿÿ8ùë×éß-
-[python:S1481K"7Remove the unused local variable "count_all_new_edges".(¯öæşÿÿÿÿ8ëƒåÛ-
+Jpython:S1481¢"%Remove the unused local variable "s".(¸ç²½ıÿÿÿÿ8¨–çîâ-
+Mpython:S1481P")Remove the unused local variable "count".(óÿÑ—øÿÿÿÿ8ëƒåÛ-
+Npython:S1481€")Remove the unused local variable "count".(’»õìüÿÿÿÿ8ùë×éß-
+Npython:S1481K"/Remove the unused local variable "num_disease".(ÂÅ†è8ëƒåÛ-
+Jpython:S1481"%Remove the unused local variable "s".(¸ç²½ıÿÿÿÿ8¸ı–«ã-
+Qpython:S1481L"2Remove the unused local variable "count_original".(€â««8ëƒåÛ-
+Lpython:S1481¸",Remove the unused local variable "max_freq".(Óıİı8ßåÌÜ-
+[python:S1481M"7Remove the unused local variable "count_all_new_edges".(¯öæşÿÿÿÿ8ëƒåÛ-
+Tpython:S1481N"5Remove the unused local variable "count_added_edges".(¤î°8ëƒåÛ-
+Tpython:S1066â"/Merge this if statement with the enclosing one.(¬Ùÿÿÿÿÿ8Ñü¿ªã-
+Tpython:S1066Ú"/Merge this if statement with the enclosing one.(¬Ùÿÿÿÿÿ8¸ı–«ã-
+Jpython:S1481€"%Remove the unused local variable "s".(¸ç²½ıÿÿÿÿ8¨–çîâ-
+qpython:S107"SFunction "jaccard_coeff" has 14 parameters, which is greater than the 7 authorized.( –Õ‘8¨–çîâ-
+rpython:S1764ˆ"MCorrect one of the identical sub-expressions on both sides of operator "and".(åµ÷¡üÿÿÿÿ8Í“­­ã-
+Tpython:S1066Ş"/Merge this if statement with the enclosing one.(¬Ùÿÿÿÿÿ8ŒÂ©ã-
+tpython:S3776"URefactor this function to reduce its Cognitive Complexity from 216 to the 15 allowed.( –Õ‘8¨–çîâ-

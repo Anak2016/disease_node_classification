@@ -5,55 +5,196 @@ from my_utils import *
 from all_models import baseline, embedding
 import all_datasets
 
+def set_config(copd, copd_geometric_dataset, *arguments, **kwargs):
 
-def get_config(model_name, copd, emb_name =None, emb_path=None, *arguments, **kwargs):
+    # if args.emb_name == 'gnn':
+    #     all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,
+    #                                                                                      *arguments, **kwargs)
+    #     all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+    #     copd_geometric_dataset.x = all_x_input
+    #
+    #     #=====================
+    #     #==running gnn to get embedding
+    #     #=====================
+    #     args.hidden = 16
+    #     from all_models import embedding
+    #     # func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, emb_name=model['emb_name'])
+    #     config = {
+    #         "param": {  # Pseudo-Label
+    #             'T1': int(args.t1_t2_alpha[0]),
+    #             'T2': int(args.t1_t2_alpha[1]),
+    #             'af': float(args.t1_t2_alpha[2])
+    #         }
+    #     }
+    #     #TODO here>> make sure that nodes are in ordered in gcn
+    #     #TODO here>> does gcn use edges weight? if it does, comment out the normalized_features
+    #     copd_geometric_dataset.x = embedding.GNN(data=copd_geometric_dataset, config=config).run()  # gnn as embedding
+    #
+    #     #=====================
+    #     #==config for classifier
+    #     #=====================
+    #
+    #     config = {
+    #         "train_input": torch.tensor(copd_geometric_dataset.x[copd_geometric_dataset.train_mask]),
+    #         'test_input': torch.tensor(copd_geometric_dataset.x[copd_geometric_dataset.test_mask]),
+    #         "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+    #         "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+    #     }
+    #
+    #     return config, copd_geometric_dataset, all_x_input
 
-    if model_name == 'svm':
+    if args.common_nodes_feat != "no":
+        #TODO here>> x is self loop
+        all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,
+                                                                                         *arguments, **kwargs)
+        all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
+        copd_geometric_dataset.x = torch.tensor(all_x_input, dtype=torch.float)
+        config = {
+            "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
+            'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
+            "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+            "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+        }
+        return config, copd_geometric_dataset, all_x_input
 
-        if args.common_nodes_feat != "no":
-            # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
-            # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
-            #TODO here>>
-            x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
-            copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
-                                                                   split=args.split, undirected=not args.directed)
+    if args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine']:
+        # --------identity matrix or valid emb_name
+        config = {
+            "train_input": copd_geometric_dataset.x[copd_geometric_dataset.train_mask],
+            'test_input': copd_geometric_dataset.x[copd_geometric_dataset.test_mask],
+            "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+            "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+        }
+        return config, copd_geometric_dataset, None
 
-            #TODO here>> create_common_nodes_as_features and normalized_features should be before copd_geometric_dataset because it preprocess data
-            all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset,*arguments, **kwargs)
+def get_config( model_name, copd, emb_name =None, emb_path=None, *arguments, **kwargs):
 
+    #--------create data to be used as args to create Dataset object
+    #TODO here>> figure out how to add edges between genes in data_preprocessing.
+
+    x, copd,  edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+    copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
+                                                           split=args.split, undirected=not args.directed)
+
+
+    # TODO here>> create_common_nodes_as_features and normalized_features should be before copd_geometric_dataset because it preprocess data
+    if model_name in ['gnn','node2vec']:
+        config, copd_geometric_dataset, all_x_input = set_config(copd, copd_geometric_dataset, *arguments, **kwargs)
+        return config, copd_geometric_dataset, all_x_input
+
+    elif model_name == 'svm':
+        config, copd_geometric_dataset, all_x_input =  set_config(copd, copd_geometric_dataset, *arguments, **kwargs)
+        return config, copd_geometric_dataset, all_x_input
+        # if args.common_nodes_feat != "no":
+        #     # train_input, test_input = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset)
+        #     # all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd, copd_geometric_dataset, used_nodes='gene', edges_weight_option= args.edges_weight_option)
+        #
+        #     copd_geometric_dataset.x = all_x_input
+        #     config = {
+        #         "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
+        #         'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
+        #         "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+        #         "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+        #     }
+        #     return config, copd_geometric_dataset, all_x_input
+        #
+        # if args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
+        #     # --------create data to be used as args to create Dataset object
+        #     # x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+        #     #
+        #     # copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
+        #     #                                                        split=args.split, undirected=not args.directed)
+        #     # --------identity matrix or valid emb_name
+        #     config = {
+        #         "train_input": copd_geometric_dataset.x[copd_geometric_dataset.train_mask],
+        #         'test_input': copd_geometric_dataset.x[copd_geometric_dataset.test_mask],
+        #         "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
+        #         "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+        #     }
+        #     # print(copd_geometric_dataset.x)
+        #     return config, copd_geometric_dataset, None
+
+    if model_name == 'rf':
+        config, copd_geometric_dataset, all_x_input =  set_config(copd, copd_geometric_dataset, *arguments, **kwargs)
+        return config, copd_geometric_dataset, all_x_input
+
+    if model_name == 'lr':
+        config, copd_geometric_dataset, all_x_input =  set_config(copd, copd_geometric_dataset, *arguments, **kwargs)
+        return config, copd_geometric_dataset, all_x_input
+
+    if model_name == 'mlp':
+        param = {
+            # Pseudo-Label
+            'T1': int(args.t1_t2_alpha[0]),
+            'T2': int(args.t1_t2_alpha[1]),
+            'af': float(args.t1_t2_alpha[2])}
+        if args.emb_name == "no_feat" and args.common_nodes_feat != 'no':
+
+            all_x_input, edges_weight, edges = preprocessing.create_common_nodes_as_features(copd,
+                                                                                             copd_geometric_dataset,
+                                                                                             *arguments, **kwargs)
             all_x_input = preprocessing.normalize_features(csr_matrix(all_x_input))
-
             copd_geometric_dataset.x = all_x_input
+
+            # display2screen(all_x_input.shape)
             config = {
+                "data": copd,
+                "label": y.numpy(),  # tensor
                 "train_input": torch.tensor(all_x_input[copd_geometric_dataset.train_mask]),
                 'test_input': torch.tensor(all_x_input[copd_geometric_dataset.test_mask]),
-                "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
-                "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+                "train_label": y.numpy()[copd_geometric_dataset.train_mask],
+                "test_label": y.numpy()[copd_geometric_dataset.test_mask],
+                # change value of hidden_layers to be used in nn.sequential
+                'sequential_layers': [nn.Linear(2996, 512),
+                                      nn.ReLU(),
+                                      nn.Linear(512, 64),
+                                      nn.ReLU(),
+                                      nn.Linear(64, len(copd.labels2idx().keys())),
+                                      nn.LogSoftmax(dim=1)
+                                      ],
+                "epochs": 200,
+                "args": args,
+                "param": param
             }
             return config, copd_geometric_dataset, all_x_input
 
-        if args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine' ]:
-            # --------create data to be used as args to create Dataset object
-            x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+        elif args.emb_path is not None or args.emb_name in ['no_feat', "node2vec", 'attentionwalk', 'bine']:
+            '''emb_path must directed to any of the emb options '''
+            # copd_geometric_dataset.x = torch.from_numpy(copd_geometric_dataset.x)
+            # copd_geometric_dataset.y = torch.from_numpy(copd_geometric_dataset.y)
+            # copd_geometric_dataset.train_mask = torch.from_numpy(copd_geometric_dataset.train_mask)
+            # copd_geometric_dataset.test_mask = torch.from_numpy(copd_geometric_dataset.test_mask)
 
-            copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
-                                                                   split=args.split, undirected=not args.directed)
-            # --------identity matrix or valid emb_name
             config = {
+                "data": copd,
+                "label": y.numpy(),  # tensor
                 "train_input": copd_geometric_dataset.x[copd_geometric_dataset.train_mask],
                 'test_input': copd_geometric_dataset.x[copd_geometric_dataset.test_mask],
                 "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
-                "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+                "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask],
+                # "hidden_layers": [64, 64, 128, 16, len(copd.labels2idx().keys())],
+                'sequential_layers': [
+                    nn.Linear(64, 32),
+                    nn.ReLU(),
+                    nn.Linear(32, 16),
+                    nn.ReLU(),
+                    nn.Linear(16, len(copd.labels2idx().keys())),
+                    nn.LogSoftmax(dim=1)
+                ],
+                "epochs": 200,
+                "args": args,
+                "param": param
             }
-            # print(copd_geometric_dataset.x)
-            print(copd_geometric_dataset.x)
             return config, copd_geometric_dataset, None
 
-        raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+        else:
+            raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
+
+    raise ValueError('provided emb_names mayb incorrect or args.common_nodes_feat is typed incorrectly')
 
 
 
-def run_ensemble(copd,  config=None):
+def run_ensemble(copd, config=None):
     assert config is not None , 'config must not be None'
 
     model_predict = []
@@ -63,6 +204,9 @@ def run_ensemble(copd,  config=None):
     # > ensemble contains n number of train models
     # > ensemble then feed data for model to be predicted
     # > collect prediction from each data and selected each predicion that have the most vote.
+
+
+
     for name,model  in config.items():
 
         random.seed(args.seed)
@@ -74,7 +218,7 @@ def run_ensemble(copd,  config=None):
         # # reassign args of jaccard_coeff function
         if model.get('edges_selection',None) is not None and model.get('emb_path', None) is not None:
             raise ValueError('only edges_selection or emb_path should be selected')
-        copd_geometric_dataset = None
+        # copd_geometric_dataset = None
         if model.get('edges_selection',None):
             args.common_nodes_feat = model['edges_selection']['common_nodes_feat']
 
@@ -93,12 +237,13 @@ def run_ensemble(copd,  config=None):
                 func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, used_nodes=args.common_nodes_feat, edges_weight_option=model['edges_selection']['edges_weight_option'])
             else:
                 raise ValueError("error in run_ensemble: common_nodes_feat is None")
-        elif model.get('emb_path', None):
+        elif model.get('emb_path', None): # done
             args.emb_path = model.get('emb_path', None)
             func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,  emb_path=model['emb_path'])
-        elif model.get('emb_name', None):
+        elif model.get('emb_name', None): # todo need to check further
             args.emb_name = model.get('emb_name', 'no_feat')
             func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, emb_name=model['emb_name'])
+
         else:
             raise ValueError('func_kwargs is None')
 
@@ -107,21 +252,49 @@ def run_ensemble(copd,  config=None):
         #==get trained model
         #=====================
         func = model['func']['model']
-        # func_args= model['func']['args']
 
         performance, trained_model = func(copd_geometric_dataset, func_kwargs) # pred must be real prediction
+
         print(performance.to_dict())
         #TODO here>> why predict_proba does not give the same resutl as predict
         test_input = copd_geometric_dataset.x[copd_geometric_dataset.test_mask]
         test_labels = copd_geometric_dataset.y[copd_geometric_dataset.test_mask]
+        if model['name'] == 'svm':
+            # pred_proba = trained_model.predict_proba(test_input)
+            pred_proba = trained_model.decision_function(test_input)
+            pred = pred_proba.argmax(1)
 
-        # pred_proba = trained_model.predict_proba(test_input)
-        pred_proba = trained_model.decision_function(test_input)
-        pred = pred_proba.argmax(1)
+            # pred = pred_proba.argmax(1)
+            model_predict_prob.append(pred_proba)
+            model_predict.append(pred)
+        elif model['name'] =='lr':
+            pred_proba = trained_model.decision_function(test_input)
+            # pred_proba = trained_model.predict_proba(test_input)
+            # pred = trained_model.predict(test_input)
+            pred = pred_proba.argmax(1)
 
-        # pred = pred_proba.argmax(1)
-        model_predict_prob.append(pred_proba)
-        model_predict.append(pred)
+            model_predict_prob.append(pred_proba)
+            model_predict.append(pred)
+        elif model['name'] == 'rf':
+            # pred_proba = trained_model.decision_function(test_input)
+            pred_proba = trained_model.predict_proba(test_input)
+            pred = pred_proba.argmax(1)
+            # pred = trained_model.predict(test_input)
+
+            model_predict_prob.append(pred_proba)
+            model_predict.append(pred)
+        elif model['name'] == 'mlp':
+            # TODO here>> how to get probability of mlp
+            # i need pred_prob and pred
+            pred_proba = trained_model(test_input)
+            pred = pred_proba.max(1)[1].numpy()
+            pred_proba = pred_proba.detach().numpy()
+
+            model_predict_prob.append(pred_proba)
+            model_predict.append(pred)
+
+        else:
+            raise ValueError('model name is not supported for incorrectly typed')
 
 
 
@@ -155,9 +328,32 @@ def run_ensemble(copd,  config=None):
     #=====================
     #==print models performance
     #=====================
+    if args.embedding_name == 'node2vec':
+        tmp = args.emb_path.split("\\")[10:]
+        file_name = '_'.join(tmp)  # eg node2vec_all_nodes_random_0.05_0.txt
+        folder = args.emb_path.split('\\')[10]
+        folder = folder + '\\' + args.emb_path.split('\\')[11]
+        folder = folder + '\\' + args.emb_path.split('\\')[12]
+        folder = folder + '\\' + "ensemble/"
+    elif args.embedding_name == 'gcn':
+        folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + "ensemble/"
+        file_name = args.emb_path.split("\\")[-1]
+    else:
+        raise ValueError('in all_models > baseline > models > svm() > else > else ')
+
     import performance_metrics
-    save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\ensemble/'
-    file_name = r'model_prediction.txt' # add model and its embedding in the name
+    # save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\ensemble/'
+    save_path = f"log/gene_disease/{args.time_stamp}/classifier/{model['name']}/split={args.split}/report_performance/"
+
+    # tmp = args.emb_path.split("\\")
+    # folder = tmp[-4] + '\\' + tmp[-3] + '\\' + tmp[-2] + '\\' +  "ensemble/"
+    # save_path = save_path + folder
+    # tmp = '_'.join(tmp[-3:-1])
+    # file_name = f'{tmp}.txt'
+
+    save_path = save_path + folder
+    print(save_path + f'{file_name} ')
+
     print('-----ensemble report')
     report = performance_metrics.report_performances(
         y_true= test_labels.numpy(),
@@ -169,73 +365,7 @@ def run_ensemble(copd,  config=None):
     print(report)
 
 
-def repeat_model_run(dataset, name=None, num_run=1, model=None, ensemble=None, *arguments, **kwargs):
-    MODEL_PERFORMANCE[name] = {}
-    if ensemble is not None:
-        assert isinstance(int, ensemble), "ensemble must be type in"
-        model_predict = []
-        for loop in ensemble:
-            # model_predict.setdefault(f'model_{loop}',[])
-            for i in range(num_run):
-                print('=================')
-                print(f'  repeat_num={i}')
-                print('=================')
-                args.seed = args.seed + i
-                random.seed(args.seed)
-                np.random.seed(args.seed)
-                torch.manual_seed(args.seed)
-                # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
-                performance, pred = model(**kwargs)
-                model_predict.append(pred)
-                for i in performance.index:
-                    MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
-                # print(f'performance = {performance.to_frame}')
-        model_predict = np.array(model_predict)
-        # collect voting output along axis 0 # figure out how??
-        from scipy.stats import mode
-        ensemble_pred = np.apply_along_axis(mode, 1, model_predict)
-        ensemble_pred = [i[0][0] for i in ensemble.tolist()]
-
-        # #=====================
-        # #==performance
-        # #=====================
-        # save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/cross_valid={args.cv}/lr={args.lr}_d={args.dropout}_wd={args.weight_decay}/report_performance/"
-        # file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}_top_k={args.top_percent_edges}stoch.txt'
-        # import performance_metrics
-        # report_test = performance_metrics.report_performances(
-        #     y_true=dataset.labels,
-        #     y_pred=ensemble_pred,
-        #     # y_score=proba,
-        #     save_path=f'{save_path}train/',
-        #     file_name=file_name
-        # )
-        # # print preformance
-
-    else:
-        for i in range(num_run):
-            print('=================')
-            print(f'  repeat_num={i}')
-            print('=================')
-            args.seed = args.seed + i
-            random.seed(args.seed)
-            np.random.seed(args.seed)
-            torch.manual_seed(args.seed)
-            # performance = model(data=copd_geometric_dataset, config=config, verbose=args.verbose)
-            performance, proba = model(**kwargs)
-            for i in performance.index:
-                MODEL_PERFORMANCE[name].setdefault(i, []).append(performance[i])
-            # print(f'performance = {performance.to_frame}')
-
-    # TODO here>> how to change seed per run
-    for i in MODEL_PERFORMANCE[name].keys():
-        MODEL_PERFORMANCE[name][i] = round(mean(MODEL_PERFORMANCE[name][i]),3)
-
-    print(f'model= {name}average of {num_run} runs are')
-    print(MODEL_PERFORMANCE)
-
-
-if __name__ == "__main__":
-
+def run_main():
     # ==============================
     # == data manipulation + labeling
     # ==============================
@@ -409,7 +539,7 @@ if __name__ == "__main__":
             # gcn_runtime = timer(embedding.run_GCN,data=copd_geometric_dataset, lr=args.lr,weight_decay=args.weight_decay )
             # repeat_model_run(name=f'gnn_{args.emb_name}', num_run=num_run, model=embedding.GNN(data=copd_geometric_dataset,config=config).run)
 
-            gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset, config=config).run)
+            gcn_runtime = timer(embedding.GNN(data=copd_geometric_dataset).run)
             print(f'total running time of baseline.gnn == {gcn_runtime}')
 
         if args.run_mlp:
@@ -449,7 +579,15 @@ if __name__ == "__main__":
                     "train_label": copd_geometric_dataset.y[copd_geometric_dataset.train_mask],
                     "test_label": copd_geometric_dataset.y[copd_geometric_dataset.test_mask],
                     # "hidden_layers": [64, 64, 128, 16, len(copd.labels2idx().keys())],
+                    # 'sequential_layers': [ # layers and its dimension have to changes depends on how emb that emb_path is directed to
+                    #     nn.Linear(16, len(copd.labels2idx().keys())),
+                    #     nn.LogSoftmax(dim=1)
+                    # ]
                     'sequential_layers': [ # layers and its dimension have to changes depends on how emb that emb_path is directed to
+                        nn.Linear(64, 32),
+                        nn.ReLU(),
+                        nn.Linear(32, 16),
+                        nn.ReLU(),
                         nn.Linear(16, len(copd.labels2idx().keys())),
                         nn.LogSoftmax(dim=1)
                     ],
@@ -613,7 +751,7 @@ if __name__ == "__main__":
                 'func':{
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True0.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True9.txt',
             },
             'model_3':{
                 'name': 'svm',
@@ -621,14 +759,14 @@ if __name__ == "__main__":
                     "model": baseline.svm,
                 },
                 # "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_k=0.05_mask=True_stoch4.txt',
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True1.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True0.txt',
             },
             'model_4': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True2.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True1.txt',
 
             },
             'model_5': {
@@ -636,28 +774,28 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True3.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True2.txt',
             },
             'model_6': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True4.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True3.txt',
             },
             'model_7': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True5.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True4.txt',
             },
             'model_8': {
                 'name': 'svm',
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True6.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True5.txt',
 
             },
             'model_9': {
@@ -665,7 +803,7 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True7.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True6.txt',
 
             },
             'model_10': {
@@ -673,7 +811,7 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True8.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True7.txt',
 
             },
             'model_11': {
@@ -681,7 +819,8 @@ if __name__ == "__main__":
                 'func': {
                     "model": baseline.svm,
                 },
-                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True9.txt',
+                "emb_path": r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\full_name_embedding_file\node2vec_emb_fullgraph_common_nodes_feat=gene07_14_19_46_added_edges=disease_no_top_bottom_k=0.5_mask=True8.txt',
+
             },
             # 'model_12': {
             #     'name': 'svm',
@@ -733,7 +872,64 @@ if __name__ == "__main__":
             # },
 
         }
-        run_ensemble(copd, config=ensemble_config)
+        # run_ensemble(copd, config=ensemble_config)
+
+        #=====================
+        #==automated
+        #=====================
+        # model = {"svm" : baseline.svm,
+        #          'lr'  :baseline.logistic_regression,
+        #          'rf'  : baseline.random_forest,
+        #         # 'gnn':,
+        #          'mlp' :baseline.mlp}
+        #
+        model = {
+            # "svm": baseline.svm,
+            # 'lr'  :baseline.logistic_regression ,
+            'mlp': baseline.mlp,
+            # 'rf'  : baseline.random_forest,
+        }
+        # tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec'
+        tmp = f'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease\\07_14_19_46\\processed\\embedding\\gcn\\split=0.8\\lr=0.09_d=0.5_wd=0.006_wc=[1 1 1 1 1 0]'
+        if tmp.split('\\')[-1] == 'node2vec':
+            args.embedding_name = 'node2vec' # please use embedding_name not emb_name; they have different purpose
+        elif tmp.split('\\')[-3] == 'gcn':
+            args.embedding_name = 'gcn' # please use embedding_name not emb_name; they have different purpose
+        else:
+            raise ValueError('In __init__.py >if__name__ == "main" > if args.ensemble > else')
+        print(args.split)
+
+        #=====================
+        #==preprocess copd_geometric_dataset
+        #=====================
+
+        # --------create data to be used as args to create Dataset object
+        # x, copd, edge_index, y = preprocessing.data_preprocessing(dataset=copd)
+        # copd_geometric_dataset = all_datasets.GeometricDataset(copd, x=x, edges_index=edge_index, y=y,
+        #                                                        split=args.split, undirected=not args.directed)
+        for model_key, model_func in model.items():
+            for root, dirs, files in os.walk(tmp, topdown=True):
+                ensemble_config = {}
+                # if root.split('\\')[-2] not in ["all_nodes_random", 'bottom_k', 'bottom_k_stoch',]:
+                # if root.split('\\')[-2]  in ['top_k_stoch']:
+                #     if root.split('\\')[-1] in ["0.5", '0.05']:
+                for i,name in enumerate(files):
+                    ensemble_config[f'model_{args.split}_{i}'] = {}
+                    # ensemble_config[f'model_{args.split}_{i}']['name'] = 'svm'
+                    # ensemble_config[f'model_{args.split}_{i}']['func'] = {"model": baseline.svm}
+                    ensemble_config[f'model_{args.split}_{i}']['name'] = model_key
+                    ensemble_config[f'model_{args.split}_{i}']['func'] = {"model": model_func}
+                    ensemble_config[f'model_{args.split}_{i}']['emb_path'] = os.path.join(root, name)
+                    print(f'load data from {os.path.join(root, name)}')
+                    # ensemble_config[f'model_{args.split}_{i}']['emb_name'] = 'gnn'
+                    # print(ensemble_config)
+                    # exit()
+                if len(ensemble_config) > 0:
+                    run_ensemble(copd, config=ensemble_config)
+                    # exit()
+            print('=================')
+            print(f'====finish running {model_key}')
+            print('=================')
 
     elif args.check_condition is not None:
         #--------check same condision for all base model
@@ -767,36 +963,6 @@ if __name__ == "__main__":
         #=====================
         run_model()
 
-    # if args.run_gcn_on_disease_graph:
-    #     G = nx.Graph()
-    #
-    #     # tmp = [(i,j) for (i,j) in zip(edge_index[0].numpy(), edge_index[1].numpy()) if int(i) == 2995 or int(j) == 2995 ]
-    #     edges = [[i, j] if int(i) < len(copd.disease2idx().values()) else (j, i) for (i, j) in
-    #              zip(edge_index[0].numpy(), edge_index[1].numpy())]
-    #     edges = list(map(lambda t: (int(t[0]), int(t[1])), edges))
-    #
-    #     edges = sorted(edges, reverse=False, key=lambda t: t[0])
-    #
-    #     adj_list = create_adj_list(edges)
-    #     # -- create genes as onehot
-    #     onehot_genes = preprocessing.create_onehot(adj_list, edges)
-    #
-    #     G.add_edges_from(edges)
-    #     input = nx.adjacency_matrix(G).todense()[:len(copd.disease2idx().keys()), :]
-    #     tmp = nx.adjacency_matrix(G).todense()[:len(copd.disease2idx().keys()), :]
-    #
-    #
-    #
-    #     config = {
-    #         "data": copd,
-    #         "input": onehot_genes,  # dictionary
-    #         "label": y.numpy(),
-    #         "train_mask": copd_geometric_dataset.train_mask,
-    #         "test_mask": copd_geometric_dataset.test_mask,
-    #         "emb": x.numpy(),
-    #         "hidden_layers": [2996, 2996, 128, 16, len(copd.labels2idx().keys())],
-    #         "epochs": 200,
-    #         "args": args,
-    #         "param": param
-    #     }
-    #     run_gcn_on_disease_graph(config, emb_name=args.emb_name)
+
+if __name__ == "__main__":
+    run_main()

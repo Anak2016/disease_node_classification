@@ -1,8 +1,8 @@
 
-mpython:S3776«"TRefactor this function to reduce its Cognitive Complexity from 45 to the 15 allowed.(žô¢·
-Jpython:S1481´"%Remove the unused local variable "s".(¸ç²½ýÿÿÿÿ8Ä†ºÈÓ-
-Opython:S1481"+Remove the unused local variable "metrics".(ÎØÏçøÿÿÿÿ8´—Þ£Ò-
-Npython:S1481¿")Remove the unused local variable "param".(âÈº×ýÿÿÿÿ8°“——Ó-
-Hpython:S1481²"(Remove the unused local variable "copd".(¢Ë¤æ8°“——Ó-
-Hpython:S1481Ì"*Remove the unused local variable "device".(Žú‰Ëùÿÿÿÿ
+Npython:S1481Æ")Remove the unused local variable "param".(âÈº×ýÿÿÿÿ8°“——Ó-
+Jpython:S1481»"%Remove the unused local variable "s".(¸ç²½ýÿÿÿÿ8Ä†ºÈÓ-
 Kpython:S1481L",Remove the unused local variable "log_list".(þþœ°8Ëëñ²Õ-
+mpython:S3776²"TRefactor this function to reduce its Cognitive Complexity from 45 to the 15 allowed.(žô¢·
+Hpython:S1481¹"(Remove the unused local variable "copd".(¢Ë¤æ8°“——Ó-
+Hpython:S1481Ó"*Remove the unused local variable "device".(Žú‰Ëùÿÿÿÿ
+Opython:S1481"+Remove the unused local variable "metrics".(ÎØÏçøÿÿÿÿ8´—Þ£Ò-

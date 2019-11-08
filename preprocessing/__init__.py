@@ -17,12 +17,17 @@ def data_preprocessing(dataset = None, name='copd'):
     if name=='copd':
         # run preprocessing for copd
         # if args.emb_path is not None:
-        if args.emb_path is not None or args.emb_name != "no_feat":
+
+        # if args.emb_path is not None or args.emb_name != "no_feat":
+        if args.emb_path is not None:
             x   = add_features()
-        else:
+        elif args.emb_name in ['gnn', 'no_feat']:
             # --------without features; instead use identity matrix of n*n where n is number of nodes
             x = np.identity(len(dataset.nodes2idx().keys()))
             x = torch.tensor(x, dtype=torch.float)
+        else:
+            raise ValueError('please specified emb_name or emb_path')
+
         # else:
         #     x = add_features()
 
@@ -40,6 +45,8 @@ def data_preprocessing(dataset = None, name='copd'):
         y = torch.tensor(y, dtype=torch.int64)  # torch.Size([2996])
 
         return x, dataset, edge_index, y
+
+
 # create funciton as
 def create_onehot(edges_dict, geometric_dataset, edges):
     # -- create genes as onehot
@@ -301,6 +308,8 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     #--------update copd_geometric_dataset
     edges = np.array(edges) # i am not sure why I nee dto convert to array then back to list to convert to tensor
     geometric_dataset.edges_index = torch.tensor(edges.tolist()) # why can't i convert
+    geometric_dataset.edge_index = torch.transpose(torch.tensor(edges.tolist()), 0,1 ) # why can't i convert
+
     geometric_dataset.edges_weight = torch.from_numpy(edges_weight).type(torch.float64)
     geometric_dataset.x = torch.from_numpy(weighted_adj).type(torch.float64)
 
@@ -409,7 +418,9 @@ def add_features():
     # === add embedding as features
     # ===========================
     # -- emb_path
-    if args.emb_path is None:
+    # if args.emb_path is None:
+
+    if args.emb_name in ['attentionwalk', 'node2vec', 'bine','gat']:
         # emb_path = f"data/gene_disease/{args.time_stamp}/gene_disease/processed/embedding/" + emb_file
 
         # -- emb_file
@@ -438,10 +449,14 @@ def add_features():
 
         elif args.emb_name == 'bine':
             emb_file = f"{args.emb_name}/bine{args.time_stamp}.txt" # todo name is missing parameters that were used to generate emb
-            #
-        elif args.emb_name == 'gcn':
-            raise ValueError("Please provide path to gcn_emb file. "
-                             "Provided emb_name == gcn is not YET supported! (I cannot come but with default name for gcn)")
+
+        # elif args.emb_name == 'gcn':
+        #
+        #     #-------- save to file
+        #
+        #
+        #     raise ValueError("Please provide path to gcn_emb file. "
+        #                      "Provided emb_name == gcn is not YET supported! (I cannot come but with default name for gcn)")
         elif args.emb_name == 'gat':
             raise ValueError("Please provide path to gat_emb file. "
                              "provided emb_name == gat is not YET supported! (I cannot come but with default name for gat)")
@@ -480,6 +495,8 @@ def add_features():
         # df.to_csv(save_path + 'emb/' + file_gcn_emb, header=True, index=False, sep='\t', mode='w')
         #TODO here>> Is index of emb_path (save by the code) above aranged in order? (0-->2996)
         # > make sure that it is in order.
+        #TODO here>> make it compatible with gcn and node2vec
+        print(f'run emb from {args.emb_path}')
         emb_name = args.emb_path.split('\\')[-1]
         emb_name = emb_name.split('_')[0]
         # if emb_name == 'node2vec':
