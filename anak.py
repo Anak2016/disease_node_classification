@@ -55,7 +55,7 @@ def save_node2vec_emb(G, save_path = f'data/gene_disease/{args.time_stamp}/proce
         with open(save_path + EMBEDDING_FILENAME, 'w') as f:
             pass
     except:
-        os.makedirs(save_path + EMBEDDING_FILENAME, exist_ok=True)
+        os.makedirs(save_path, exist_ok=True)
     # Precompute probabilities and generate walks - **ON WINDOWS ONLY WORKS WITH workers=1**
     node2vec = Node2Vec(G, dimensions=64, walk_length=30, num_walks=200,
                         workers=4)  # Use temp_folder for big graphs # todo undirected_edges
@@ -136,7 +136,7 @@ def run_node2vec(copd, copd_geometric, weighted_adj, time_stamp=args.time_stamp,
 
     # if args.self_loop is True:
     save_path = r'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease'
-    save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\node2vec\\'
+    save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\{args.added_edges_option}\\node2vec\\'
     tmp = save_path
     assert args.index is not None, "please specified index of embedding file"
     if args.top_bottom_percent_edges is not None:

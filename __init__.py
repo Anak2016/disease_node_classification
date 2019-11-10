@@ -205,7 +205,8 @@ def run_ensemble(copd, config=None):
     # > ensemble then feed data for model to be predicted
     # > collect prediction from each data and selected each predicion that have the most vote.
 
-
+    args.added_edges_option = 'longest_path'
+    # args.added_edges_option = 'shared_gene'
 
     for name,model  in config.items():
 
@@ -234,7 +235,10 @@ def run_ensemble(copd, config=None):
                 args.shared_nodes_random_edges_percent    = model['edges_selection']['shared_nodes_random_edges_percent']
                 args.all_nodes_random_edges_percent    = model['edges_selection']['all_nodes_random_edges_percent']
 
-                func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, used_nodes=args.common_nodes_feat, edges_weight_option=model['edges_selection']['edges_weight_option'])
+                func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,
+                                                                    used_nodes=args.common_nodes_feat,
+                                                                    edges_weight_option=model['edges_selection']['edges_weight_option'],
+                                                                    added_edges_option=args.added_edges_option)
             else:
                 raise ValueError("error in run_ensemble: common_nodes_feat is None")
         elif model.get('emb_path', None): # done

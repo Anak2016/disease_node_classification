@@ -10,6 +10,10 @@ import all_datasets
 # from my_utils import create_adj_list
 # from my_utils import *
 import my_utils
+import networkx as nx
+import collections
+from collections import OrderedDict
+from operator import itemgetter
 
 def data_preprocessing(dataset = None, name='copd'):
     assert dataset is not None, "In run_preprocessing, dataset must not be none"
@@ -166,8 +170,242 @@ def plot_shared_nodes_distribution(nodes_with_shared_genes=None, used_nodes=None
     #     }
     # plot_figures(config)
 
+def get_added_edges_from_nodes_with_shared_genes(edges, used_nodes, plot_shared_gene_dist):
+    # TODO here>> create_edges_dict support option use=all, gene, disease??
+    edges_dict, nodes_with_shared_genes = my_utils.create_edges_dict(edges,
+                                                                     used_nodes)  # return {disease: [{gene, weight}, ... ]} where list of genes are genese that connected to disease by an edge.
+    # nodes_with_shared_genes = { key: [list(i.keys())[0]  for i in j ] for key, j in edges_dict.items()} # rearrange to {disease: [genes,...]}
 
-def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes='gene', edges_weight_option='jaccard'):
+    # plot_shared_gene_dist = True
+    # --------plot_shread_nodes_distribution
+    # plot_shared_gene_dist = True
+    if plot_shared_gene_dist:
+        # TODO here>> takes too long for gene and disease
+        run_time = timer(plot_shared_nodes_distribution, nodes_with_shared_genes,
+                         used_nodes)  # plot and choose th for gene and disease)
+        print(f"plot_shared_nodes_distribution takes {run_time} ms to run ")
+
+    def get_added_edges(nodes_with_shared_genes, used_nodes):
+        '''
+
+        :param nodes_with_shared_genes:
+        :param used_nodes:
+        :return:
+        '''
+        # the function is created for readability
+        tmp = []
+        # selected = []
+        nodes_shared_count = {}
+        for i, (d1, g1) in enumerate(nodes_with_shared_genes.items()):
+            if len(list(nodes_with_shared_genes.items())[i + 1:]) == 0:
+                break
+            else:
+                for d2, g2 in list(nodes_with_shared_genes.items())[i + 1:]:
+                    nodes_shared_count.setdefault(d1 * d2, len(
+                        set(g1).intersection(set(g2))))  # key = g1 * g2 because it produce unique number for each pair
+                    if used_nodes == 'gene':  # add edges between disease
+                        if nodes_shared_count.get(d1 * d2) > 0:  # this is slow
+                            tmp.append((d1, d2))
+                    elif used_nodes == 'disease':  # add edges between genes
+                        if nodes_shared_count.get(g1 * g2) > 0:  # this is slow
+                            tmp.append((g1, g2))
+                    else:
+                        # add edges between genes-genes and diseases-diseases
+                        if nodes_shared_count.get(d1 * d2) > 0:  # this is slow
+                            tmp.append((d1, d2))
+                        if nodes_shared_count.get(g1 * g2) > 0:  # this is slow
+                            tmp.append((g1, g2))
+
+                    # if nodes_shared_count.get(d1*d2) > 0 and d1 != d2 and d1*d2 not in selected: # this is slow
+                    #     tmp.append((d1,d2))
+                    # selected.append(d1*d2)
+
+                    # if len(set(g1).intersection(set(g2))) > 0 and d1 != d2 and (d1,d2) not in tmp and (d2,d1) not in tmp: # this is slow
+                    #     tmp.append((d1,d2))
+        return tmp
+
+    return get_added_edges(nodes_with_shared_genes, used_nodes)
+
+def add_edges_with_shared_nodes(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist, edges_weight_option,save_path):
+    # added_edges =
+    added_edges = get_added_edges_from_nodes_with_shared_genes(edges, used_nodes, plot_shared_gene_dist)
+    # added_edges = get_added_edges(nodes_with_shared_genes, used_nodes)
+
+    max_node = len(list(dataset.nodes2idx()))
+
+    #--------create symmetric adj
+    before_added_edges = np.array(edges).T
+    before_added_edges_adj = csr_matrix((np.ones_like(before_added_edges)[0], (before_added_edges[0], before_added_edges[1]))).todense() # dim = num_disease * num_nodes
+    before_added_edges_adj = np.vstack((before_added_edges_adj, np.zeros((max_node - before_added_edges_adj.shape[0], before_added_edges_adj.shape[1])))) # dim = num_nodes * num_nodes
+    before_added_edges_adj = before_added_edges_adj + before_added_edges_adj.transpose() - before_added_edges_adj.diagonal() # symmetric_adj ; dim = num_nodes * num_nodes
+
+    original_edges = edges
+    edges = edges + added_edges # (edges= 4715 + added_edges = 539) = 5254
+    edges = np.array(edges).T
+    #--------get weight edges (networkx function should preserve order)
+    edges_weight = None
+    weighted_adj = None
+    if edges_weight_option == 'jaccard':
+        from edge_weight import jaccard_coeff
+        # weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, edges_percent=args.edges_percent)
+        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop,
+                                                          weight_limit_percent=args.edges_weight_percent, top_edges_percent=args.top_percent_edges, bottom_edges_percent=args.bottom_percent_edges,
+                                                          shared_nodes_random_edges_percent=args.shared_nodes_random_edges_percent,all_nodes_random_edges_percent=args.all_nodes_random_edges_percent,
+                                                          top_bottom_percent=args.top_bottom_percent_edges)
+        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', weighted_adj)
+        np.save(f'{save_path}\edges_weight_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', edges_weight)
+        print(f'saveing weight_adj and edge_weight (option={edges_weight_option} weight_limit={args.edges_weight_limit}) at {save_path}')
+
+    if edges_weight_option == 'no':
+        G = nx.Graph()
+        G.add_edges_from(zip(edges[0], edges[1]))  # 5254
+        weighted_adj = nx.to_numpy_matrix(G) # all edges have equal weight of 1
+        edges_weight = np.ones((weighted_adj.nonzero()[0].shape[0]))
+        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}.txt', weighted_adj)
+        np.save(f'{save_path}\edges_weight_option={edges_weight_option}.txt', edges_weight)
+        print(f'saveing weight_adj and edge_weight( option= {edges_weight_option}) at {save_path}')
+
+    return weighted_adj, edges_weight
+
+def add_edges_with_longest_path(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path, percent):
+    weighted_adj, edges_weight = None, None
+
+    def Merlin_pandas(l):
+        '''return dict that after apply cumsum to pandas'''
+        #     df = pd.DataFrame(l).rename(columns=tmp)
+        df = pd.DataFrame(l, index=[0])
+        #     print(df)
+        df = pd.concat([df] * 2, ignore_index=True)
+        df.iloc[1] = df.iloc[0].cumsum()
+        #     print(df)
+        tmp = df
+        return tmp
+
+    G = nx.Graph()
+    G.add_edges_from(edges)
+    #=====================
+    #==get biggest disconnected subgraph, so it consistent with node2vec
+    #=====================
+
+    disconnected_graph = list(nx.connected_component_subgraphs(G))
+    disconnected_graph = [(disconnected_graph[i], len(g)) for i, g in enumerate(disconnected_graph)]
+
+    from operator import itemgetter
+
+    disconnected_graph = sorted(disconnected_graph, key=itemgetter(1), reverse=True)
+    # print(disconnected_graph)
+
+    # disconnected_graph = [subgraph1, subgraph2, ....] #where subgraph is of type networkx
+    biggest_disconnected_graph = [graph for graph, length in disconnected_graph][0]
+    G = biggest_disconnected_graph
+
+    #=====================
+    #==get length of pairwise nodes + sorted in decending order
+    #=====================
+
+    # length = nx.all_pairs_shortest_path_length(G)
+    length = {}
+    for i in range(dataset.num_diseases):
+        tmp1 = {}
+        for j in range(dataset.num_diseases):
+            try:
+                tmp1[j] = nx.shortest_path_length(G, source=i, target=j)
+            except nx.NodeNotFound:
+                pass
+
+
+        length.setdefault('tmp', []).append([i, tmp1])
+    length = length['tmp']
+    # print(len(G.edges))
+    # print(len(edges))
+    def pick_longest_path(length, amount=None):
+        tmp = {}
+        count_same_val = collections.OrderedDict({})
+        for i in length:
+            #     print(i)
+            for j, val in i[1].items():
+                if j >= i[0]:
+                    tmp[f'{i[0]}_{j}'] = val
+                    if count_same_val.setdefault(val, None) is None:
+                        count_same_val[val] = 1
+                    else:
+                        count_same_val[val] += 1
+                        #     tmp = sorted((v,k) for k,v in tmp.items())[::-1]
+        tmp = np.array(sorted(tmp.items(), key=lambda tmp: tmp[1], reverse=True))
+        new_edges = tmp[:, 0]
+        tmp = tmp[:, 1].astype(int)
+
+        count_same_val = OrderedDict(sorted(count_same_val.items(), key=itemgetter(0), reverse=True))
+        ind = 0
+        print(f'tmp = {tmp}')
+        print(f'count_same_val = {count_same_val}')
+        # apply cumsum to pandas
+        df = Merlin_pandas(count_same_val)  # cumsum with the same key
+        print(f'df = {df}')
+        picked = None
+        cumsum = df.iloc[1].to_dict()
+        for i, (k, v) in enumerate(cumsum.items()):
+            if i == 0 and v < amount:
+                picked = v
+            if i == 0 and v > amount:
+                picked = amount
+                break
+            #             print(picked)
+            if v <= amount:
+                picked = v
+
+        picked = list(range(picked))
+        print(f'picked = {picked}')
+        left_num = amount - len(picked)
+        if left_num > 0:
+            tmp = tmp[tmp == tmp[max(picked) + 1]]
+            print(tmp)
+            prob = [1 / len(tmp) for i in range(len(tmp))]
+            more_picked = np.random.choice(range(len(tmp)), left_num, p=prob, replace=False)
+            more_picked += len(picked)
+            more_picked = list(more_picked)
+            print(more_picked)
+            picked += more_picked
+            print(picked)
+
+        print(f"picked = {picked}")
+        # get edgse
+        picked_edges = new_edges[picked]
+        picked_edges = np.array([i.split('_') for i in picked_edges])
+        picked_edges = picked_edges.astype(np.int)
+
+        return picked_edges
+
+    #TODO here>> add same number of edges to 0.05- 0.5
+    if percent == 0.05:
+        amount = 24
+    if percent == 0.1:
+        amount = 48
+    if percent == 0.2:
+        amount = 97
+    if percent == 0.3:
+        amount = 146
+    if percent == 0.4:
+        amount = 195
+    if percent == 0.5:
+        amount = 244
+
+    print('========before ============')
+    print(len(G.edges))
+    weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
+    # print(weighted_adj.nonzero()[0].shape[0])
+    picked_edges = pick_longest_path(length, amount=amount)
+    print('========after============')
+    G.add_edges_from(picked_edges)
+    print(len(G.edges))
+    weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
+    edges_weight = np.array(range(weighted_adj.nonzero()[0].shape[0]))
+    print(weighted_adj.nonzero()[0].shape[0])
+    #TODO here>> what does edges_weight support to look like?
+
+    return weighted_adj, edges_weight
+
+def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene_dist = False, used_nodes='gene', edges_weight_option='jaccard', added_edges_option='shared_gene', percent=None):
     '''
         gene is a feat of disease if there exist edges between gene and disease nodes
     :param dataset:
@@ -204,92 +442,11 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     #==code below is really really bad and slow.
     #=====================
 
-    #TODO here>> create_edges_dict support option use=all, gene, disease??
-    edges_dict, nodes_with_shared_genes = my_utils.create_edges_dict(edges, used_nodes) # return {disease: [{gene, weight}, ... ]} where list of genes are genese that connected to disease by an edge.
-    # nodes_with_shared_genes = { key: [list(i.keys())[0]  for i in j ] for key, j in edges_dict.items()} # rearrange to {disease: [genes,...]}
+    if added_edges_option == 'shared_gene':
+        weighted_adj, edges_weight= add_edges_with_shared_nodes(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path)
 
-    # plot_shared_gene_dist = True
-    #--------plot_shread_nodes_distribution
-    # plot_shared_gene_dist = True
-    if plot_shared_gene_dist:
-        #TODO here>> takes too long for gene and disease
-        run_time = timer(plot_shared_nodes_distribution, nodes_with_shared_genes,  used_nodes) # plot and choose th for gene and disease)
-        print(f"plot_shared_nodes_distribution takes {run_time} ms to run ")
-
-    def get_added_edges(nodes_with_shared_genes, used_nodes):
-        '''
-
-        :param nodes_with_shared_genes:
-        :param used_nodes:
-        :return:
-        '''
-        # the function is created for readability
-        tmp = []
-        # selected = []
-        nodes_shared_count = {}
-        for i, (d1, g1) in enumerate(nodes_with_shared_genes.items()):
-            if len(list(nodes_with_shared_genes.items())[i+1:]) == 0:
-                break
-            else:
-                for d2, g2 in list(nodes_with_shared_genes.items())[i+1:]:
-                    nodes_shared_count.setdefault(  d1*d2, len(set(g1).intersection(set(g2)))) # key = g1 * g2 because it produce unique number for each pair
-                    if used_nodes == 'gene': # add edges between disease
-                        if nodes_shared_count.get(d1*d2) > 0 : # this is slow
-                            tmp.append((d1,d2))
-                    elif used_nodes == 'disease': # add edges between genes
-                        if nodes_shared_count.get(g1*g2) > 0 : # this is slow
-                            tmp.append((g1,g2))
-                    else:
-                        # add edges between genes-genes and diseases-diseases
-                        if nodes_shared_count.get(d1*d2) > 0 : # this is slow
-                            tmp.append((d1,d2))
-                        if nodes_shared_count.get(g1*g2) > 0 : # this is slow
-                            tmp.append((g1,g2))
-
-                    # if nodes_shared_count.get(d1*d2) > 0 and d1 != d2 and d1*d2 not in selected: # this is slow
-                    #     tmp.append((d1,d2))
-                        # selected.append(d1*d2)
-
-                    # if len(set(g1).intersection(set(g2))) > 0 and d1 != d2 and (d1,d2) not in tmp and (d2,d1) not in tmp: # this is slow
-                    #     tmp.append((d1,d2))
-        return tmp
-
-
-    added_edges = get_added_edges(nodes_with_shared_genes, used_nodes)
-
-    max_node = len(list(dataset.nodes2idx()))
-
-    #--------create symmetric adj
-    before_added_edges = np.array(edges).T
-    before_added_edges_adj = csr_matrix((np.ones_like(before_added_edges)[0], (before_added_edges[0], before_added_edges[1]))).todense() # dim = num_disease * num_nodes
-    before_added_edges_adj = np.vstack((before_added_edges_adj, np.zeros((max_node - before_added_edges_adj.shape[0], before_added_edges_adj.shape[1])))) # dim = num_nodes * num_nodes
-    before_added_edges_adj = before_added_edges_adj + before_added_edges_adj.transpose() - before_added_edges_adj.diagonal() # symmetric_adj ; dim = num_nodes * num_nodes
-
-    original_edges = edges
-    edges = edges + added_edges # (edges= 4715 + added_edges = 539) = 5254
-    edges = np.array(edges).T
-    #--------get weight edges (networkx function should preserve order)
-    edges_weight = None
-    weighted_adj = None
-    if edges_weight_option == 'jaccard':
-        from edge_weight import jaccard_coeff
-        # weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop, edges_percent=args.edges_percent)
-        weighted_adj, edges_weight, edges = jaccard_coeff(dataset, geometric_dataset, original_edges, added_edges, edges, mask_edges=args.mask_edges, weight_limit=args.edges_weight_limit, self_loop=args.self_loop,
-                                                          weight_limit_percent=args.edges_weight_percent, top_edges_percent=args.top_percent_edges, bottom_edges_percent=args.bottom_percent_edges,
-                                                          shared_nodes_random_edges_percent=args.shared_nodes_random_edges_percent,all_nodes_random_edges_percent=args.all_nodes_random_edges_percent,
-                                                          top_bottom_percent=args.top_bottom_percent_edges)
-        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', weighted_adj)
-        np.save(f'{save_path}\edges_weight_option={edges_weight_option}_weight_limit={args.edges_weight_limit}.txt', edges_weight)
-        print(f'saveing weight_adj and edge_weight (option={edges_weight_option} weight_limit={args.edges_weight_limit}) at {save_path}')
-
-    if edges_weight_option == 'no':
-        G = nx.Graph()
-        G.add_edges_from(zip(edges[0], edges[1]))  # 5254
-        weighted_adj = nx.to_numpy_matrix(G) # all edges have equal weight of 1
-        edges_weight = np.ones((weighted_adj.nonzero()[0].shape[0]))
-        np.save(f'{save_path}\weighted_adj_option={edges_weight_option}.txt', weighted_adj)
-        np.save(f'{save_path}\edges_weight_option={edges_weight_option}.txt', edges_weight)
-        print(f'saveing weight_adj and edge_weight( option= {edges_weight_option}) at {save_path}')
+    if added_edges_option == 'longest_path':
+        weighted_adj, edges_weight = add_edges_with_longest_path(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path, percent)
 
     #TODO here>> trying out differnet weight for edges between diseases
     # > create gene to gene nodes and apply the same edge weight criteria

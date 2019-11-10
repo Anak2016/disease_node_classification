@@ -2,11 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a98d580-fa2a-4883-a168-b6bd99ac144f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StickySelectionHighlights.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/anak.py" beforeDir="false" afterPath="$PROJECT_DIR$/anak.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/edge_weight/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/edge_weight/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_embedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_embedding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/.ipynb_checkpoints/scatch_paper-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/scatch_paper/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/Untitled1.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scatch_paper/scatch_paper.ipynb" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -350,7 +358,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>967</line>
+          <line>971</line>
           <option name="timeStamp" value="445" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -360,7 +368,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>338</line>
+          <line>495</line>
           <option name="timeStamp" value="474" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -380,12 +388,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>215</line>
-          <option name="timeStamp" value="577" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>125</line>
+          <line>129</line>
           <option name="timeStamp" value="581" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -404,23 +407,18 @@
           <option name="timeStamp" value="654" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/anak.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="659" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/baseline/models.py</url>
           <line>215</line>
           <option name="timeStamp" value="738" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>445</line>
+          <line>602</line>
           <option name="timeStamp" value="756" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>299</line>
+          <line>303</line>
           <option name="timeStamp" value="757" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -430,12 +428,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>357</line>
+          <line>361</line>
           <option name="timeStamp" value="815" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>648</line>
+          <line>655</line>
           <option name="timeStamp" value="817" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -465,17 +463,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>200</line>
+          <line>207</line>
           <option name="timeStamp" value="839" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>365</line>
+          <line>522</line>
           <option name="timeStamp" value="843" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
-          <line>614</line>
+          <line>621</line>
           <option name="timeStamp" value="891" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -485,22 +483,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>348</line>
+          <line>352</line>
           <option name="timeStamp" value="901" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>300</line>
+          <line>304</line>
           <option name="timeStamp" value="916" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>20</line>
+          <line>24</line>
           <option name="timeStamp" value="922" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_embedding.py</url>
-          <line>1334</line>
+          <line>1348</line>
           <option name="timeStamp" value="936" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -510,13 +508,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>499</line>
+          <line>656</line>
           <option name="timeStamp" value="959" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/run_embedding.py</url>
-          <line>1437</line>
-          <option name="timeStamp" value="964" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/all_models/embedding/gnn.py</url>
@@ -530,7 +523,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_embedding.py</url>
-          <line>1363</line>
+          <line>1377</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -544,13 +537,8 @@
           <option name="timeStamp" value="979" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>927</line>
-          <option name="timeStamp" value="983" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
-          <line>503</line>
+          <line>660</line>
           <option name="timeStamp" value="985" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -580,17 +568,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>571</line>
+          <line>575</line>
           <option name="timeStamp" value="996" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>288</line>
+          <line>292</line>
           <option name="timeStamp" value="997" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/__init__.py</url>
-          <line>255</line>
+          <line>259</line>
           <option name="timeStamp" value="998" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -598,16 +586,75 @@
           <line>59</line>
           <option name="timeStamp" value="999" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>445</line>
+          <option name="timeStamp" value="1008" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>472</line>
+          <option name="timeStamp" value="1010" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_embedding.py</url>
+          <line>1328</line>
+          <option name="timeStamp" value="1013" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>448</line>
+          <option name="timeStamp" value="1014" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>220</line>
+          <option name="timeStamp" value="1015" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/edge_weight/__init__.py</url>
+          <line>232</line>
+          <option name="timeStamp" value="1016" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>405</line>
+          <option name="timeStamp" value="1021" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_embedding.py</url>
+          <line>1456</line>
+          <option name="timeStamp" value="1031" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/preprocessing/__init__.py</url>
+          <line>396</line>
+          <option name="timeStamp" value="1032" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/anak.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="1033" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/anak.py</url>
+          <line>55</line>
+          <option name="timeStamp" value="1034" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="edges.shape" language="Python" />
+        <watch expression="added_edges" language="Python" />
+        <watch expression="nodes_with_shared_genes" language="Python" />
         <watch expression="copd_geometric_dataset.train_mask.shape" language="Python" />
         <watch expression="args.arch" language="Python" />
         <watch expression="split" language="Python" />
         <watch expression="args.split" language="Python" />
         <watch expression="copd_geometric_dataset.test_mask.shape" language="Python" />
+        <watch expression="percent" language="Python" />
+        <watch expression="len(G.edges)" language="Python" />
         <watch expression="k" language="Python" />
         <watch expression="model" language="Python" />
         <watch expression="args.index" language="Python" />
@@ -633,8 +680,19 @@
         <watch expression="num_selected" language="Python" />
         <watch expression="bottom_edges_percent" language="Python" />
         <watch expression="weighted_adj_matrix.shape" language="Python" />
+        <watch expression="args.added_edges_option" language="Python" />
         <watch expression="weighted_adj_matrix.nonzero()[0].shape" language="Python" />
+        <watch expression="args.add_edges_option" language="Python" />
+        <watch expression="args.add_edge_option" language="Python" />
+        <watch expression="picked_edges.shape" language="Python" />
+        <watch expression="picked_edges" language="Python" />
         <watch expression="weighted_adj_matrix[weighted_adj_matrix.nonzero()].shape" language="Python" />
+        <watch expression="nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes))).nonzero()[0].shape" language="Python" />
+        <watch expression="weighted_adj[73][78]" language="Python" />
+        <watch expression="weighted_adj" language="Python" />
+        <watch expression="weighted_adj.shape" language="Python" />
+        <watch expression="weighted_adj[73,78]" language="Python" />
+        <watch expression="nx.to_numpy_matrix(G).nonzero()[0].shape" language="Python" />
         <watch expression="weighted_adj[weighted_adj.nonzero()].shape" language="Python" />
         <watch expression="added_edges.shape[1] * 0.05" language="Python" />
         <watch expression="original_edges.shape[1] * 2" language="Python" />
@@ -647,7 +705,6 @@
         <watch expression="weight_limit" language="Python" />
         <watch expression="original_edges.shape" language="Python" />
         <watch expression="num_selected" language="Python" />
-        <watch expression="nx.to_numpy_matrix(G).nonzero()[0].shape" language="Python" />
         <watch expression="np.amax(weighted_adj_matrix)" language="Python" />
         <watch expression="np.amax(weighted_adj_matrix[weighted_adj_matrix&lt;1])" language="Python" />
         <watch expression="np.amax(weighted_adj_matrix[(weighted_adj_matrix &gt;0) &amp; (weighted_adj_matrix &lt; 1)])" language="Python" />
@@ -695,6 +752,45 @@
         <watch expression="data.num_classes" language="Python" />
         <watch expression="x[0]" language="Python" />
         <watch expression="save_path + EMBEDDING_FILENAME" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="used_nodes" language="Python" />
+        <watch expression="args.added_edges_option" language="Python" />
+        <watch expression="top_bottom_percent" language="Python" />
+        <watch expression="num_selected" language="Python" />
+        <watch expression="tmp.size" language="Python" />
+        <watch expression="len(G.edges)" language="Python" />
+        <watch expression="edges_weight" language="Python" />
+        <watch expression="i" language="Python" />
+        <watch expression="length" language="Python" />
+        <watch expression="picked_edges" language="Python" />
+        <watch expression="original_edges" language="Python" />
+        <watch expression="(original_edges.shape)" language="Python" />
+        <watch expression="weighted_adj[weighted_adj.nonzero()]" language="Python" />
+        <watch expression="__py_debug_temp_var_2100608342" />
+        <watch expression="amount" language="Python" />
+        <watch expression="edges.shape" language="Python" />
+        <watch expression="length" />
+        <watch expression="len(length)" language="Python" />
+        <watch expression="tmp" language="Python" />
+        <watch expression="count_same_val" language="Python" />
+        <watch expression="picked_edges" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="picked_edges.shape" language="Python" />
+        <watch expression="len(G.edges)" language="Python" />
+        <watch expression="edges[0]" language="Python" />
+        <watch expression="np.array(edges).T.shape" language="Python" />
+        <watch expression="cumsum" language="Python" />
+        <watch expression="len(picked)" language="Python" />
+        <watch expression="picked_edges" language="Python" />
+        <watch expression="edges" language="Python" />
+        <watch expression="edges[-1]" language="Python" />
+        <watch expression="tmp.shape" language="Python" />
+        <watch expression="tmp" language="Python" />
+        <watch expression="new_edges" language="Python" />
+        <watch expression="len(new_edges)" language="Python" />
+        <watch expression="np.unique(new_edges)[0].shape" language="Python" />
+        <watch expression="__py_debug_temp_var_1603544197" />
+        <watch expression="np.unique(new_edges)" language="Python" />
       </configuration>
     </watches-manager>
   </component>

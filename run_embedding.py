@@ -1295,6 +1295,8 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
         # =====================
         # # reassign args of jaccard_coeff function
 
+        args.added_edges_option = 'longest_path'
+        # args.added_edges_option = 'shared_gene'
         copd_geometric_dataset = None
         if model.get('edges_selection', None):
             args.common_nodes_feat = model['edges_selection']['common_nodes_feat']
@@ -1312,10 +1314,22 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
                 args.top_bottom_percent_edges = model['edges_selection']['top_bottom_percent_edges']
                 args.shared_nodes_random_edges_percent    = model['edges_selection']['shared_nodes_random_edges_percent']
                 args.all_nodes_random_edges_percent    = model['edges_selection']['all_nodes_random_edges_percent']
+                if model['edges_selection']['top_percent_edges'] is not None:
+                    percent = model['edges_selection']['top_percent_edges']
+                if model['edges_selection']['bottom_percent_edges'] is not None:
+                    percent = model['edges_selection']['bottom_percent_edges']
+                if model['edges_selection']['top_bottom_percent_edges'] is not None:
+                    percent = model['edges_selection']['top_bottom_percent_edges']
+                if model['edges_selection']['shared_nodes_random_edges_percent'] is not None:
+                    percent = model['edges_selection']['shared_nodes_random_edges_percent']
+                if model['edges_selection']['all_nodes_random_edges_percent'] is not None:
+                    percent = model['edges_selection']['all_nodes_random_edges_percent']
 
                 # func_kwargs = { 'used_nodes':args.common_nodes_feat,"edges_weight_option":model['edges_selection']['edges_weight_option']}
                 _, copd_geometric_dataset, weight_adj = get_config(model['name'], copd, used_nodes=args.common_nodes_feat,
-                                                                 edges_weight_option=model['edges_selection']['edges_weight_option'])
+                                                                 edges_weight_option=model['edges_selection']['edges_weight_option'],
+                                                                added_edges_option = args.added_edges_option,
+                                                                   percent = percent)
             else:
                 raise ValueError("error in run_ensemble: common_nodes_feat is None")
         else:
@@ -1366,13 +1380,18 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
             raise ValueError('specifed embedding  is not supported or incorrectly typed')
 
 def run_main():
-    percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
-    stoch = [True, False]
-    # conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
-    #               'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
-    conditions = ['top_bottom_percent_edges', 'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+    # percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
+    # # stoch = [True, False]
+    # # conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
+    # #               'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+    # conditions = ['top_bottom_percent_edges', 'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+
     # embedding = 'gnn'
     embedding = 'node2vec'
+
+    conditions = ['top_bottom_percent_edges']
+    percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
+    stoch = [True]
 
     # percent = [0.1]
     # stoch = [True, False]
