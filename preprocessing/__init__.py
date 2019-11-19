@@ -377,6 +377,80 @@ def add_edges_with_longest_path(dataset, geometric_dataset, edges, used_nodes, p
         return picked_edges
 
     #TODO here>> add same number of edges to 0.05- 0.5
+    if percent == 0:
+        amount = 0
+    if percent == 0.05:
+        amount = 24
+    if percent == 0.1:
+        amount = 48
+    if percent == 0.2:
+        amount = 97
+    if percent == 0.3:
+        amount = 146
+    if percent == 0.4:
+        amount = 195
+    if percent == 0.5:
+        amount = 244
+    print('========before ============')
+    print(len(G.edges))
+    weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
+    # print(weighted_adj.nonzero()[0].shape[0])
+    picked_edges = pick_longest_path(length, amount=amount)
+    print('========after============')
+    G.add_edges_from(picked_edges)
+    print(len(G.edges))
+    weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
+    edges_weight = np.array([1 for i in range(weighted_adj.nonzero()[0].shape[0])])
+    print(weighted_adj.nonzero()[0].shape[0])
+    #TODO here>> what does edges_weight support to look like?
+
+    return weighted_adj, edges_weight
+def added_edges_with_same_class(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path, percent):
+     x = geometric_dataset.x
+     y = geometric_dataset.y
+
+     G = nx.Graph()
+     G.add_edges_from(edges)
+     # =====================
+     # ==get biggest disconnected subgraph, so it consistent with node2vec
+     # =====================
+
+     disconnected_graph = list(nx.connected_component_subgraphs(G))
+     disconnected_graph = [(disconnected_graph[i], len(g)) for i, g in enumerate(disconnected_graph)]
+     #
+     from operator import itemgetter
+
+     disconnected_graph = sorted(disconnected_graph, key=itemgetter(1), reverse=True)
+     # print(disconnected_graph)
+
+     # disconnected_graph = [subgraph1, subgraph2, ....] #where subgraph is of type networkx
+     biggest_disconnected_graph = [graph for graph, length in disconnected_graph][0]
+     G = biggest_disconnected_graph
+
+    #=====================
+    #==
+    #=====================
+
+     added_edges = []
+     for i,val1 in enumerate(y):
+         if i == geometric_dataset.num_disease:
+             break
+         for j,val2 in enumerate(y):
+             if i > j and val1 == val2 : # no repeated edges and in the same class
+                 added_edges.append([i,j]) # 1153
+
+
+     G.add_edges_from(added_edges)
+     weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
+     edges_weight = np.array([1 for i in range(weighted_adj.nonzero()[0].shape[0])])
+     print(weighted_adj.nonzero()[0].shape[0])
+
+     return weighted_adj, edges_weight
+
+
+def add_edges_with_no_shared_nodes(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path, percent):
+    if percent == 0:
+        amount = 0
     if percent == 0.05:
         amount = 24
     if percent == 0.1:
@@ -390,18 +464,51 @@ def add_edges_with_longest_path(dataset, geometric_dataset, edges, used_nodes, p
     if percent == 0.5:
         amount = 244
 
-    print('========before ============')
-    print(len(G.edges))
+    weighted_adj, edges_weight = None, None
+    added_edges = get_added_edges_from_nodes_with_shared_genes(edges, used_nodes, plot_shared_gene_dist)
+    all_edges = []
+    for i in range(geometric_dataset.num_disease):
+        for j in range(geometric_dataset.num_disease):
+            if i < j:
+                all_edges.append((i, j))
+    # sorted(added_edges, key=lambda tup: tup[0], reverse=True)
+    all_edges = set(all_edges)
+    added_edges = set(added_edges)
+    no_shared_gene = all_edges.difference(added_edges) # 4511
+
+    prob = [1/len(no_shared_gene) for i in range(len(no_shared_gene))]
+    # get number of edges to picked per nodes alpha value
+    picked = np.random.choice(range(len(no_shared_gene)), amount, p=prob, replace=False)
+    no_shared_gene = np.array(list(no_shared_gene))
+    added_edges = no_shared_gene[picked]
+
+
+    x = geometric_dataset.x
+    y = geometric_dataset.y
+
+    G = nx.Graph()
+    G.add_edges_from(edges)
+    # =====================
+    # ==get biggest disconnected subgraph, so it consistent with node2vec
+    # =====================
+
+    disconnected_graph = list(nx.connected_component_subgraphs(G))
+    disconnected_graph = [(disconnected_graph[i], len(g)) for i, g in enumerate(disconnected_graph)]
+    #
+    from operator import itemgetter
+
+    disconnected_graph = sorted(disconnected_graph, key=itemgetter(1), reverse=True)
+    # print(disconnected_graph)
+
+
+    # disconnected_graph = [subgraph1, subgraph2, ....] #where subgraph is of type networkx
+    biggest_disconnected_graph = [graph for graph, length in disconnected_graph][0]
+    G = biggest_disconnected_graph
+
+
+    G.add_edges_from(added_edges)
     weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
-    # print(weighted_adj.nonzero()[0].shape[0])
-    picked_edges = pick_longest_path(length, amount=amount)
-    print('========after============')
-    G.add_edges_from(picked_edges)
-    print(len(G.edges))
-    weighted_adj = nx.to_numpy_matrix(G, nodelist=list(range(dataset.num_nodes)))
-    edges_weight = np.array(range(weighted_adj.nonzero()[0].shape[0]))
-    print(weighted_adj.nonzero()[0].shape[0])
-    #TODO here>> what does edges_weight support to look like?
+    edges_weight = np.array([1 for i in range(weighted_adj.nonzero()[0].shape[0])])
 
     return weighted_adj, edges_weight
 
@@ -441,13 +548,18 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     #=====================
     #==code below is really really bad and slow.
     #=====================
-
+    if added_edges_option == 'no_shared_gene':
+        weighted_adj, edges_weight = add_edges_with_no_shared_nodes(dataset, geometric_dataset, edges, used_nodes,
+                                                                 plot_shared_gene_dist, edges_weight_option, save_path, percent)
     if added_edges_option == 'shared_gene':
         weighted_adj, edges_weight= add_edges_with_shared_nodes(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path)
 
     if added_edges_option == 'longest_path':
         weighted_adj, edges_weight = add_edges_with_longest_path(dataset, geometric_dataset, edges, used_nodes, plot_shared_gene_dist,edges_weight_option, save_path, percent)
-
+    if added_edges_option == 'same_class':
+        weighted_adj, edges_weight = added_edges_with_same_class(dataset, geometric_dataset, edges, used_nodes,
+                                                                 plot_shared_gene_dist, edges_weight_option, save_path,
+                                                                 percent)
     #TODO here>> trying out differnet weight for edges between diseases
     # > create gene to gene nodes and apply the same edge weight criteria
 
@@ -463,7 +575,9 @@ def create_common_nodes_as_features(dataset, geometric_dataset, plot_shared_gene
     #     weighted_adj = weighted_adj[range(0,geometric_dataset.x.shape[0])]
 
     #--------update copd_geometric_dataset
-    edges = np.array(edges) # i am not sure why I nee dto convert to array then back to list to convert to tensor
+    # edges = np.array(edges) # i am not sure why I nee dto convert to array then back to list to convert to tensor
+    edges = np.array(weighted_adj.nonzero()).T
+    # print(edges.T.shape)
     geometric_dataset.edges_index = torch.tensor(edges.tolist()) # why can't i convert
     geometric_dataset.edge_index = torch.transpose(torch.tensor(edges.tolist()), 0,1 ) # why can't i convert
 
@@ -654,6 +768,7 @@ def add_features():
         # > make sure that it is in order.
         #TODO here>> make it compatible with gcn and node2vec
         print(f'run emb from {args.emb_path}')
+
         emb_name = args.emb_path.split('\\')[-1]
         emb_name = emb_name.split('_')[0]
         # if emb_name == 'node2vec':

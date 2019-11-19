@@ -205,7 +205,7 @@ def run_ensemble(copd, config=None):
     # > ensemble then feed data for model to be predicted
     # > collect prediction from each data and selected each predicion that have the most vote.
 
-    args.added_edges_option = 'longest_path'
+    # args.added_edges_option = 'longest_path'
     # args.added_edges_option = 'shared_gene'
 
     for name,model  in config.items():
@@ -234,19 +234,28 @@ def run_ensemble(copd, config=None):
                 args.bottom_percent_edges    = model['edges_selection']['bottom_percent_edges']
                 args.shared_nodes_random_edges_percent    = model['edges_selection']['shared_nodes_random_edges_percent']
                 args.all_nodes_random_edges_percent    = model['edges_selection']['all_nodes_random_edges_percent']
-
+                if args.all_nodes_random_edges_percent is not None:
+                    args.percent = args.all_nodes_random_edges_percent
+                elif args.shared_nodes_random_edges_percent is not None:
+                    args.percent = args.all_nodes_random_edges_percent
+                elif args.bottom_percent_edges is not None:
+                    args.percent = args.bottom_percent_edges
+                elif args.top_percent_edges is not None:
+                    args.percent = args.top_percent_edges
+                else:
+                    raise ValueError('no percent specified')
                 func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,
                                                                     used_nodes=args.common_nodes_feat,
                                                                     edges_weight_option=model['edges_selection']['edges_weight_option'],
-                                                                    added_edges_option=args.added_edges_option)
+                                                                    added_edges_option=args.added_edge_option)
             else:
                 raise ValueError("error in run_ensemble: common_nodes_feat is None")
         elif model.get('emb_path', None): # done
             args.emb_path = model.get('emb_path', None)
-            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,  emb_path=model['emb_path'])
+            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd,  emb_path=model['emb_path'],added_edges_option=args.added_edge_option)
         elif model.get('emb_name', None): # todo need to check further
             args.emb_name = model.get('emb_name', 'no_feat')
-            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, emb_name=model['emb_name'])
+            func_kwargs, copd_geometric_dataset, _ = get_config(model['name'], copd, emb_name=model['emb_name'],added_edges_option=args.added_edge_option)
 
         else:
             raise ValueError('func_kwargs is None')
@@ -334,20 +343,35 @@ def run_ensemble(copd, config=None):
     #=====================
     if args.embedding_name == 'node2vec':
         tmp = args.emb_path.split("\\")[10:]
-        file_name = '_'.join(tmp)  # eg node2vec_all_nodes_random_0.05_0.txt
-        folder = args.emb_path.split('\\')[10]
-        folder = folder + '\\' + args.emb_path.split('\\')[11]
-        folder = folder + '\\' + args.emb_path.split('\\')[12]
-        folder = folder + '\\' + "ensemble/"
+        args.percent = tmp[-2]
+        # file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+        file_name = tmp[-1]  # eg node2vec_all_nodes_random_0.05_0.txt
+        folder = args.emb_path.split('\\')[-4]
+        folder = folder + '\\' + args.emb_path.split('\\')[-3]
+        folder = folder + '\\' + f"{args.percent}/ensemble/"
+
+        # tmp = args.emb_path.split("\\")[10:]
+        # args.percent = tmp[-2]
+        # file_name = tmp[-1]  # eg node2vec_all_nodes_random_0.05_0.txt
+        # folder = args.emb_path.split('\\')[10]
+        # folder = folder + '\\' + args.emb_path.split('\\')[11]
+        # folder = folder + '\\' + args.emb_path.split('\\')[12]
+        # folder = folder + '\\' + f"{args.percent}/ensemble/"
+
     elif args.embedding_name == 'gcn':
-        folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + "ensemble/"
+        folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + f"{args.percent}/ensemble/"
         file_name = args.emb_path.split("\\")[-1]
     else:
         raise ValueError('in all_models > baseline > models > svm() > else > else ')
 
     import performance_metrics
     # save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\output\gene_disease\ensemble/'
-    save_path = f"log/gene_disease/{args.time_stamp}/classifier/{model['name']}/split={args.split}/report_performance/"
+    if args.added_edge_option == 'longest_path':
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/{model['name']}/split={args.split}/"
+    elif args.added_edge_option in ['shared_gene', 'no_shared_gene']:
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/{model['name']}/split={args.split}/report_performance/"
+    else:
+        raise ValueError('args.added_edges_option is wrong')
 
     # tmp = args.emb_path.split("\\")
     # folder = tmp[-4] + '\\' + tmp[-3] + '\\' + tmp[-2] + '\\' +  "ensemble/"
@@ -356,6 +380,7 @@ def run_ensemble(copd, config=None):
     # file_name = f'{tmp}.txt'
 
     save_path = save_path + folder
+    print(f'folder = {folder}')
     print(save_path + f'{file_name} ')
 
     print('-----ensemble report')
@@ -893,14 +918,24 @@ def run_main():
             'mlp': baseline.mlp,
             'rf'  : baseline.random_forest,
         }
-        tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\node2vec'
+        # args.added_edge_option = 'longest_path'
+        args.added_edge_option = 'no_shared_gene'
+        # args.added_edge_option = 'shared_gene'
+        # args.added_edge_option = 'same_class'
+
+        args.embedding_name = 'node2vec'
+        # args.embedding_name = 'gcn'
+        tmp = f'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease\\07_14_19_46\\processed\\embedding\\{args.added_edge_option}\\node2vec'
+        # tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\shared_gene\node2vec\top_bottom_k_stoch\0'
         # tmp = f'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease\\07_14_19_46\\processed\\embedding\\gcn\\split=0.8\\lr=0.09_d=0.5_wd=0.006_wc=[1 1 1 1 1 0]'
-        if tmp.split('\\')[-1] == 'node2vec':
-            args.embedding_name = 'node2vec' # please use embedding_name not emb_name; they have different purpose
-        elif tmp.split('\\')[-3] == 'gcn':
-            args.embedding_name = 'gcn' # please use embedding_name not emb_name; they have different purpose
-        else:
-            raise ValueError('In __init__.py >if__name__ == "main" > if args.ensemble > else')
+        # tmp = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\data\gene_disease\07_14_19_46\processed\embedding\same_class\node2vec'
+
+        # if tmp.split('\\')[-1] == 'node2vec':
+        #     args.embedding_name = 'node2vec' # please use embedding_name not emb_name; they have different purpose
+        # elif tmp.split('\\')[-3] == 'gcn':
+        #     args.embedding_name = 'gcn' # please use embedding_name not emb_name; they have different purpose
+        # else:
+        #     raise ValueError('In __init__.py >if__name__ == "main" > if args.ensemble > else')
         print(args.split)
 
         #=====================
@@ -924,8 +959,8 @@ def run_main():
                     ensemble_config[f'model_{args.split}_{i}']['name'] = model_key
                     ensemble_config[f'model_{args.split}_{i}']['func'] = {"model": model_func}
                     ensemble_config[f'model_{args.split}_{i}']['emb_path'] = os.path.join(root, name)
-                    print(f'load data from {os.path.join(root, name)}')
                     # ensemble_config[f'model_{args.split}_{i}']['emb_name'] = 'gnn'
+                    print(f'load data from {os.path.join(root, name)}')
                     # print(ensemble_config)
                     # exit()
                 if len(ensemble_config) > 0:

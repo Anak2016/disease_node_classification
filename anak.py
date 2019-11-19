@@ -138,38 +138,39 @@ def run_node2vec(copd, copd_geometric, weighted_adj, time_stamp=args.time_stamp,
     save_path = r'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease'
     save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\{args.added_edges_option}\\node2vec\\'
     tmp = save_path
-    assert args.index is not None, "please specified index of embedding file"
-    if args.top_bottom_percent_edges is not None:
-        if args.stochastic_edges:
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
-            save_path = save_path + f'top_bottom_k_stoch\\{args.top_bottom_percent_edges}\\'
-        else:
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
-            save_path = save_path + f'top_bottom_k\\{args.top_bottom_percent_edges}\\'
-    if args.all_nodes_random_edges_percent is not None and args.shared_nodes_random_edges_percent is not None:
-        raise ValueError(
-            " Either args.all_nodes_random_edges_percent or args.shared_nodes_random_edges_percent MUST NOT be None")
-    if args.all_nodes_random_edges_percent is not None:
-        # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_all_nodes_random={args.all_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
-        save_path = save_path + f'all_nodes_random\\{args.all_nodes_random_edges_percent}\\'
-    if args.shared_nodes_random_edges_percent is not None:
-        # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_shared_nodes_random={args.shared_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
-        save_path = save_path + f'shared_nodes_random\\{args.shared_nodes_random_edges_percent}\\'
-    if args.bottom_percent_edges is not None:
-        if args.stochastic_edges:
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
-            save_path = save_path + f'bottom_k_stoch\\{args.bottom_percent_edges}\\'
+    if args.added_edges_option == 'no_shared_gene':
+        assert args.index is not None, "please specified index of embedding file"
+        if args.top_bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_bottom_k_stoch\\{args.top_bottom_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_bottom_k={args.top_bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_bottom_k\\{args.top_bottom_percent_edges}\\'
+        if args.all_nodes_random_edges_percent is not None and args.shared_nodes_random_edges_percent is not None:
+            raise ValueError(
+                " Either args.all_nodes_random_edges_percent or args.shared_nodes_random_edges_percent MUST NOT be None")
+        if args.all_nodes_random_edges_percent is not None:
+            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_all_nodes_random={args.all_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+            save_path = save_path + f'all_nodes_random\\{args.all_nodes_random_edges_percent}\\'
+        if args.shared_nodes_random_edges_percent is not None:
+            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_shared_nodes_random={args.shared_nodes_random_edges_percent}_mask={args.mask_edges}_stochh{args.index}.txt"
+            save_path = save_path + f'shared_nodes_random\\{args.shared_nodes_random_edges_percent}\\'
+        if args.bottom_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'bottom_k_stoch\\{args.bottom_percent_edges}\\'
 
-        else:
-            save_path = save_path + f'bottom_k\\{args.bottom_percent_edges}\\'
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
-    if args.top_percent_edges is not None:
-        if args.stochastic_edges:
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
-            save_path = save_path + f'top_k_stoch\\{args.top_percent_edges}\\'
-        else:
-            # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}{args.index}.txt"
-            save_path = save_path + f'top_k\\{args.top_percent_edges}\\'
+            else:
+                save_path = save_path + f'bottom_k\\{args.bottom_percent_edges}\\'
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_bottom_k={args.bottom_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+        if args.top_percent_edges is not None:
+            if args.stochastic_edges:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}_stochh{args.index}.txt"
+                save_path = save_path + f'top_k_stoch\\{args.top_percent_edges}\\'
+            else:
+                # EMBEDDING_FOLDER=f"node2vec_emb_fullgraph_common_nodes_feat={args.common_nodes_feat}{time_stamp}_added_edges=disease_{args.edges_weight_option}_top_k={args.top_percent_edges}_mask={args.mask_edges}{args.index}.txt"
+                save_path = save_path + f'top_k\\{args.top_percent_edges}\\'
 
     # save_path = f'data/gene_disease/{args.time_stamp}/processed/embedding/node2vec/'
 

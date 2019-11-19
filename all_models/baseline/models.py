@@ -106,17 +106,18 @@ def logistic_regression(data, config=None, decision_func='ovr', verbose=True):
         # file_name = f'emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
         if args.embedding_name == 'node2vec':
             tmp = args.emb_path.split("\\")[10:]
-            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            args.percent = tmp[-2]
+            file_name = tmp[-1]   # eg node2vec_all_nodes_random_0.05_0.txt
             folder = args.emb_path.split('\\')[10]
             folder = folder + '\\' + args.emb_path.split('\\')[11]
-            folder = folder + '\\' + args.emb_path.split('\\')[12]
+            folder = folder + '\\' + args.emb_path.split('\\')[12] + '\\' + f"{args.percent}/"
         elif args.embedding_name == 'gcn':
-            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + f"{args.percent}/"
             file_name = args.emb_path.split("\\")[-1]
         else:
             raise ValueError('in all_models > baseline > models > logistic_regression() > else > else ')
 
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/lr/split={args.split}/report_performance/{folder}/"
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/lr/split={args.split}/report_performance/{folder}/"
 
         import os
         if not os.path.exists(save_path):
@@ -130,15 +131,15 @@ def logistic_regression(data, config=None, decision_func='ovr', verbose=True):
             y_true=train_label,
             y_pred=y_pred_train,
             y_score=y_pred_train_proba,
-            # save_path=f'{save_path}train/',
-            # file_name=file_name
+            save_path=f'{save_path}train/',
+            file_name=file_name
         )
         report_test = performance_metrics.report_performances(
             y_true=test_label,
             y_pred=y_pred_test,
             y_score=y_pred_test_proba,
-            # save_path=f'{save_path}test/',
-            # file_name=file_name
+            save_path=f'{save_path}test/',
+            file_name=file_name
             )
         if args.report_performance:
             print(report_train)
@@ -148,7 +149,7 @@ def logistic_regression(data, config=None, decision_func='ovr', verbose=True):
     # return report_test.iloc[-1], model
 
 
-# def svm(x_train,label_train, x_test, label_test, decision_func='ovo'):
+# run_node2vec(x_train,label_train, x_test, label_test, decision_func='ovo'):
 def svm(data, config=None, decision_func='ovr', verbose=True):
     '''
 
@@ -258,23 +259,28 @@ def svm(data, config=None, decision_func='ovr', verbose=True):
         #TODO here>> split cases for emb_path and emb_name
         if args.embedding_name == 'node2vec':
             tmp = args.emb_path.split("\\")[10:]
-            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
-            folder = args.emb_path.split('\\')[10]
-            folder = folder + '\\' + args.emb_path.split('\\')[11]
-            folder = folder + '\\' + args.emb_path.split('\\')[12]
+            args.percent = tmp[-2]
+            # file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            file_name = tmp[-1]   # eg node2vec_all_nodes_random_0.05_0.txt
+            folder = args.emb_path.split('\\')[-4]
+            folder = folder + '\\'+ args.emb_path.split('\\')[-3]
+            folder = folder + '\\' + args.emb_path.split('\\')[-2]
         elif args.embedding_name == 'gcn':
-            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + f"{args.percent}/"
             file_name = args.emb_path.split("\\")[-1]
         else:
             raise ValueError('in all_models > baseline > models > svm() > else > else ')
 
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/svm/split={args.split}/report_performance/{folder}/"
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/svm/split={args.split}/report_performance/{folder}/"
+
         # file_name = f'cross_validation={args.cv}_emb={args.emb_name}_epoch={args.epochs}_wc={args.weighted_class}.txt'
 
 
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)
+
+        print(f'folder = {folder}')
         print(f'save to {save_path+"train/"+file_name}')
         print(f'save to {save_path + "test/" + file_name}')
         report_train = performance_metrics.report_performances(
@@ -563,17 +569,19 @@ def mlp(data, config):
         #     print(report_test)
         if args.embedding_name == 'node2vec':
             tmp = args.emb_path.split("\\")[10:]
-            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            args.percent = tmp[-2]
+            file_name = tmp[-1]   # eg node2vec_all_nodes_random_0.05_0.txt
+            # file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
             folder = args.emb_path.split('\\')[10]
             folder = folder + '\\' + args.emb_path.split('\\')[11]
-            folder = folder + '\\' + args.emb_path.split('\\')[12]
+            folder = folder + '\\' + args.emb_path.split('\\')[12] + '\\' + f"{args.percent}/"
         elif args.embedding_name == 'gcn':
-            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + f"{args.percent}/"
             file_name = args.emb_path.split("\\")[-1]
         else:
             raise ValueError('in all_models > baseline > models > mlp() > else > else ')
 
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/mlp/split={args.split}/report_performance/{folder}/"
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/mlp/split={args.split}/report_performance/{folder}/"
 
         import os
         if not os.path.exists(save_path):
@@ -730,17 +738,19 @@ def random_forest(data, config, evaluate=False):
 
         if args.embedding_name == 'node2vec':
             tmp = args.emb_path.split("\\")[10:]
-            file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
+            args.percent = tmp[-2]
+            file_name = tmp[-1]   # eg node2vec_all_nodes_random_0.05_0.txt
+            # file_name = '_'.join(tmp) # eg node2vec_all_nodes_random_0.05_0.txt
             folder = args.emb_path.split('\\')[10]
             folder = folder + '\\' + args.emb_path.split('\\')[11]
-            folder = folder + '\\' + args.emb_path.split('\\')[12]
+            folder = folder + '\\' + args.emb_path.split('\\')[12] + '\\' + f"{args.percent}/"
         elif args.embedding_name == 'gcn':
-            folder = '\\'.join(args.emb_path.split('\\')[-6:-1])
+            folder = '\\'.join(args.emb_path.split('\\')[-6:-1]) + '\\' + f"{args.percent}/"
             file_name = args.emb_path.split("\\")[-1]
         else:
             raise ValueError('in all_models > baseline > models > random_forest() > else > else ')
 
-        save_path = f"log/gene_disease/{args.time_stamp}/classifier/rf/split={args.split}/report_performance/{folder}/"
+        save_path = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edge_option}/rf/split={args.split}/report_performance/{folder}/"
         import os
         if not os.path.exists(save_path):
             os.makedirs(save_path)

@@ -1295,8 +1295,7 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
         # =====================
         # # reassign args of jaccard_coeff function
 
-        args.added_edges_option = 'longest_path'
-        # args.added_edges_option = 'shared_gene'
+
         copd_geometric_dataset = None
         if model.get('edges_selection', None):
             args.common_nodes_feat = model['edges_selection']['common_nodes_feat']
@@ -1359,7 +1358,7 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
             # args.hidden = 32
             # args.hidden = 16
             # args.hidden = 8
-            # args.epochs = 100
+            args.epochs = 200
             args.report_performance = True
             print(copd_geometric_dataset.edge_index.shape)
 
@@ -1370,28 +1369,38 @@ def run_and_save_embedding(copd, emb_type=None, config=None):
                 "conv2": GCNConv(args.hidden, 16, cached=True),
 
                 # "Linearin_32": nn.Linear(64, 32),
-                "Linear32_16": nn.Linear(32, 16),
+                # "Linear32_16": nn.Linear(32, 16),
                 "Linear16_out": nn.Linear(16, copd_geometric_dataset.num_classes),
-                "Linear32_out": nn.Linear(32, copd_geometric_dataset.num_classes),
+                # "Linear32_out": nn.Linear(32, copd_geometric_dataset.num_classes),
             }
-
+            #TODO here>> check input of GCN
             embedding.GNN(data=copd_geometric_dataset).run(modules)
         else:
             raise ValueError('specifed embedding  is not supported or incorrectly typed')
 
 def run_main():
     # percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
-    # # stoch = [True, False]
-    # # conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
-    # #               'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+    # stoch = [True, False]
+    # conditions = ['top_percent_edges', 'bottom_percent_edges', 'top_bottom_percent_edges',
+    #               'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
     # conditions = ['top_bottom_percent_edges', 'all_nodes_random_edges_percent', 'shared_nodes_random_edges_percent']
+
+    # args.added_edges_option = 'longest_path' # running
+    # args.added_edges_option = 'shared_gene'
+    args.added_edges_option = 'no_shared_gene'
+    percent = [0.1, 0.2, 0.3, 0.4, 0.5,0.05]
+    stoch = [True]
+    conditions = ['top_bottom_percent_edges']
+
+    # args.added_edges_option = 'same_class'
+    # added_edges_option = ['longest_path', 'shared_gene', 'same_class']
 
     # embedding = 'gnn'
     embedding = 'node2vec'
 
-    conditions = ['top_bottom_percent_edges']
-    percent = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5]
-    stoch = [True]
+    # conditions = ['top_bottom_percent_edges']
+    # percent = [0]
+    # stoch = [True]
 
     # percent = [0.1]
     # stoch = [True, False]
@@ -1399,10 +1408,14 @@ def run_main():
     # conditions = ["top_percent_edges"]
 
     embedding_config = {}
+    # for option in added_edges_option:
+    #     args.added_edges_option = option
+
     for i in conditions:
         for k in stoch:
             for j in percent:
-                if i in ['shared_nodes_random_edges_percent', "shared_nodes_random_edges_percent"]:
+
+                if i in ['all_nodes_random_edges_percent', "shared_nodes_random_edges_percent"]:
                     if k:
                         for index in range(10):  # all of them have the same result.
                             embedding_config[f'{i}{j}_stoch={k}_{index}'] = {}

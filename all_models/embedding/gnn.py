@@ -66,7 +66,9 @@ class Net(torch.nn.Module):
             # self._emb_output = x
 
             x = F.relu(x) # chosen
-            x = F.relu(self.Linear16_out(x)) # chosen
+            x = F.dropout(x, p=args.dropout, training=self.training)
+            x = self.Linear16_out(x) # chosen
+            # x = F.relu(self.Linear16_out(x)) # chosen
 
             # x = F.relu(self.Linearin_32(x))
             # x = F.relu(self.Linear32_16(x))
@@ -126,7 +128,7 @@ class GNN:
         print(self.weighted_class.numpy().astype(int))
         self.HP = f'lr={args.lr}_d={args.dropout}_wd={args.weight_decay}_wc={self.weighted_class.numpy().astype(int)}'
 
-        self.folder = f"log/gene_disease/{args.time_stamp}/classifier/gcn/split={data.split}/{self.HP}/"
+        self.folder = f"log/gene_disease/{args.time_stamp}/classifier/{args.added_edges_option}/gcn/split={data.split}/{self.HP}/"
 
         if not os.path.exists(self.folder):
             os.makedirs(self.folder)
@@ -932,7 +934,7 @@ class GNN:
         save_path = None
 
         save_path = r'C:\\Users\\awannaphasch2016\\PycharmProjects\\disease_node_classification\\data\\gene_disease'
-        save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\gcn\\split={args.split}\\mlp16_out\\{self.HP}\\'
+        save_path = save_path + f'\\{args.time_stamp}\\processed\\embedding\\{args.added_edges_option}\\gcn\\split={args.split}\\softmax\\{self.HP}\\'
         tmp = save_path
         assert args.index is not None, "please specified index of embedding file"
         if args.top_bottom_percent_edges is not None:
@@ -999,7 +1001,7 @@ class GNN:
         time_stamp = args.time_stamp
         save_path = None
         save_path = r'C:\Users\awannaphasch2016\PycharmProjects\disease_node_classification\log\gene_disease'
-        save_path = save_path + f'\\{args.time_stamp}\\classifier\\gcn\\split={args.split}\\mlp16_out\\{self.HP}\\'
+        save_path = save_path + f'\\{args.time_stamp}\\classifier\\{args.added_edges_option}\\gcn\\split={args.split}\\softmax\\{self.HP}\\'
         tmp = save_path
 
         assert args.index is not None, "please specified index of embedding file"
